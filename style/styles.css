@@ -1,0 +1,86 @@
+*
+{
+    margin: 0;
+    padding: 0;
+}
+nav
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+    border-radius: 50px;
+    background-color: rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+}
+
+nav > a
+{
+    color: #fff;
+    padding: 5px 20px;
+    border-radius: 25px;
+    font-weight: 500;
+    transition: background-color .25s ease-in-out;
+}
+nav > a:hover
+{
+    color: #fff;
+    text-decoration: none;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+header
+{
+    background-image: url("/img/strada.jpg");
+    background-size: cover;
+    background-position: center;
+    padding: 100px 20px;
+    color: #789;
+}
+h1
+{
+    position: relative;
+    bottom: -90px;
+}
+h1, h3
+{
+    margin: auto;
+    padding: 10px;
+    width: fit-content;
+    border: 1px solid;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+main
+{
+    padding: 20px;
+    background-image: linear-gradient(#ddd, #ccc, #bbb, #aaa);
+}
+li > a
+{
+    color: black;
+}
+.cont1
+{
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+.txt1
+{
+    display: flex;
+    align-items: center;
+}
+.contenuti
+{
+    margin: 20px auto;
+    padding: 30px;
+    width: fit-content;
+}
+#google_translate_element
+{
+    position: fixed;
+    top: 0;
+    right: 0;
+}
