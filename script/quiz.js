@@ -32,7 +32,7 @@ class Domanda {
     this.testo = testo;
     this.corretta = corretta;
     this.img = img;
-    risultato=null;
+    this.risultato=null;
   }
 }
 class Quizz {
