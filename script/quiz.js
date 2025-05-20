@@ -1,8 +1,38 @@
+class Utente {
+  constructor(nome, cognome, email, password,data_nascita) {
+    this.nome = nome;
+    this.cognome = cognome;
+    this.email = email;
+    this.password = password;
+    this.data_nascita = data_nascita;
+    domande = [];
+  }
+  getdomandecorrette() 
+  {
+    let domandeCorrette=[]
+    for (let i = 0; i < this.domande.length; i++) {
+      if (this.domande[i].risultato == true) {
+        domandeCorrette.push(this.domande[i]);
+      }
+    }
+    return domandeCorrette;
+  }
+  getdomandeerrate(){
+    let domandeErrate=[]
+    for (let i = 0; i < this.domande.length; i++) {
+      if (this.domande[i].risultato == false) {
+        domandeErrate.push(this.domande[i]);
+      }
+    }
+    return domandeErrate;
+  }
+}
 class Domanda {
   constructor(testo, corretta, img = null) {
     this.testo = testo;
     this.corretta = corretta;
     this.img = img;
+    risultato=null;
   }
 }
 class Quizz {
@@ -48,10 +78,10 @@ let quizz = new Quizz();
 quizz.caricaDomande();
 function creaquiz() {
   let domande = quizz.domande;
-  let i=0;
+  let i = 0;
   function aggiornadomanda(n) {
     document.getElementById("testo").textContent = domande[n].testo;
-    if (domande[n].img!== null) {
+    if (domande[n].img !== null) {
       document.getElementById("immagine").src = domande[n].img;
       document.getElementById("immagine").style.display = "";
     }
@@ -60,22 +90,19 @@ function creaquiz() {
     }
   }
   aggiornadomanda(i);
-  for (let s=0;s<document.getElementsByClassName("bottoni").length; s++){
-    document.getElementsByClassName("bottoni")[s].addEventListener("click",function(){
-      i+=1;
+  for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
+    document.getElementsByClassName("bottoni")[s].addEventListener("click", function () {
+      document.getElementById("numero-domanda").textContent = i + 1
+      if (domande[i].corretta == (this.value === "true")) {
+        domande[i].risultato = true;
+      }
+      else {
+        domande[i].risultato = false;
+      }
+      i += 1;
       aggiornadomanda(i);
-      document.getElementById("numero-domanda").textContent=i+1
-      console.log(document.getElementsByClassName("bottoni")[s].textContent)
-      console.log(domande[i].corretta)
-      if(document.getElementsByClassName("bottoni")[s].textContent=="Vero" && domande[i].corretta=="true")
-      {
-        alert("giusto")
-      }
-      else if(document.getElementsByClassName("bottoni")[s].textContent=="Falso" && domande[i].corretta=="false")
-      {
-        alert("giusto")
-      }
-      })
+
+    })
   }
 }
 
