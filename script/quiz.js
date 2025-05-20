@@ -60,6 +60,23 @@ function creaquiz() {
     }
   }
   aggiornadomanda(i);
+  for (let s=0;s<document.getElementsByClassName("bottoni").length; s++){
+    document.getElementsByClassName("bottoni")[s].addEventListener("click",function(){
+      i+=1;
+      aggiornadomanda(i);
+      document.getElementById("numero-domanda").textContent=i+1
+      console.log(document.getElementsByClassName("bottoni")[s].textContent)
+      console.log(domande[i].corretta)
+      if(document.getElementsByClassName("bottoni")[s].textContent=="Vero" && domande[i].corretta=="true")
+      {
+        alert("giusto")
+      }
+      else if(document.getElementsByClassName("bottoni")[s].textContent=="Falso" && domande[i].corretta=="false")
+      {
+        alert("giusto")
+      }
+      })
+  }
 }
 
 
