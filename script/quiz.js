@@ -1,5 +1,5 @@
 class Utente {
-  constructor(nome, cognome, email, password,data_nascita) {
+  constructor(nome, cognome, email, password, data_nascita) {
     this.nome = nome;
     this.cognome = cognome;
     this.email = email;
@@ -7,9 +7,8 @@ class Utente {
     this.data_nascita = data_nascita;
     domande = [];
   }
-  getdomandecorrette() 
-  {
-    let domandeCorrette=[]
+  getdomandecorrette() {
+    let domandeCorrette = []
     for (let i = 0; i < this.domande.length; i++) {
       if (this.domande[i].risultato == true) {
         domandeCorrette.push(this.domande[i]);
@@ -17,8 +16,8 @@ class Utente {
     }
     return domandeCorrette;
   }
-  getdomandeerrate(){
-    let domandeErrate=[]
+  getdomandeerrate() {
+    let domandeErrate = []
     for (let i = 0; i < this.domande.length; i++) {
       if (this.domande[i].risultato == false) {
         domandeErrate.push(this.domande[i]);
@@ -32,7 +31,7 @@ class Domanda {
     this.testo = testo;
     this.corretta = corretta;
     this.img = img;
-    this.risultato=null;
+    this.risultato = null;
   }
 }
 class Quizz {
@@ -74,10 +73,22 @@ class Quizz {
     }
   }
 }
+document.addEventListener("")
 let quizz = new Quizz();
 quizz.caricaDomande();
 function creaquiz() {
   let domande = quizz.domande;
+  let max = 0;
+  for (let i = 0; i < domande.length; i++) {
+    altezza = parseFloat(window.getComputedStyle(document.getElementById("testo")).getPropertyValue("height"))
+    document.getElementById("testo").textContent = domande[i].testo;
+    if (altezza > max) {
+      max = altezza;
+    }
+  }
+  document.getElementById("testo").style.height = max + "px";
+
+
   let i = 0;
   function aggiornadomanda(n) {
     document.getElementById("testo").textContent = domande[n].testo;
@@ -88,19 +99,25 @@ function creaquiz() {
     else {
       document.getElementById("immagine").style.display = "none";
     }
+    document.getElementById("numero-domanda").textContent = n + 1;
   }
-  aggiornadomanda(i);
+  if (i < domande.length - 1) {
+    aggiornadomanda(i);
+  }
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
     document.getElementsByClassName("bottoni")[s].addEventListener("click", function () {
-      document.getElementById("numero-domanda").textContent = i + 1
-      if (domande[i].corretta == (this.value === "true")) {
-        domande[i].risultato = true;
+      if (i < domande.length - 1) {
+        if (domande[i].corretta == (this.value === "true")) {
+          domande[i].risultato = true;
+        }
+        else {
+          domande[i].risultato = false;
+        }
+        i += 1;
+        aggiornadomanda(i);
+
       }
-      else {
-        domande[i].risultato = false;
-      }
-      i += 1;
-      aggiornadomanda(i);
+
 
     })
   }

@@ -12,21 +12,10 @@ nav {
     white-space: nowrap;
 }
 
-.VIpgJd-ZVi9od-ORHb-OEVmcd {
-    display: none;
-}
-
 #google_translate_element {
     position: fixed;
     top: 0;
     right: 0;
-}
-
-.quiz-card {
-    height: 90%;
-}
-#immagine-container{
-    height: 300px;
 }
 nav>a {
     color: #fff;
