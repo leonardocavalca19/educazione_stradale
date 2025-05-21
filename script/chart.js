@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function(){
     const ctx = document.getElementById("myChart");
+    const torta = document.getElementById("torta");
 
     const incidentiConLesioni = [
         { anno: 2019, numero : 172183 },
@@ -8,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function(){
         { anno: 2022, numero : 165889 },
         { anno: 2023, numero : 166525 }
     ];
+    const tipiIncidenti = [];
 
     new Chart(ctx, {
         type: 'line',
@@ -26,5 +28,26 @@ document.addEventListener("DOMContentLoaded", function(){
                 }
             }
         }
+    });
+
+    new Chart(torta, {
+        const data = {
+            labels: [
+                'Red',
+                'Blue',
+                'Yellow'
+            ],
+            atasets: [{
+                label: 'My First Dataset',
+                data: [300, 50, 100],
+                backgroundColor: [
+                    'rgb(255, 99, 132)',
+                    'rgb(54, 162, 235)',
+                    'rgb(255, 205, 86)'
+                ],
+                offset: [0, 0, 200],
+                hoverOffset: 4
+            }]
+        };
     });
 });

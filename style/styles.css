@@ -17,7 +17,6 @@ nav
     background-color: rgba(0, 0, 0, 0.7);
     white-space: nowrap;
 }
-
 nav > a
 {
     color: #fff;
@@ -40,6 +39,11 @@ header
     padding: 100px 20px;
     color: #789;
 }
+main
+{
+    padding: 20px;
+    background-image: linear-gradient(#ddd, #ccc, #bbb, #aaa);
+}
 h1
 {
     position: relative;
@@ -53,19 +57,25 @@ h1, h3
     border: 1px solid;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
-main
-{
-    padding: 20px;
-    background-image: linear-gradient(#ddd, #ccc, #bbb, #aaa);
-}
 li > a
 {
     color: black;
 }
-.cont1
+@media (min-width: 1023px)
 {
-    display: grid;
-    grid-template-columns: 50% 50%;
+    .cont1
+    {
+        display: grid;
+        grid-template-columns: 50% 50%;
+    }
+}
+@media (max-width: 1024px)
+{
+    .cont1
+    {
+        display: grid;
+        grid-template-columns: 100%;
+    }
 }
 .txt1
 {
