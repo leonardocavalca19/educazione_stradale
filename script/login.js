@@ -1,3 +1,9 @@
+let utenti
+async function getutenti() {
+    utenti = await fetch("/json/utenti.json");
+}
+getutenti()
+
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("emailInput").addEventListener("input", function () {
         if (document.getElementById("emailInput").checkValidity()) {
@@ -24,8 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (localStorage.getItem('utenteAccesso') == null) {
             noaccesso()
         }
-        else{
-            window.location.href="/quiz.html"
+        else {
+            window.location.href = "/quiz.html"
         }
     })
     const bottoneAccedi = document.getElementById("accedi");
@@ -33,13 +39,22 @@ document.addEventListener("DOMContentLoaded", function () {
         bottoneAccedi.addEventListener("click", function (event) {
             event.preventDefault();
             if (document.getElementById("emailInput").checkValidity() && document.getElementById("passwordInput").checkValidity() && new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
-                accesso = 1;
-                if (document.getElementById("rememberMeCheck").checked) {
-                    localStorage.setItem('utenteAccesso', accesso);
+                if (Utente.login(document.getElementById("emailInput").value, document.getElementById("passwordInput").value)!=null) {
+                    accesso = 1;
+                    if (document.getElementById("rememberMeCheck").checked) {
+                        localStorage.setItem('utenteAccesso', accesso);
+                    }
+                    window.location.href = "/quiz.html";
                 }
-                window.location.href = "/quiz.html";
+                else{
+                    document.getElementById("messaggioErrore").textContent="Errore! Utente non trovato. Riprova"
+                    document.getElementById("messaggioErrore").style.display = ""
+                }
+
+
             }
             else {
+                document.getElementById("messaggioErrore").textContent="Errore! Qualcosa è andato storto. Riprova"
                 document.getElementById("messaggioErrore").style.display = ""
 
             }

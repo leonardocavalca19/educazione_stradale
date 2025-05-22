@@ -45,7 +45,7 @@ function creaquiz() {
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
     document.getElementsByClassName("bottoni")[s].addEventListener("click", function () {
       if (i < domande.length - 1) {
-        if (domande[i].corretta == (this.value === "true")) {
+        if (domande[i].controllagiusta(this.value === "true")) {
           domande[i].risultato = true;
         }
         else {
