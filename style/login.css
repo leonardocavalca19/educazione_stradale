@@ -11,12 +11,23 @@ nav {
     background-color: rgba(0, 0, 0, 0.7);
     white-space: nowrap;
 }
-
 #google_translate_element {
     position: fixed;
     top: 0;
     right: 0;
 }
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+    display: none;
+}
+#google_translate_element {
+    position: fixed;
+    top: 0;
+    right: 0;
+    display: flex;
+    width: 39.5%;
+    justify-content: end;
+}
+
 nav>a {
     color: #fff;
     padding: 5px 20px;
@@ -29,4 +40,12 @@ nav>a:hover {
     color: #fff;
     text-decoration: none;
     background-color: rgba(255, 255, 255, 0.5);
+}
+
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f8f9fa;
 }
