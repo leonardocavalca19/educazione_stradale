@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("resettaLinguaBtn").addEventListener("click", function () {
-        document.cookie = "googtrans=/it/it; path=/; SameSite=Lax";
-        window.location.reload();
-    })
     document.getElementById("emailInput").addEventListener("input", function () {
         if (document.getElementById("emailInput").checkValidity()) {
             document.getElementById("emailInput").style.borderColor = "green"

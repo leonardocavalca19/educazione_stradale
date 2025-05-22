@@ -1,3 +1,10 @@
+document.addEventListener("DOMContentLoaded", function(){
+    document.getElementById("resettaLinguaBtn").addEventListener("click", function () {
+        document.cookie = "googtrans=/it/it; path=/; SameSite=Lax";
+        window.location.reload();
+    })
+});
+
 function googleTranslateElementInit()
 {
     new google.translate.TranslateElement({
