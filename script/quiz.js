@@ -1,82 +1,20 @@
-class Utente {
-  constructor(nome, cognome, email, password, data_nascita) {
-    this.nome = nome;
-    this.cognome = cognome;
-    this.email = email;
-    this.password = password;
-    this.data_nascita = data_nascita;
-    domande = [];
-  }
-  getdomandecorrette() {
-    let domandeCorrette = []
-    for (let i = 0; i < this.domande.length; i++) {
-      if (this.domande[i].risultato == true) {
-        domandeCorrette.push(this.domande[i]);
-      }
-    }
-    return domandeCorrette;
-  }
-  getdomandeerrate() {
-    let domandeErrate = []
-    for (let i = 0; i < this.domande.length; i++) {
-      if (this.domande[i].risultato == false) {
-        domandeErrate.push(this.domande[i]);
-      }
-    }
-    return domandeErrate;
-  }
+let accesso = localStorage.getItem('utenteAccesso')
+function noaccesso() {
+  localStorage.removeItem('utenteAccesso');
+  window.location.href = "/login.html"
 }
-class Domanda {
-  constructor(testo, corretta, img = null) {
-    this.testo = testo;
-    this.corretta = corretta;
-    this.img = img;
-    this.risultato = null;
-  }
-}
-class Quizz {
-  constructor(domande = []) {
-    this.domande = domande;
-    this.realizazzione = null;
-  }
-  scegliDomandeRandom(json, n) {
-    let argomenti = Object.keys(json);
-
-    while (this.domande.length < n) {
-      let j = Math.floor(Math.random() * (argomenti.length));
-      let argomento = json[argomenti[j]];
-      let argomentidomandeArgomento = Object.keys(argomento);
-      let i = Math.floor(Math.random() * (argomentidomandeArgomento.length));
-      let domandeargomento = argomento[argomentidomandeArgomento[i]];
-      let d = Math.floor(Math.random() * (domandeargomento.length));
-      let domandaargomento = domandeargomento[d];
-      let domanda = new Domanda(domandaargomento.q, domandaargomento.a, domandaargomento.img);
-      this.domande.push(domanda);
-    }
-  }
-  async caricaDomande() {
-    try {
-      const risposta = await fetch("/json/domande.json");
-      if (!risposta.ok) {
-        throw new Error(`Errore HTTP! Status: ${risposta.status}.`);
-      }
-      let json = await risposta.json();
-      this.scegliDomandeRandom(json, 30);
-      creaquiz();
-
-
-    } catch (errore) {
-      console.error("Impossibile caricare o processare il file JSON:", errore);
-      if (this.quizContainer) {
-        this.quizContainer.innerHTML = `<p>Errore nel caricamento delle domande: ${errore.message}. Controlla la console per i dettagli.</p>`;
-      }
-    }
-  }
-}
-document.addEventListener("")
-let quizz = new Quizz();
+let quizz
+quizz = new Quizz();
 quizz.caricaDomande();
 function creaquiz() {
+  document.getElementById("resettaLinguaBtn").addEventListener("click", function () {
+    document.cookie = "googtrans=/it/it; path=/; SameSite=Lax";
+    window.location.reload();
+  })
+  document.getElementById("logoutBtn").addEventListener("click", function () {
+    noaccesso()
+    window.location.href = "/login.html";
+  })
   let domande = quizz.domande;
   let max = 0;
   for (let i = 0; i < domande.length; i++) {

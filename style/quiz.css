@@ -24,8 +24,16 @@ nav {
     position: fixed;
     top: 0;
     right: 0;
+    display: flex;
+    width: 39.5%;
+    justify-content: end;
 }
-
+#logoutBtn{
+    position: fixed;
+    word-wrap: break-word;
+    top: 0;
+    left: 0;
+}
 .quiz-card {
     height: 90%;
 }

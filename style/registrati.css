@@ -1,0 +1,14 @@
+body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background-color: #f8f9fa;
+      padding-top: 2rem;
+      padding-bottom: 2rem;
+    }
+
+    .signup-card {
+      max-width: 600px;
+      width: 100%;
+    }
