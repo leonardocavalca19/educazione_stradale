@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function(){
             }
         }
     });
-
+/*
     new Chart(torta, {
         const data = {
             labels: [
@@ -49,5 +49,5 @@ document.addEventListener("DOMContentLoaded", function(){
                 hoverOffset: 4
             }]
         };
-    });
+    });*/
 });
