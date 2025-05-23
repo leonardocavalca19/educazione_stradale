@@ -30,8 +30,11 @@ async function hashPasswordConSHA256_Server(password) {
 async function caricareUtentiIniziali() {
     try {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
-        const dati = await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8');
-        utentiInMemoria = JSON.parse(dati);
+        const dati =JSON.parse(await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8'));
+        for (let i=0;i<dati.lenght;i++){
+            utentiInMemoria.push(new UtenteServer(dati[i].nome,dati[i].cognome,dati[i].email,dati[i].passwordHash,dati[i].dataNascita))
+        }
+        
         console.log("Utenti esistenti caricati in memoria da utenti.json.");
     } catch (error) {
         if (error.code === 'ENOENT') {
