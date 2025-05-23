@@ -3,7 +3,11 @@
     padding: 0;
     box-sizing: border-box;
 }
-
+html, body {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    top: 0 !important;
+}
 header {
     background-image: url("/img/strada.jpg");
     background-size: cover;
@@ -138,9 +142,32 @@ li>a {
     padding: 30px;
     width: fit-content;
 }
-
-.VIpgJd-ZVi9od-ORHb-OEVmcd {
-    display: none;
+.VIpgJd-ZVi9od-ORHb-OEVmcd,
+.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+    position: absolute !important;
+    top: -500px !important;
+    left: -500px !important;
+    height: 0 !important;
+    width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+#skiptranslate {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}
+body.translated-ltr, body.translated-rtl {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+    top: 0px !important;
 }
 
 #google_translate_element {
