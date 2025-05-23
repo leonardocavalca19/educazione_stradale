@@ -13,25 +13,24 @@ async function getutenti() {
         utenti = [];
     }
 }
-async function inviaListaAlServer(listaDaInviare) {
+async function inviaDatiNuovoUtenteAlServer(datiUtente) {
+    console.log("CLIENT: Invio dati del nuovo utente:", datiUtente);
     try {
-        const response = await fetch('/salva-lista-utenti', {
+        const response = await fetch('/registra-utente', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(listaDaInviare),
+            body: JSON.stringify(datiUtente),
         });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ message: response.statusText }));
-            throw new Error(`Errore dal server: ${response.status} - ${errorData.message}`);
-        }
-
+        console.log("CLIENT: Status risposta server:", response.status);
         const risultato = await response.json();
-        console.log('Risposta dal server:', risultato.message);
-        alert('Dati registrati e lista inviata con successo!');
+        if (!response.ok) {
+            throw new Error(risultato.message || `Errore HTTP: ${response.status}`);
+        }
+        console.log('CLIENT: Risposta dal server:', risultato.message);
+        alert('Utente registrato con successo!');
     } catch (error) {
-        console.error('Errore durante l_invio della lista al server:', error);
-        alert(`Errore durante l_invio dei dati: ${error.message}`);
+        console.error('CLIENT: Errore durante l_invio dei dati utente:', error);
+        alert(`Errore registrazione: ${error.message}`);
     }
 }
 
@@ -114,8 +113,18 @@ document.addEventListener("DOMContentLoaded", function () {
             terminiCheck.classList.add("is-valid");
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
-            utenti.push(new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value)))
-            inviaListaAlServer(utenti)
+            let nuovoutente = new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value))
+            let contenuto = false
+            for (let i = 0; i < utenti.length - 1; i++) {
+                if (JSON.stringify(nuovoutente) == JSON.stringify(utenti[i])) {
+                    contenuto = true
+                }
+            }
+            if (!contenuto) {
+                utenti.push(nuovoutente)
+                await nviaDatiNuovoUtenteAlServer(nuovoutente)
+            }
+
         }
     })
 })

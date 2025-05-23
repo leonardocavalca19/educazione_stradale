@@ -59,33 +59,73 @@ async function salvareUtentiSuFile() {
 
 const server = http.createServer(async (req, res) => {
     console.log(`SERVER: Ricevuta richiesta - Metodo: ${req.method}, URL: ${req.url}`);
-
-    if (req.url === '/salva-lista-utenti' && req.method === 'POST') {
-        console.log("SERVER: Endpoint /salva-lista-utenti (POST) raggiunto!");
+    if (req.url === '/registra-utente' && req.method === 'POST') {
+        console.log("SERVER: Endpoint /registra-utente (POST) raggiunto.");
         let corpoRichiesta = '';
-        req.on('data', chunk => {
-            corpoRichiesta += chunk.toString();
-        });
-
+        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
-            console.log("SERVER: Corpo richiesta per /salva-lista-utenti:", corpoRichiesta);
+            console.log("SERVER: Corpo richiesta per /registra-utente:", corpoRichiesta);
             try {
-                const listaRicevutaDalClient = JSON.parse(corpoRichiesta);
-                utentiInMemoria = listaRicevutaDalClient;
+                const datiNuovoUtente = JSON.parse(corpoRichiesta);
+                console.log("SERVER: Dati parsati da /registra-utente:", datiNuovoUtente);
+                if (!datiNuovoUtente.email || !datiNuovoUtente.password || !datiNuovoUtente.nome) {
+                    console.error("SERVER: Dati mancanti o non validi da /registra-utente");
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Dati mancanti o non validi." }));
+                }
+                if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
+                    console.warn("SERVER: Email già registrata:", datiNuovoUtente.email);
+                    res.writeHead(409, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Email già registrata." }));
+                }
+                const passwordInChiaro = datiNuovoUtente.password;
+                const passwordHashata = await hashPasswordConSHA256_Server(passwordInChiaro);
+                console.log("SERVER: Password hashata per /registra-utente.");
+                const utenteDaSalvare = new UtenteServer(
+                    datiNuovoUtente.nome,
+                    datiNuovoUtente.cognome,
+                    datiNuovoUtente.email,
+                    passwordHashata,
+                    datiNuovoUtente.dataNascita
+                );
+
+                utentiInMemoria.push(utenteDaSalvare);
                 await salvareUtentiSuFile();
 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Lista utenti ricevuta e salvata con successo dal server!" }));
+                res.writeHead(201, { 'Content-Type': 'application/json' });
+
             } catch (error) {
-                console.error("SERVER: Errore in /salva-lista-utenti:", error);
+                console.error("SERVER: Errore in /registra-utente:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Errore interno del server durante il salvataggio della lista." }));
+                res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione." }));
             }
         });
     } 
     else if (req.url === '/' || req.url === '/index.html') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'index.html'), 'utf8');
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.end(html);
+        } catch(e){ console.error("SERVER: Errore caricamento index.html:", e); res.writeHead(404); res.end("index.html non trovato");}
     } else if (req.url === '/registrazione.js' && req.method === 'GET' ) {
+         try {
+            const js = await fs.readFile(path.join(__dirname, '..', 'registrazione.js'), 'utf8');
+            res.writeHead(200, {'Content-Type': 'application/javascript'});
+            res.end(js);
+        } catch(e){ console.error("SERVER: Errore caricamento registrazione.js:", e); res.writeHead(404); res.end("registrazione.js non trovato");}
     } else if (req.url === '/json/utenti.json' && req.method === 'GET') {
+         try {
+            const utentiFile = await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8');
+            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.end(utentiFile);
+        } catch (e){
+            if(e.code === 'ENOENT') {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify([]));
+            } else {
+                console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura utenti.json");
+            }
+        }
     }
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
