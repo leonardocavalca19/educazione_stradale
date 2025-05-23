@@ -1,6 +1,4 @@
 let utenti=[]
-const fs = require('fs');
-console.log(fs)
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
