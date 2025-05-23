@@ -118,6 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
             for (let i = 0; i < utenti.length - 1; i++) {
                 if (JSON.stringify(nuovoutente) == JSON.stringify(utenti[i])) {
                     contenuto = true
+                    break
                 }
             }
             if (!contenuto) {

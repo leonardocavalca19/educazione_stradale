@@ -86,7 +86,7 @@ const server = http.createServer(async (req, res) => {
                     datiNuovoUtente.cognome,
                     datiNuovoUtente.email,
                     passwordHashata,
-                    datiNuovoUtente.dataNascita
+                    datiNuovoUtente.data_nascita
                 );
 
                 utentiInMemoria.push(utenteDaSalvare);
