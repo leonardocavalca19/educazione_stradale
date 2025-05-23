@@ -4,11 +4,6 @@
     padding: 0;
     box-sizing: border-box;
 }
-html, body {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    top: 0 !important;
-}
 header {
     background-image: url("/img/strada.jpg");
     background-size: cover;
