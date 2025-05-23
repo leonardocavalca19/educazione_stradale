@@ -6,10 +6,9 @@ async function getutenti() {
             throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
         }
         const datiJSON = await response.json();
-        for(let i=0;i<datiJSON.length-1;i++){
+        for(let i=0;i<datiJSON.length;i++){
             utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita))
         }
-        utenti = datiJSON;
 
     } catch (error) {
         console.error("Impossibile caricare il file utenti.json:", error);

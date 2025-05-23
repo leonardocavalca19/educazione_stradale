@@ -7,7 +7,6 @@ const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
 let utentiInMemoria = [];
 class UtenteServer {
     constructor(nome, cognome, email, passwordHash, dataNascita) {
-        this.id = crypto.randomUUID();
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
@@ -99,27 +98,81 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione." }));
             }
         });
-    } 
+
+    }
+    else if (req.url === '/modifica-utente' && req.method === 'PUT') {
+        console.log("SERVER: Endpoint /modifica-utente (PUT) raggiunto.");
+
+        let corpoRichiesta = '';
+        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
+        req.on('end', async () => {
+            try {
+                const payload = JSON.parse(corpoRichiesta);
+                const emailDaModificare = payload.emailDaModificare;
+                const aggiornamenti = payload.aggiornamenti;
+
+                if (!emailDaModificare || !aggiornamenti) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Email dell'utente da modificare e dati per l'aggiornamento sono richiesti." }));
+                }
+
+                console.log(`SERVER: Richiesta di modifica per l'utente con email: ${emailDaModificare}`);
+                console.log("SERVER: Dati di aggiornamento ricevuti:", aggiornamenti);
+
+                const indiceUtente = utentiInMemoria.findIndex(u => u.email === emailDaModificare);
+
+                if (indiceUtente === -1) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita." }));
+                }
+
+                const utenteDaAggiornare = utentiInMemoria[indiceUtente];
+
+                if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
+                    console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
+                    utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
+                    console.log(`SERVER: Password aggiornata e hashata per l'utente: ${utenteDaAggiornare.email}`);
+                }
+
+                utentiInMemoria[indiceUtente] = utenteDaAggiornare;
+
+                await salvareUtentiSuFile();
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "Utente aggiornato con successo.", utente: utenteDaAggiornare }));
+
+            } catch (error) {
+                console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);
+                if (error instanceof SyntaxError) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Corpo della richiesta JSON non valido." }));
+                } else {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente." }));
+                }
+            }
+        });
+    }
     else if (req.url === '/' || req.url === '/index.html') {
         try {
             const html = await fs.readFile(path.join(__dirname, '..', 'index.html'), 'utf8');
-            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(html);
-        } catch(e){ console.error("SERVER: Errore caricamento index.html:", e); res.writeHead(404); res.end("index.html non trovato");}
-    } else if (req.url === '/registrazione.js' && req.method === 'GET' ) {
-         try {
+        } catch (e) { console.error("SERVER: Errore caricamento index.html:", e); res.writeHead(404); res.end("index.html non trovato"); }
+    } else if (req.url === '/registrazione.js' && req.method === 'GET') {
+        try {
             const js = await fs.readFile(path.join(__dirname, '..', 'registrazione.js'), 'utf8');
-            res.writeHead(200, {'Content-Type': 'application/javascript'});
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
             res.end(js);
-        } catch(e){ console.error("SERVER: Errore caricamento registrazione.js:", e); res.writeHead(404); res.end("registrazione.js non trovato");}
+        } catch (e) { console.error("SERVER: Errore caricamento registrazione.js:", e); res.writeHead(404); res.end("registrazione.js non trovato"); }
     } else if (req.url === '/json/utenti.json' && req.method === 'GET') {
-         try {
+        try {
             const utentiFile = await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8');
-            res.writeHead(200, {'Content-Type': 'application/json'});
+            res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(utentiFile);
-        } catch (e){
-            if(e.code === 'ENOENT') {
-                res.writeHead(200, {'Content-Type': 'application/json'});
+        } catch (e) {
+            if (e.code === 'ENOENT') {
+                res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify([]));
             } else {
                 console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura utenti.json");
