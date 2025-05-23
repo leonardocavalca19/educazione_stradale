@@ -34,34 +34,7 @@ async function inviaListaAlServer(listaDaInviare) {
         alert(`Errore durante l_invio dei dati: ${error.message}`);
     }
 }
-async function hashPasswordConSHA256(password) {
-    try {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-        const hashArray = Array.from(new Uint8Array(hashBuffer));
-        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-        return hashHex;
-    } catch (error) {
-        console.error("Errore durante l'hashing della password:", error);
-        throw error;
-    }
-}
-
-async function gethashedpassword(password) {
-    if (password) {
-        try {
-            const hashedPassword = await hashPasswordConSHA256(password);
-            return hashedPassword
-
-        } catch (error) {
-            console.error("Impossibile procedere con la registrazione a causa di un errore di hashing.");
-        }
-    } else {
-        console.log("La password è vuota.");
-    }
-}
 getutenti()
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("registrazioneForm").addEventListener("submit", async function (event) {
@@ -141,8 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             terminiCheck.classList.add("is-valid");
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
-            let passwordcriptata = await gethashedpassword(document.getElementById("passwordRegistrazioneInput").value)
-            utenti.push(new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, passwordcriptata, new Date(document.getElementById("dataNascitaInput").value)))
+            utenti.push(new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value)))
         }
     })
 })

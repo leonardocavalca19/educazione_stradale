@@ -1,30 +1,54 @@
 const fs = require('fs').promises;
 const path = require('path');
 const http = require('http');
+const crypto = require('crypto');
 
-const PERCORSO_UTENTI_JSON = path.join(__dirname, 'json', 'utenti.json');
+const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
 let utentiInMemoria = [];
+class UtenteServer {
+    constructor(nome, cognome, email, passwordHash, dataNascita) {
+        this.id = crypto.randomUUID();
+        this.nome = nome;
+        this.cognome = cognome;
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.dataNascita = new Date(dataNascita).toISOString().split('T')[0];
+        this.dataRegistrazione = new Date().toISOString();
+    }
+}
+
+async function hashPasswordConSHA256_Server(password) {
+    if (typeof global.crypto !== 'undefined' && global.crypto.subtle) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await global.crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    } else {
+        return crypto.createHash('sha256').update(password).digest('hex');
+    }
+}
 
 async function caricareUtentiIniziali() {
     try {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
         const dati = await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8');
         utentiInMemoria = JSON.parse(dati);
+        console.log("Utenti esistenti caricati in memoria da utenti.json.");
     } catch (error) {
         if (error.code === 'ENOENT') {
-            console.log("File utenti.json non trovato all'avvio. Si inizierà con una lista vuota. Verrà creato al primo salvataggio.");
+            console.log("File utenti.json non trovato. Inizio con lista vuota.");
             utentiInMemoria = [];
         } else {
-            console.error("Errore durante il caricamento di utenti.json all'avvio:", error);
-            utentiInMemoria = [];
+            console.error("Errore caricamento utenti.json:", error);
         }
     }
 }
 
-async function salvareListaUtentiSuFile(listaDaSalvare) {
+async function salvareUtentiSuFile() {
     try {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
-        const datiJSONString = JSON.stringify(listaDaSalvare, null, 2);
+        const datiJSONString = JSON.stringify(utentiInMemoria, null, 2);
         await fs.writeFile(PERCORSO_UTENTI_JSON, datiJSONString, 'utf8');
         console.log("Lista utenti salvata con successo su utenti.json");
     } catch (error) {
@@ -34,52 +58,43 @@ async function salvareListaUtentiSuFile(listaDaSalvare) {
 }
 
 const server = http.createServer(async (req, res) => {
-    if (req.url === '/salva-lista-utenti' && req.method === 'POST') {
+    if (req.url === '/registra-utente' && req.method === 'POST') {
         let corpoRichiesta = '';
-        req.on('data', chunk => {
-            corpoRichiesta += chunk.toString();
-        });
+        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
             try {
-                const listaRicevutaDalClient = JSON.parse(corpoRichiesta);
-                utentiInMemoria = listaRicevutaDalClient; 
+                const datiNuovoUtente = JSON.parse(corpoRichiesta);
+                if (!datiNuovoUtente.email || !datiNuovoUtente.password || !datiNuovoUtente.nome) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Dati mancanti o non validi." }));
+                }
+                if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
+                    res.writeHead(409, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Email già registrata." }));
+                }
 
-                await salvareListaUtentiSuFile(utentiInMemoria);
+                const passwordHashata = await hashPasswordConSHA256_Server(datiNuovoUtente.password);
 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Lista utenti ricevuta e salvata con successo!" }));
+                const utenteDaSalvare = new UtenteServer(
+                    datiNuovoUtente.nome,
+                    datiNuovoUtente.cognome,
+                    datiNuovoUtente.email,
+                    passwordHashata,
+                    datiNuovoUtente.dataNascita
+                );
+
+                utentiInMemoria.push(utenteDaSalvare);
+                await salvareUtentiSuFile();
+
+                res.writeHead(201, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "Utente registrato con successo!", id: utenteDaSalvare.id }));
             } catch (error) {
-
+                console.error("Errore in /registra-utente:", error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "Errore interno del server." }));
             }
         });
     } 
-    else if (req.url === '/' || req.url === '/index.html') {
-        try {
-            const htmlContent = await fs.readFile(path.join(__dirname, 'index.html'), 'utf8');
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(htmlContent);
-        } catch (e) { res.writeHead(404); res.end("index.html non trovato");}
-    } else if (req.url === '/registrazione.js') {
-        try {
-            const jsContent = await fs.readFile(path.join(__dirname, 'registrazione.js'), 'utf8');
-            res.writeHead(200, { 'Content-Type': 'application/javascript' });
-            res.end(jsContent);
-        } catch (e) { res.writeHead(404); res.end("registrazione.js non trovato");}
-    } else if (req.url === '/json/utenti.json' && req.method === 'GET') {
-         try {
-            const utentiFileContent = await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8');
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(utentiFileContent);
-        } catch (e) {
-            if (e.code === 'ENOENT') {
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify([]));
-            } else {
-                console.error("Errore lettura utenti.json per GET:", e);
-                res.writeHead(500); res.end("Errore caricamento utenti.json");
-            }
-        }
-    }
     else {
         res.writeHead(404, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: "Endpoint non trovato" }));
