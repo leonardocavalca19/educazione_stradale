@@ -1,4 +1,4 @@
-let utenti=[]
+let utenti = []
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -11,6 +11,27 @@ async function getutenti() {
     } catch (error) {
         console.error("Impossibile caricare il file utenti.json:", error);
         utenti = [];
+    }
+}
+async function inviaListaAlServer(listaDaInviare) {
+    try {
+        const response = await fetch('/salva-lista-utenti', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(listaDaInviare),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({ message: response.statusText }));
+            throw new Error(`Errore dal server: ${response.status} - ${errorData.message}`);
+        }
+
+        const risultato = await response.json();
+        console.log('Risposta dal server:', risultato.message);
+        alert('Dati registrati e lista inviata con successo!');
+    } catch (error) {
+        console.error('Errore durante l_invio della lista al server:', error);
+        alert(`Errore durante l_invio dei dati: ${error.message}`);
     }
 }
 async function hashPasswordConSHA256(password) {
@@ -115,14 +136,13 @@ document.addEventListener("DOMContentLoaded", function () {
             terminiCheck.classList.add("is-invalid");
             terminiCheck.classList.remove("is-valid")
         }
-        else{
+        else {
             terminiCheck.classList.remove("is-invalid");
             terminiCheck.classList.add("is-valid");
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
-            let passwordcriptata= await gethashedpassword(document.getElementById("passwordRegistrazioneInput").value)
-            utenti.push(new Utente(document.getElementById("nomeInput").value,document.getElementById("cognomeInput").value,document.getElementById("emailRegistrazioneInput").value,passwordcriptata,new Date(document.getElementById("dataNascitaInput").value)))
-            let jsonString = JSON.stringify(utenti);
+            let passwordcriptata = await gethashedpassword(document.getElementById("passwordRegistrazioneInput").value)
+            utenti.push(new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, passwordcriptata, new Date(document.getElementById("dataNascitaInput").value)))
         }
     })
 })
