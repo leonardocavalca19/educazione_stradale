@@ -1,26 +1,21 @@
-let utenti
+let utenti=[]
 async function getutenti() {
-    utenti = await fetch("/json/utenti.json");
+    try {
+        const response = await fetch("/json/utenti.json");
+        if (!response.ok) {
+            throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
+        }
+        const datiJSON = await response.json();
+        utenti = datiJSON;
+
+    } catch (error) {
+        console.error("Impossibile caricare il file utenti.json:", error);
+        utenti = [];
+    }
 }
 getutenti()
 
 document.addEventListener("DOMContentLoaded", function () {
-    document.getElementById("emailInput").addEventListener("input", function () {
-        if (document.getElementById("emailInput").checkValidity()) {
-            document.getElementById("emailInput").style.borderColor = "green"
-        }
-        else {
-            document.getElementById("emailInput").style.borderColor = "red"
-        }
-    })
-    document.getElementById("passwordInput").addEventListener("input", function () {
-        if (document.getElementById("passwordInput").checkValidity() && new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
-            document.getElementById("passwordInput").style.borderColor = "green"
-        }
-        else {
-            document.getElementById("passwordInput").style.borderColor = "red"
-        }
-    })
     function noaccesso() {
         localStorage.removeItem('utenteAccesso');
         window.location.href = "/login.html"
@@ -34,33 +29,41 @@ document.addEventListener("DOMContentLoaded", function () {
             window.location.href = "/quiz.html"
         }
     })
-    const bottoneAccedi = document.getElementById("accedi");
-    if (bottoneAccedi) {
-        bottoneAccedi.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (document.getElementById("emailInput").checkValidity() && document.getElementById("passwordInput").checkValidity() && new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
-                if (Utente.login(document.getElementById("emailInput").value, document.getElementById("passwordInput").value)!=null) {
-                    accesso = 1;
-                    if (document.getElementById("rememberMeCheck").checked) {
-                        localStorage.setItem('utenteAccesso', accesso);
-                    }
-                    window.location.href = "/quiz.html";
-                }
-                else{
-                    document.getElementById("messaggioErrore").textContent="Errore! Utente non trovato. Riprova"
-                    document.getElementById("messaggioErrore").style.display = ""
-                }
 
-
+    document.getElementById("form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        if (document.getElementById("passwordInput").checkValidity() && new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
+            document.getElementById("passwordInput").style.borderColor = "green"
+        }
+        else {
+            document.getElementById("passwordInput").style.borderColor = "red"
+        }
+        if (document.getElementById("emailInput").checkValidity()) {
+            document.getElementById("emailInput").style.borderColor = "green"
+        }
+        else {
+            document.getElementById("emailInput").style.borderColor = "red"
+        }
+        if (document.getElementById("emailInput").checkValidity() && document.getElementById("passwordInput").checkValidity() || new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
+            if (Utente.login(document.getElementById("emailInput").value, document.getElementById("passwordInput").value) != null) {
+                accesso = 1;
+                if (document.getElementById("rememberMeCheck").checked) {
+                    localStorage.setItem('utenteAccesso', accesso);
+                }
+                window.location.href = "/quiz.html";
             }
             else {
-                document.getElementById("messaggioErrore").textContent="Errore! Qualcosa è andato storto. Riprova"
+                document.getElementById("messaggioErrore").textContent = "Errore! Utente non trovato. Riprova"
                 document.getElementById("messaggioErrore").style.display = ""
-
             }
 
-        });
-    } else {
-        console.warn("Pulsante con id='accedi' non trovato in login.html.");
-    }
+
+        }
+        else {
+            document.getElementById("messaggioErrore").textContent = "Errore! Qualcosa è andato storto. Riprova"
+            document.getElementById("messaggioErrore").style.display = ""
+
+        }
+
+    });
 })

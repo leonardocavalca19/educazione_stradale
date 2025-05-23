@@ -11,6 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style/login.css">
+    <link rel="stylesheet" href="/style/comune.css">
     <script src="script/translate.js"></script>
     <script src="/script/libreriaclassi.js"></script>
     <script src="/script/login.js"></script>
@@ -50,7 +51,7 @@
                 <div class="card shadow-lg login-card" id="campo">
                     <div class="card-body p-4 p-md-5">
                         <h2 class="card-title text-center mb-4 fw-bold">Accedi</h2>
-                        <form>
+                        <form id="form">
                             <div class="mb-3">
                                 <label for="emailInput" class="form-label">Indirizzo Email</label>
                                 <input type="email" class="form-control form-control-lg" id="emailInput"
@@ -72,8 +73,7 @@
                             </div>
 
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg fw-semibold"
-                                    id="accedi">Accedi</button>
+                                <button type="submit" class="btn btn-primary btn-lg fw-semibold">Accedi</button>
                             </div>
 
                             <hr class="my-4">
