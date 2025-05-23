@@ -6,6 +6,9 @@ async function getutenti() {
             throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
         }
         const datiJSON = await response.json();
+        for(let i=0;i<datiJSON.length-1;i++){
+            utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita))
+        }
         utenti = datiJSON;
 
     } catch (error) {
@@ -14,7 +17,6 @@ async function getutenti() {
     }
 }
 async function inviaDatiNuovoUtenteAlServer(datiUtente) {
-    console.log("CLIENT: Invio dati del nuovo utente:", datiUtente);
     try {
         const response = await fetch('/registra-utente', {
             method: 'POST',
@@ -123,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             if (!contenuto) {
                 utenti.push(nuovoutente)
-                await nviaDatiNuovoUtenteAlServer(nuovoutente)
+                await inviaDatiNuovoUtenteAlServer(nuovoutente)
             }
 
         }

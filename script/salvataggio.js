@@ -13,7 +13,6 @@ class UtenteServer {
         this.email = email;
         this.passwordHash = passwordHash;
         this.dataNascita = new Date(dataNascita).toISOString().split('T')[0];
-        this.dataRegistrazione = new Date().toISOString();
     }
 }
 
