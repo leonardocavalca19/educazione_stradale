@@ -6,12 +6,13 @@ const crypto = require('crypto');
 const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
 let utentiInMemoria = [];
 class UtenteServer {
-    constructor(nome, cognome, email, passwordHash, dataNascita) {
+    constructor(nome, cognome, email, passwordHash, dataNascita,test) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.passwordHash = passwordHash;
         this.dataNascita = new Date(dataNascita).toISOString().split('T')[0];
+        this.test=test
     }
 }
 
@@ -32,7 +33,7 @@ async function caricareUtentiIniziali() {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
         const dati =JSON.parse(await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8'));
         for (let i=0;i<dati.lenght;i++){
-            utentiInMemoria.push(new UtenteServer(dati[i].nome,dati[i].cognome,dati[i].email,dati[i].passwordHash,dati[i].dataNascita))
+            utentiInMemoria.push(new UtenteServer(dati[i].nome,dati[i].cognome,dati[i].email,dati[i].passwordHash,dati[i].dataNascita,dati[i].test))
         }
         
         console.log("Utenti esistenti caricati in memoria da utenti.json.");
@@ -87,7 +88,8 @@ const server = http.createServer(async (req, res) => {
                     datiNuovoUtente.cognome,
                     datiNuovoUtente.email,
                     passwordHashata,
-                    datiNuovoUtente.data_nascita
+                    datiNuovoUtente.data_nascita,
+                    datiNuovoUtente.test
                 );
 
                 utentiInMemoria.push(utenteDaSalvare);

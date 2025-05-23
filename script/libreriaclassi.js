@@ -1,11 +1,17 @@
 class Utente {
-  constructor(nome, cognome, email, password, data_nascita) {
+  constructor(nome, cognome, email, password, data_nascita,test) {
     this.nome = nome;
     this.cognome = cognome;
     this.email = email;
     this.password = password;
     this.data_nascita = data_nascita;
-    this.domande = [];
+    if (test!=null){
+      this.test = test;
+    }
+    else{
+      test=[]
+    }
+    
   }
   static login(mail,password){
     for (let i=0;i<utenti.length;i++){

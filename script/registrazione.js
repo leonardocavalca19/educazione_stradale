@@ -7,7 +7,7 @@ async function getutenti() {
         }
         const datiJSON = await response.json();
         for(let i=0;i<datiJSON.length;i++){
-            utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita))
+            utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita,datiJSON[i].test))
         }
 
     } catch (error) {
@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
             terminiCheck.classList.add("is-valid");
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
-            let nuovoutente = new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value))
+            let nuovoutente = new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value),[])
             let contenuto = false
             for (let i = 0; i < utenti.length - 1; i++) {
                 if (JSON.stringify(nuovoutente) == JSON.stringify(utenti[i])) {
