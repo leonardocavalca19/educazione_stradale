@@ -115,6 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
             utenti.push(new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value)))
+            inviaListaAlServer(utenti)
         }
     })
 })

@@ -58,46 +58,39 @@ async function salvareUtentiSuFile() {
 }
 
 const server = http.createServer(async (req, res) => {
-    if (req.url === '/registra-utente' && req.method === 'POST') {
+    console.log(`SERVER: Ricevuta richiesta - Metodo: ${req.method}, URL: ${req.url}`);
+
+    if (req.url === '/salva-lista-utenti' && req.method === 'POST') {
+        console.log("SERVER: Endpoint /salva-lista-utenti (POST) raggiunto!");
         let corpoRichiesta = '';
-        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
+        req.on('data', chunk => {
+            corpoRichiesta += chunk.toString();
+        });
+
         req.on('end', async () => {
+            console.log("SERVER: Corpo richiesta per /salva-lista-utenti:", corpoRichiesta);
             try {
-                const datiNuovoUtente = JSON.parse(corpoRichiesta);
-                if (!datiNuovoUtente.email || !datiNuovoUtente.password || !datiNuovoUtente.nome) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Dati mancanti o non validi." }));
-                }
-                if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
-                    res.writeHead(409, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email già registrata." }));
-                }
-
-                const passwordHashata = await hashPasswordConSHA256_Server(datiNuovoUtente.password);
-
-                const utenteDaSalvare = new UtenteServer(
-                    datiNuovoUtente.nome,
-                    datiNuovoUtente.cognome,
-                    datiNuovoUtente.email,
-                    passwordHashata,
-                    datiNuovoUtente.dataNascita
-                );
-
-                utentiInMemoria.push(utenteDaSalvare);
+                const listaRicevutaDalClient = JSON.parse(corpoRichiesta);
+                utentiInMemoria = listaRicevutaDalClient;
                 await salvareUtentiSuFile();
 
-                res.writeHead(201, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Utente registrato con successo!", id: utenteDaSalvare.id }));
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "Lista utenti ricevuta e salvata con successo dal server!" }));
             } catch (error) {
-                console.error("Errore in /registra-utente:", error);
+                console.error("SERVER: Errore in /salva-lista-utenti:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Errore interno del server." }));
+                res.end(JSON.stringify({ message: "Errore interno del server durante il salvataggio della lista." }));
             }
         });
     } 
+    else if (req.url === '/' || req.url === '/index.html') {
+    } else if (req.url === '/registrazione.js' && req.method === 'GET' ) {
+    } else if (req.url === '/json/utenti.json' && req.method === 'GET') {
+    }
     else {
+        console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Endpoint non trovato" }));
+        res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js" }));
     }
 });
 
