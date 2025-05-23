@@ -61,6 +61,7 @@
         width: fit-content;
         position: fixed;
         top: 40px;
+        left: 0;
         z-index: 1;
         padding: 10px 20px;
         overflow: hidden;
@@ -98,6 +99,10 @@
     position: fixed;
     top: 0;
     right: 0;
+}
+
+#menu-toggle {
+    display: none;
 }
 
 .VIpgJd-ZVi9od-ORHb-OEVmcd {
