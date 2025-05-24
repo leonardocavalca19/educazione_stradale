@@ -152,61 +152,36 @@ function creaquiz() {
             }
           }
           if (finito) {
+            console.log("Quiz completato! Tentativo di salvataggio...");
+
             let utenteStringaDaStorage = localStorage.getItem("utenteAccesso");
             let utenteDatiParsati = null;
+
+
             if (!utenteStringaDaStorage || utenteStringaDaStorage === "null") {
-              console.error("ERRORE nel blocco if(finito): 'utenteAccesso' non trovato o è la stringa 'null' in localStorage. Impossibile salvare il quiz.");
-              alert("Errore: sessione utente non valida o scaduta. Per favore, effettua nuovamente il login.");
-              localStorage.removeItem('utenteAccesso');
-              sessionStorage.removeItem('utenteAccesso');
+              console.error("ERRORE if(finito): 'utenteAccesso' non trovato o è 'null' in localStorage.");
+
+              alert("Errore: sessione utente non valida. Prova a fare login di nuovo.");
               window.location.href = "/login.html";
               return;
             }
-            console.log("DEBUG: Oggetto 'quizz' (dovrebbe contenere le domande e i risultati):", JSON.parse(JSON.stringify(quizz)));
-            console.log("DEBUG: Contenuto di 'utenteConQuiz.test' (dovrebbe essere un array con l'oggetto quizz):", JSON.parse(JSON.stringify(utenteConQuiz.test)));
-            console.log("DEBUG: Lunghezza di 'utenteConQuiz.test':", utenteConQuiz.test ? utenteConQuiz.test.length : "non definito o null");
-
-            const aggiornamentiDaInviare = {
-              test: utenteConQuiz.test
-            };
-
-            console.log("Invio dati aggiornati al server:", emailPerSalvataggio, aggiornamentiDaInviare);
-            if (utenteConQuiz.test && utenteConQuiz.test.length > 0) {
-              console.log("DEBUG: 'utenteConQuiz.test[0]' (il primo quiz nell'array):", JSON.parse(JSON.stringify(utenteConQuiz.test[0])));
-              if (utenteConQuiz.test[0] && utenteConQuiz.test[0].domande) {
-                console.log("DEBUG: Numero di domande nel primo quiz:", utenteConQuiz.test[0].domande.length);
-              }
-            } else {
-              console.warn("ATTENZIONE: 'utenteConQuiz.test' è vuoto o non definito prima di inviare al server!");
-            }
-
-            if (emailPerSalvataggio) {
-              modificaDatiUtente(emailPerSalvataggio, aggiornamentiDaInviare);
-            }
-
-
             try {
               utenteDatiParsati = JSON.parse(utenteStringaDaStorage);
             } catch (e) {
-              console.error("ERRORE nel blocco if(finito): Errore nel parsing di 'utenteAccesso' da localStorage. Dati corrotti?", e);
-              console.log("Stringa problematica da localStorage:", utenteStringaDaStorage);
-              alert("Errore: i dati della sessione utente sembrano corrotti. Per favore, effettua nuovamente il login.");
+              console.error("ERRORE if(finito): Errore parsing 'utenteAccesso'.", e);
+              alert("Errore: dati sessione corrotti. Prova a fare login di nuovo.");
               localStorage.removeItem('utenteAccesso');
               window.location.href = "/login.html";
               return;
             }
-
             if (!utenteDatiParsati || !utenteDatiParsati.email) {
-              console.error("ERRORE nel blocco if(finito): Dati utente parsati non validi o email mancante.");
-              console.log("Dati utente problematici:", utenteDatiParsati);
-              alert("Errore: i dati utente sono incompleti. Per favore, effettua nuovamente il login.");
+              console.error("ERRORE if(finito): Dati utente parsati non validi o email mancante.");
+              alert("Errore: dati utente incompleti. Prova a fare login di nuovo.");
               localStorage.removeItem('utenteAccesso');
               window.location.href = "/login.html";
               return;
             }
-
             console.log("DEBUG nel blocco if(finito): Dati utente letti e validati da localStorage:", utenteDatiParsati);
-
 
             let testEsistenti = [];
             if (utenteDatiParsati.test && Array.isArray(utenteDatiParsati.test)) {
@@ -221,46 +196,57 @@ function creaquiz() {
               null,
               testEsistenti
             );
+
+            console.log("DEBUG: 'utenteConQuiz' appena istanziato. Valore iniziale di utenteConQuiz.test:", JSON.parse(JSON.stringify(utenteConQuiz.test)));
+
+            console.log("DEBUG: Oggetto 'quizz' (prima di essere aggiunto a utenteConQuiz.test):", JSON.parse(JSON.stringify(quizz)));
+
+
             utenteConQuiz.test.push(quizz);
 
 
-            try {
-              localStorage.setItem("utenteAccesso", JSON.stringify(utenteConQuiz));
-              console.log("Utente aggiornato con il nuovo quiz e salvato in localStorage:", utenteConQuiz);
-            } catch (e) {
-              console.error("ERRORE nel blocco if(finito): Impossibile salvare utente aggiornato in localStorage", e);
-              alert("Errore durante il salvataggio locale dei progressi. Il quiz potrebbe non essere salvato correttamente.");
+            console.log("DEBUG: Contenuto di 'utenteConQuiz.test' DOPO .push(quizz):", JSON.parse(JSON.stringify(utenteConQuiz.test)));
+            console.log("DEBUG: Lunghezza di 'utenteConQuiz.test' DOPO .push(quizz):", utenteConQuiz.test ? utenteConQuiz.test.length : "non definito o null");
+            if (utenteConQuiz.test && utenteConQuiz.test.length > 0 && utenteConQuiz.test[0] && utenteConQuiz.test[0].domande) {
+              console.log("DEBUG: Numero domande nel primo quiz in utenteConQuiz.test[0]:", utenteConQuiz.test[0].domande.length);
+            }}}
 
-            }
+
+            localStorage.setItem("utenteAccesso", JSON.stringify(utenteConQuiz));
+            console.log("Utente aggiornato con il nuovo quiz e salvato in localStorage:", JSON.parse(JSON.stringify(utenteConQuiz))); // Logga l'oggetto intero
+
 
             const emailPerSalvataggio = utenteConQuiz.email;
+            const aggiornamentiDaInviare = {
+              test: utenteConQuiz.test 
+            };
 
+            // Log per verificare 'aggiornamentiDaInviare' prima della chiamata al server
+            console.log("DEBUG: 'aggiornamentiDaInviare' che verranno inviati al server:", JSON.parse(JSON.stringify(aggiornamentiDaInviare)));
+
+            // 9. Chiamata al server
             if (emailPerSalvataggio) {
-              const aggiornamentiDaInviare = {
-
-              };
-              console.log("Invio dati aggiornati al server:", emailPerSalvataggio, aggiornamentiDaInviare);
+              // Il log che prima mostrava {} era il seguente:
+              console.log("Invio dati aggiornati al server:", emailPerSalvataggio, aggiornamentiDaInviare); // Questo log è quello problematico
               modificaDatiUtente(emailPerSalvataggio, aggiornamentiDaInviare);
             } else {
-
-              console.error("ERRORE CRITICO nel blocco if(finito): Email dell'utente non disponibile per il salvataggio sul server, nonostante le validazioni.");
+              console.error("ERRORE CRITICO if(finito): Email dell'utente non disponibile per il salvataggio sul server.");
               alert("Errore critico: impossibile identificare l'utente per il salvataggio sul server.");
             }
-          }
+          
+
+
+          document.getElementById("quizlink").addEventListener("click", function (event) {
+            event.preventDefault();
+            if (localStorage.getItem('utenteAccesso') == null) {
+              noaccesso()
+            }
+            else {
+              window.location.href = "/quiz.html"
+            }
+          })
         }
-
-
-        document.getElementById("quizlink").addEventListener("click", function (event) {
-          event.preventDefault();
-          if (localStorage.getItem('utenteAccesso') == null) {
-            noaccesso()
-          }
-          else {
-            window.location.href = "/quiz.html"
-          }
-        })
-      }
-    })
+      })
   }
 }
 

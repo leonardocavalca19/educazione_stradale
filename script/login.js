@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (document.getElementById("rememberMeCheck").checked) {
                         localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
                     } else {
-                        sessionStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
+                        localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
                     }
                     window.location.href = "/quiz.html";
                 } else {
