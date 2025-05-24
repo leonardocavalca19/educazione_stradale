@@ -15,18 +15,18 @@ class Utente {
   }
   getdomandecorrette() {
     let domandeCorrette = []
-    for (let i = 0; i < this.domande.length; i++) {
-      if (this.domande[i].risultato == true) {
-        domandeCorrette.push(this.domande[i]);
+    for (let i = 0; i < this.quiz.domande.length; i++) {
+      if (this.quiz.domande[i].risultato == true) {
+        domandeCorrette.push(this.quiz.domande[i]);
       }
     }
     return domandeCorrette;
   }
   getdomandeerrate() {
     let domandeErrate = []
-    for (let i = 0; i < this.domande.length; i++) {
-      if (this.domande[i].risultato == false) {
-        domandeErrate.push(this.domande[i]);
+    for (let i = 0; i < this.quiz.domande.length; i++) {
+      if (this.quiz.domande[i].risultato == false) {
+        domandeErrate.push(this.quiz.domande[i]);
       }
     }
     return domandeErrate;
@@ -86,4 +86,17 @@ class Quizz {
       }
     }
   }
+}
+function getUtenteSalvato() {
+    let datiUtenteString = localStorage.getItem('utenteAccesso');
+    if (datiUtenteString) {
+        return { dati: datiUtenteString, tipoStorage: 'localStorage' };
+    }
+    datiUtenteString = sessionStorage.getItem('utenteAccesso');
+    if (datiUtenteString) {
+
+        return { dati: datiUtenteString, tipoStorage: 'sessionStorage' };
+    }
+
+    return null;
 }
