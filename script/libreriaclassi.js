@@ -9,7 +9,7 @@ class Utente {
       this.test = test;
     }
     else{
-      test=[]
+      this.test=[]
     }
     
   }

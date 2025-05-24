@@ -183,7 +183,7 @@ function creaquiz() {
         }
         else {
           for (let i = 0; i < utenti.length; i++) {
-            if (JSON.parse(JSON.stringify(utenti[i])).email == JSON.parse(accesso).email && JSON.parse(JSON.stringify(utenti[i])).password == JSON.parse(accesso).password) {
+            if (JSON.parse(JSON.stringify(utenti[i])).email === JSON.parse(accesso).email) {
               utenteCorrente = utenti[i]
             }
           }
