@@ -1,7 +1,30 @@
-let accesso = localStorage.getItem('utenteAccesso')
+let utenti = []
+async function getutenti() {
+  try {
+    const response = await fetch("/json/utenti.json");
+    if (!response.ok) {
+      throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
+    }
+    const datiJSON = await response.json();
+    for (let i = 0; i < datiJSON.length; i++) {
+      utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
+    }
+
+  } catch (error) {
+    console.error("Impossibile caricare il file utenti.json:", error);
+    utenti = [];
+  }
+}
+getutenti()
+let accesso
+if (sessionStorage.getItem('utenteAccesso') == null) {
+  accesso = localStorage.getItem('utenteAccesso')
+}
+else {
+  accesso = sessionStorage.getItem('utenteAccesso')
+}
 let utenteCorrente = null
 function noaccesso() {
-  localStorage.removeItem('utenteAccesso');
   window.location.href = "/login.html"
 }
 if (accesso) {
@@ -159,56 +182,60 @@ function creaquiz() {
           aggiornadomanda(i);
         }
         else {
-          alert("godo")
-
-          let utente = localStorage.getItem("utenteAccesso")
-          try {
-            utente = JSON.parse(utente)
-          }
-          catch {
-
-
-            let local = JSON.parse(localStorage.getItem("utenteAccesso"))
-            utenteCorrente = new Utente(local.nome, local.cognome, local.email, local.password, local.data_nascita, [])
-            utenteCorrente.test.push(quizz)
-            utenteCorrente = JSON.parse(JSON.stringify(utenteCorrente))
-            localStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente))
-            const emailUtente = utenteCorrente ? utenteCorrente.email : null;
-
-            async function modificaDatiUtente(emailAttuale, aggiornamenti) {
-              const url = '/modifica-utente';
-
-              const payload = {
-                emailDaModificare: emailAttuale,
-                aggiornamenti: aggiornamenti
-              };
-
-              try {
-                const response = await fetch(url, {
-                  method: 'PUT',
-                  headers: {
-                    'Content-Type': 'application/json'
-                  },
-                  body: JSON.stringify(payload)
-                });
-
-                const responseData = await response.json();
-
-                if (response.ok) {
-                  console.log('Risposta dal server:', responseData);
-                  document.getElementById('formModificaPassword').reset();
-                } else {
-                  console.error('Errore dal server:', responseData);
-                  displayMessage(responseData.message || 'Si è verificato un errore durante la modifica.', 'danger');
-                }
-              } catch (error) {
-                console.error('Errore durante l_invio della richiesta:', error);
-                displayMessage('Errore di connessione o durante la richiesta. Riprova.', 'danger');
-              }
+          for (let i = 0; i < utenti.length; i++) {
+            if (JSON.parse(JSON.stringify(utenti[i])).email == JSON.parse(accesso).email && JSON.parse(JSON.stringify(utenti[i])).password == JSON.parse(accesso).password) {
+              utenteCorrente = utenti[i]
             }
-            modificaDatiUtente(emailUtente,)
-
           }
+          utenteCorrente.test.push(quizz)
+          if (sessionStorage.getItem('utenteAccesso') !== null) {
+            sessionStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
+            console.log("Dati utente aggiornati in sessionStorage.");
+          } else if (localStorage.getItem('utenteAccesso') !== null) {
+
+            localStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
+            console.log("Dati utente aggiornati in localStorage.");
+          } else {
+            console.warn("Origine storage utente non chiara, salvo in sessionStorage di default.");
+            sessionStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
+          }
+
+          const emailUtente = utenteCorrente ? utenteCorrente.email : null;
+          const aggiornamentiPayload = {
+            nuovoQuizCompletato: quizz
+          };
+          async function modificaDatiUtente(emailAttuale, aggiornamenti) {
+            const url = '/modifica-utente';
+
+            const payloadDaInviare = {
+              emailDaModificare: emailAttuale,
+              aggiornamenti: aggiornamenti
+            };
+            try {
+              const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payloadDaInviare)
+              });
+
+              const responseData = await response.json();
+
+              if (response.ok) {
+                console.log('Risposta dal server:', responseData);
+                document.getElementById('formModificaPassword').reset();
+              } else {
+                console.error('Errore dal server:', responseData);
+                displayMessage(responseData.message || 'Si è verificato un errore durante la modifica.', 'danger');
+              }
+            } catch (error) {
+              console.error('Errore durante l_invio della richiesta:', error);
+              displayMessage('Errore di connessione o durante la richiesta. Riprova.', 'danger');
+            }
+          }
+          modificaDatiUtente(emailUtente, aggiornamentiPayload)
+
 
         }
 
