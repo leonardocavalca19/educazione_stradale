@@ -194,7 +194,6 @@ function creaquiz() {
           } else if (localStorage.getItem('utenteAccesso') !== null) {
 
             localStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
-            console.log("Dati utente aggiornati in localStorage.");
           } else {
             console.warn("Origine storage utente non chiara, salvo in sessionStorage di default.");
             sessionStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
@@ -224,7 +223,6 @@ function creaquiz() {
               const responseData = await response.json();
 
               if (response.ok) {
-                console.log('Risposta dal server:', responseData);
               } else {
                 console.error('Errore dal server:', responseData);
                 displayMessage(responseData.message || 'Si è verificato un errore durante la modifica.', 'danger');
