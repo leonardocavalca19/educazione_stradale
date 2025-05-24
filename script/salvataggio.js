@@ -61,6 +61,14 @@ async function salvareUtentiSuFile() {
 
 const server = http.createServer(async (req, res) => {
     console.log(`SERVER: Ricevuta richiesta - Metodo: ${req.method}, URL: ${req.url}`);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.writeHead(204);
+        res.end();
+        return;
+    }
     if (req.url === '/registra-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /registra-utente (POST) raggiunto.");
         let corpoRichiesta = '';
@@ -134,13 +142,13 @@ const server = http.createServer(async (req, res) => {
                 const utenteDaAggiornare = utentiInMemoria[indiceUtente];
                 if (aggiornamenti.hasOwnProperty('nuovoQuizCompletato')) {
 
-                if (!utenteDaAggiornare.test) {
-                    utenteDaAggiornare.test = [];
-                }
+                    if (!utenteDaAggiornare.test) {
+                        utenteDaAggiornare.test = [];
+                    }
 
-                utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
-                console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
-            }
+                    utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
+                    console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
+                }
                 if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //

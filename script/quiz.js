@@ -21,57 +21,60 @@ let quizz;
 quizz = new Quizz();
 quizz.caricaDomande();
 
-async function modificaDatiUtente(emailAttuale, aggiornamenti) {
-  const url = 'http://localhost:3000/modifica-utente';
+const emailUtente = utenteCorrente ? utenteCorrente.email : null;
+const aggiornamentiDaInviare = {
+  test: utenteCorrente.test
+};
 
-  const payload = {
-    emailDaModificare: emailAttuale,
-    aggiornamenti: aggiornamenti
+async function modificaDatiUtente(emailAttuale, updates) {
+  const url = '/modifica-utente'; 
+
+  const payload = { 
+    emailDaModificare: emailAttuale, 
+    aggiornamenti: updates 
   };
 
   try {
-    const response = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json'
+    const response = await fetch(url, { 
+      method: 'PUT', 
+      headers: { 
+        'Content-Type': 'application/json' 
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload) 
     });
 
-    const responseData = await response.json();
+    const responseData = await response.json(); 
 
-    if (response.ok) {
-      console.log('Risposta dal server (modifica dati utente):', responseData);
-
-      if (responseData.utente) {
-        localStorage.setItem("utenteAccesso", JSON.stringify(responseData.utente));
-
-        utenteCorrente = responseData.utente;
-      }
-      return { success: true, message: responseData.message, utenteAggiornato: responseData.utente };
+    if (response.ok) { 
+      console.log('Dati utente aggiornati sul server:', responseData); 
     } else {
-      console.error('Errore dal server (modifica dati utente):', responseData);
-      return { success: false, message: responseData.message || 'Si è verificato un errore durante la modifica.' };
+      console.error('Errore dal server durante la modifica:', responseData); 
     }
   } catch (error) {
-    console.error('Errore durante l_invio della richiesta (modifica dati utente):', error);
-    return { success: false, message: 'Errore di connessione o durante la richiesta. Riprova.' };
+    console.error("Errore durante l'invio della richiesta di modifica:", error); 
   }
 }
 
+if (emailUtente) {
+  modificaDatiUtente(emailUtente, aggiornamentiDaInviare); //
+} else {
+  console.error("Email utente non disponibile, impossibile aggiornare i dati.");
+}
+    
+
 function creaquiz() {
-  document.getElementById("navigazione").addEventListener('wheel', function(event) {
+  document.getElementById("navigazione").addEventListener('wheel', function (event) {
     event.preventDefault();
     const scrollAmount = event.deltaY;
     document.getElementById("navigazione").scrollLeft += scrollAmount;
   });
 
-  document.getElementById("resettaLinguaBtn").addEventListener("click", function() {
+  document.getElementById("resettaLinguaBtn").addEventListener("click", function () {
     document.cookie = "googtrans=/it/it; path=/; SameSite=Lax";
     window.location.reload();
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", function() {
+  document.getElementById("logoutBtn").addEventListener("click", function () {
     noaccesso();
   });
 
@@ -85,8 +88,8 @@ function creaquiz() {
 
     bottone.classList.add("btn", "btn-outline-secondary", "btn-sm", "me-2"); // Aggiungi classi qui
 
-    bottone.addEventListener("click", function() {
-      i = parseInt(this.dataset.domandaIndex); 
+    bottone.addEventListener("click", function () {
+      i = parseInt(this.dataset.domandaIndex);
       aggiornadomanda(i);
     });
     bottoni.push(bottone);
@@ -94,7 +97,7 @@ function creaquiz() {
   }
 
 
-  for (let k = 0; k < domande.length; k++) { 
+  for (let k = 0; k < domande.length; k++) {
     document.getElementById("testo").textContent = domande[k].testo;
     let altezza = parseFloat(window.getComputedStyle(document.getElementById("testo")).getPropertyValue("height"));
     if (altezza > max) {
@@ -118,7 +121,7 @@ function creaquiz() {
       btn.classList.remove('active');
       btn.classList.add('btn-outline-secondary');
 
-      btn.style.backgroundColor = ''; 
+      btn.style.backgroundColor = '';
 
 
       const domandaIndex = parseInt(btn.dataset.domandaIndex);
@@ -140,7 +143,7 @@ function creaquiz() {
 
 
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
-    document.getElementsByClassName("bottoni")[s].addEventListener("click", async function() { // Aggiungi 'async' qui
+    document.getElementsByClassName("bottoni")[s].addEventListener("click", async function () { // Aggiungi 'async' qui
       if (i < domande.length) {
         if (domande[i].controllagiusta(this.value === "true")) {
           domande[i].risultato = true;
@@ -149,8 +152,8 @@ function creaquiz() {
         }
         const currentNavButton = document.querySelector(`#navigazione button[data-domanda-index="${i}"]`);
         if (currentNavButton) {
-            currentNavButton.classList.remove('active', 'btn-outline-secondary');
-            currentNavButton.classList.add('btn-success-custom');
+          currentNavButton.classList.remove('active', 'btn-outline-secondary');
+          currentNavButton.classList.add('btn-success-custom');
         }
         if (i < domande.length - 1) {
 
@@ -169,9 +172,9 @@ function creaquiz() {
           if (finito) {
             quizz.realizazzione = new Date().toISOString();
 
-            
+
             const aggiornamentiUtente = {
-              nuovoQuizCompletato: quizz 
+              nuovoQuizCompletato: quizz
             };
 
             if (utenteCorrente && utenteCorrente.email) {
@@ -183,11 +186,11 @@ function creaquiz() {
               } else {
                 console.error("Errore nel salvataggio delle statistiche:", result.message);
                 alert("Errore nel salvataggio dei risultati. Riprova più tardi.");
-                window.location.href = "/risultati.html"; 
+                window.location.href = "/risultati.html";
               }
             } else {
               console.warn("Utente non loggato o email non disponibile. Non posso salvare il quiz.");
-              window.location.href = "/risultati.html"; 
+              window.location.href = "/risultati.html";
             }
           }
         }
@@ -196,7 +199,7 @@ function creaquiz() {
   }
 
 
-  document.getElementById("quizlink").addEventListener("click", function(event) {
+  document.getElementById("quizlink").addEventListener("click", function (event) {
     event.preventDefault();
     if (localStorage.getItem('utenteAccesso') == null) {
       noaccesso();
