@@ -18,7 +18,27 @@ let quizz
 quizz = new Quizz();
 quizz.caricaDomande();
 function creaquiz() {
+  function scrollNavigazioneVersoBottoneAttivo(indiceBottoneAttivo) {
+    const containerNavigazione = document.getElementById("navigazione");
 
+    if (!bottoni || bottoni.length === 0) return;
+
+    const bottoneAttivo = bottoni[indiceBottoneAttivo];
+
+    if (containerNavigazione && bottoneAttivo) {
+      const containerLarghezza = containerNavigazione.clientWidth;
+      const bottoneOffsetLeft = bottoneAttivo.offsetLeft;
+      const bottoneLarghezza = bottoneAttivo.offsetWidth;
+      let destinazioneScroll = bottoneOffsetLeft - (containerLarghezza / 2) + (bottoneLarghezza / 2);
+
+      destinazioneScroll = Math.max(0, destinazioneScroll);
+      destinazioneScroll = Math.min(destinazioneScroll, containerNavigazione.scrollWidth - containerLarghezza);
+      containerNavigazione.scrollTo({
+        left: destinazioneScroll,
+        behavior: 'smooth'
+      });
+    }
+  }
   document.getElementById("navigazione").addEventListener('wheel', function (event) {
     event.preventDefault();
     const scrollAmount = event.deltaY;
@@ -36,15 +56,46 @@ function creaquiz() {
   let max = 0;
   let bottoni = []
   let i = 0;
+
   for (let j = 0; j < domande.length; j++) {
-    let bottone = document.createElement("button")
-    bottone.textContent = j + 1
+    let bottone = document.createElement("button");
+    bottone.textContent = j + 1;
+
+    bottone.classList.add("btn");
+    bottone.classList.add("btn-outline-secondary");
+
     bottone.addEventListener("click", function () {
-      i = j
-    })
-    aggiornadomanda(j)
-    bottoni.push(bottone)
-    document.getElementById("navigazione").appendChild(bottone)
+      for (let a = 0; a < bottoni.length; a++) {
+        if (domande[a].risultato == null) {
+          bottoni[a].style.color = "#6c757d"
+        }
+        else {
+          if (bottoni[a].classList.contains("btn-primary")) {
+            bottoni[a].classList.remove("btn-primary");
+          }
+          bottoni[a].classList.add("btn-success");
+        }
+      }
+      const bottoneAttivoPrecedente = document.querySelector('#navigazione button.btn-primary');
+      if (bottoneAttivoPrecedente && bottoneAttivoPrecedente !== this) {
+        bottoneAttivoPrecedente.classList.remove("btn-primary");
+      }
+
+      i = j;
+      aggiornadomanda(i);
+
+
+
+    });
+
+    bottoni.push(bottone);
+    document.getElementById("navigazione").appendChild(bottone);
+  }
+
+
+  if (bottoni.length > 0 && bottoni[0].style.backgroundColor !== "rgb(124, 252, 0)") {
+    bottoni[0].classList.remove("btn-outline-secondary");
+    bottoni[0].classList.add("btn-primary");
   }
 
   for (let i = 0; i < domande.length; i++) {
@@ -58,20 +109,31 @@ function creaquiz() {
 
 
   function aggiornadomanda(n) {
-    document.getElementById("testo").textContent = domande[n].testo;
-    if (domande[n].img !== null) {
-      document.getElementById("immagine").src = domande[n].img;
-      document.getElementById("immagine").style.display = "";
+    if (n < domande.length) {
+      scrollNavigazioneVersoBottoneAttivo(n);
+      if (!bottoni[n].classList.contains("btn-success")) {
+        bottoni[n].classList.add("btn-primary");
+        bottoni[n].style.color = "white"
+      }
+      else {
+        bottoni[n].classList.add("btn-primary");
+        bottoni[n].classList.remove("btn-success")
+      }
+      document.getElementById("testo").textContent = domande[n].testo;
+      if (domande[n].img !== null) {
+        document.getElementById("immagine").src = domande[n].img;
+        document.getElementById("immagine").style.display = "";
+      }
+      else {
+        document.getElementById("immagine").style.display = "none";
+      }
+      document.getElementById("numero-domanda").textContent = n + 1;
+      return n
     }
-    else {
-      document.getElementById("immagine").style.display = "none";
-    }
-    document.getElementById("numero-domanda").textContent = n + 1;
-    return n
+
   }
-  if (i < domande.length - 1) {
-    aggiornadomanda(i);
-  }
+
+  aggiornadomanda(i);
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
     document.getElementsByClassName("bottoni")[s].addEventListener("click", function () {
       if (i < domande.length) {
@@ -81,26 +143,31 @@ function creaquiz() {
         else {
           domande[i].risultato = false;
         }
-        bottoni[i].style.backgroundColor = "#7CFC00"
-        if (i < domande.length - 1) {
+        bottoni[i].classList.add("btn");
+        bottoni[i].classList.add("btn-success");
+        bottoni[i].style.color = "white"
+        let esci = true
+        for (let a = 0; a < domande.length; a++) {
+          for (let j = 0; j < domande.length; j++) {
+            if (domande[j].risultato == null) {
+              esci = false
+            }
+          }
+        }
+        if (!esci) {
           i += 1;
           aggiornadomanda(i);
         }
         else {
-          let finito = true
-          for (let j = 0; j < domande.length; j++) {
-            if (domande[j].risultato == null) {
-              finito = false
-            }
-          }
-          if (finito) {
-            let utente = localStorage.getItem("utenteAccesso")
-            try {
-              utente = JSON.parse(utente)
-            }
-            catch {
+          alert("godo")
 
-            }
+          let utente = localStorage.getItem("utenteAccesso")
+          try {
+            utente = JSON.parse(utente)
+          }
+          catch {
+
+
             let local = JSON.parse(localStorage.getItem("utenteAccesso"))
             utenteCorrente = new Utente(local.nome, local.cognome, local.email, local.password, local.data_nascita, [])
             utenteCorrente.test.push(quizz)
@@ -154,15 +221,6 @@ function creaquiz() {
     localStorage.removeItem('utenteAccesso');
     window.location.href = "/login.html"
   }
-  document.getElementById("quizlink").addEventListener("click", function (event) {
-    event.preventDefault()
-    if (localStorage.getItem('utenteAccesso') == null) {
-      noaccesso()
-    }
-    else {
-      window.location.href = "/quiz.html"
-    }
-  })
 }
 
 
