@@ -201,6 +201,7 @@ function creaquiz() {
           }
 
           const emailUtente = utenteCorrente ? utenteCorrente.email : null;
+          quizz.realizazzione=new Date()
           const aggiornamentiPayload = {
             nuovoQuizCompletato: quizz
           };
@@ -224,7 +225,6 @@ function creaquiz() {
 
               if (response.ok) {
                 console.log('Risposta dal server:', responseData);
-                document.getElementById('formModificaPassword').reset();
               } else {
                 console.error('Errore dal server:', responseData);
                 displayMessage(responseData.message || 'Si è verificato un errore durante la modifica.', 'danger');
