@@ -4,34 +4,26 @@
     padding: 0;
     box-sizing: border-box;
 }
-html, body {
-    margin-top: 0 !important;
-    padding-top: 0 !important;
-    top: 0 !important;
-}
-header {
+header
+{
     background-image: url("/img/strada.jpg");
     background-size: cover;
     background-position: center;
     padding: 100px 20px;
     color: #789;
 }
-
 main
 {
     padding: 20px;
     min-height: 100vh;
     background-image: linear-gradient(#ddd, #ccc, #bbb, #aaa);
 }
-
 h1
 {
     position: relative;
     bottom: -90px;
 }
-
-h1,
-h3
+h1, h3
 {
     margin: auto;
     padding: 10px;
@@ -39,25 +31,16 @@ h3
     border: 1px solid;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
-
-li>a
+.links
 {
-    color: black;
+    color: #000;
 }
-
-.txt1
-{
-    display: flex;
-    align-items: center;
-}
-
 .contenuti
 {
     margin: 20px auto;
     padding: 30px;
     width: fit-content;
 }
-
 #menu-toggle
 {
     display: none;

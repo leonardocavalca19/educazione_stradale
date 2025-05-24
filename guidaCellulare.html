@@ -7,6 +7,7 @@
         <script src="script/script.js"></script>
         <script src="script/chart.js"></script>
         <script src="script/translate.js"></script>
+        <!--<script src="script/prova.js"></script>-->
         <link rel="stylesheet" href="style/styles.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="/style/comune.css">
@@ -35,14 +36,25 @@
             <h1>USO DEL CELLULARE ALLA GUIDA</h1>
         </header>
         <main>
-            <article>
-                <p>
-                    L'uso del cellulare alla guida è diventato una delle principali cause di incidenti stradali in Italia, superando l'eccesso di velocità e la guida in stato di ebbrezza.<br>
-                    Infatti, el 2024, oltre il 50% delle patenti ritirate è stato causato dall'uso improprio del cellulare durante la guida.<br>
-                </p>
-            </article>
-            <article class="container-fluid">
-                <h4>Secondo il codice della strada:</h4>
+            <section class="testo-grafico">
+                <div class="canvas">
+                    <canvas id="tortaCellulare"></canvas>
+                </div>
+                <div class="txt1">
+                    <p>
+                        Utilizzare il cellulare durante la guida è una delle principali cause di distrazione al volante e contribuisce in modo significativo agli incidenti stradali, anche mortali.
+                        Che si tratti di inviare un messaggio, rispondere a una chiamata o consultare i social, ogni secondo di distrazione può avere pesanti conseguenze.<br>
+                        L'uso del cellulare alla guida è diventato una delle principali cause di incidenti stradali in Italia, superando l'eccesso di velocità e la guida in stato di ebbrezza.<br>
+                        Infatti, nel 2024, oltre il 50% delle patenti ritirate è stato causato dall'uso improprio del cellulare durante la guida.<br><br>
+                        Ma oltre alle multe, c'è in gioco molto di più: il rischio reale di causare un incidente, con potenziali feriti o vittime.<br>
+                        La distrazione causata dal cellulare riduce drasticamente la capacità di reazione, la percezione dell'ambiente circostante e la possibilità di evitare ostacoli improvvisi.
+                        L'unico comportamento sicuro è semplice: non usare il cellulare mentre si guida.
+                        Se è necessario telefonare o leggere un messaggio, è bene accostare in un luogo sicuro.
+                    </p>
+                </div>
+            </section>
+            <section class="container-fluid">
+                <h4>Secondo il codice della strada (art. 173 cds):</h4>
                 <p>
                     È vietato al conducente di far uso durante la marcia di apparecchi radiotelefonici, smartphone, computer portatili, notebook, tablet e dispositivi analoghi
                     che comportino anche solo temporaneamente l'allontanamento delle mani dal volante ovvero di usare cuffie sonore. [...]<br>
@@ -50,10 +62,33 @@
                     per il loro funzionamento l'uso delle mani.<br>
                     Chi infrange questa legge è soggetto a sanzioni amministrative, tra cui multe che variano tra 250 e 1000 euro, decurtazione di punti dalla patente e sospensione della patente in caso di recidiva
                 </p>
-                <p>fonti <a href="https://www.patente.it/normativa/articolo-173-cds?idc=436">qui</a></p>
-            </article>
+            </section>
         </main>
-        <footer></footer>
+        <footer>
+            <div class="collabs">
+                <p>
+                    Collaboratori:
+                </p>
+                <ul>
+                    <li><a class="links-footer" href="https://webuser.itis.pr.it/~sCAVALCA5" target="_blank">Cavalca Leonardo</a></li>
+                    <li><a class="links-footer" href="webuser.itis.pr.it/~sfrattar" target="_blank">Frattaruolo Salvatore</a></li>
+                    <li><a class="links-footer" href="webuser.itis.pr.it/~ssozzi4" target="_blank">Sozzi Mattia</a></li>
+                </ul>
+            </div>
+            <div class="altri-link">
+                <p>
+                    Altri link utili:
+                </p>
+                <ul>
+                    <li><a class="links-footer" href="https://github.com/leonardocavalca19/educazione_stradale" target="_blank">GitHub</a></li>
+                    <li><a class="links-footer" href="https://trello.com/b/wuqI5Lv9/educazione-stradale" target="_blank">Trello</a></li>
+                </ul>
+            </div>
+            <div class="fonti">
+                <p>Fonti:</p>
+                <a class="links-footer" href="https://www.patente.it/normativa/articolo-173-cds?idc=436">patente.it</a>
+            </div>
+        </footer>
         <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     </body>
 </html>
