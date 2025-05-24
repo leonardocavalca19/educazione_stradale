@@ -104,7 +104,7 @@ function creaquiz() {
             let local=JSON.parse(localStorage.getItem("utenteAccesso"))
             utenteCorrente=new Utente(local.nome,local.cognome,local.email,local.password,local.data_nascita,[])
             utenteCorrente.test.push(quizz)
-            utenteCorrente=JSON.parse(utenteCorrente)
+            utenteCorrente=JSON.parse(JSON.stringify(utenteCorrente))
             localStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente))
             const emailUtente = utenteCorrente ? utenteCorrente.email : null;
 
