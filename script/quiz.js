@@ -167,27 +167,52 @@ function creaquiz() {
           }
 
           if (finito) {
-            quizz.realizazzione = new Date().toISOString();
+            let utente = localStorage.getItem("utenteAccesso")
+            try {
+              utente = JSON.parse(utente)
+            }
+            catch {
 
-            
-            const aggiornamentiUtente = {
-              nuovoQuizCompletato: quizz 
-            };
+            }
+            let local=JSON.parse(localStorage.getItem("utenteAccesso"))
+            utenteCorrente=new Utente(local.nome,local.cognome,local.email,local.password,local.data_nascita,[])
+            utenteCorrente.test.push(quizz)
+            utenteCorrente=JSON.parse(utenteCorrente)
+            localStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente))
+            const emailUtente = utenteCorrente ? utenteCorrente.email : null;
 
-            if (utenteCorrente && utenteCorrente.email) {
-              const result = await modificaDatiUtente(utenteCorrente.email, aggiornamentiUtente);
+            if (emailUtente) {
+              fetch('http://localhost:3000/modifica-utente', {
+                method: 'PUT',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  emailDaModificare: emailUtente,
+                  aggiornamenti: {
+                    nuovoQuizCompletato: quizz
+                  }
+                })
+              })
+                .then(response => {
+                  if (!response.ok) {
+                    throw new Error(`Errore HTTP! Status: ${response.status}`);
+                  }
+                  return response.json();
+                })
+                .then(data => {
+                  console.log('Statistiche utente aggiornate sul server:', data);
 
-              if (result.success) {
-                console.log("Quiz completato e statistiche salvate con successo!");
-                window.location.href = "/risultati.html";
-              } else {
-                console.error("Errore nel salvataggio delle statistiche:", result.message);
-                alert("Errore nel salvataggio dei risultati. Riprova più tardi.");
-                window.location.href = "/risultati.html"; 
-              }
-            } else {
-              console.warn("Utente non loggato o email non disponibile. Non posso salvare il quiz.");
-              window.location.href = "/risultati.html"; 
+                  if (data.utente) {
+                    localStorage.setItem('utenteAccesso', JSON.stringify(data.utente));
+                  }
+                  window.location.href = "/risultati.html";
+                })
+                .catch(error => {
+                  console.error('Errore durante l\'aggiornamento delle statistiche utente:', error);
+                  alert('Errore nel salvataggio dei risultati. Riprova più tardi.');
+                  window.location.href = "/risultati.html";
+                });
             }
           }
         }
