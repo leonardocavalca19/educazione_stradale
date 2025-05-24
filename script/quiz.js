@@ -233,7 +233,7 @@ function creaquiz() {
             }
           }
           modificaDatiUtente(emailUtente, aggiornamentiPayload)
-
+          window.location.href="/risultati.html"
 
         }
 
