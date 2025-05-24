@@ -115,7 +115,9 @@ const server = http.createServer(async (req, res) => {
     }
     else if (req.url === '/modifica-utente' && req.method === 'PUT') {
         console.log("SERVER: Endpoint /modifica-utente (PUT) raggiunto.");
-
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
@@ -176,6 +178,9 @@ const server = http.createServer(async (req, res) => {
     }
     else if (req.url === '/login-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /login-utente (POST) raggiunto.");
+         res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {

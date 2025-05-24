@@ -154,13 +154,34 @@ function creaquiz() {
           if (finito) {
             let utenteStringaDaStorage = localStorage.getItem("utenteAccesso");
             let utenteDatiParsati = null;
-            if (!utenteStringaDaStorage || utenteStringaDaStorage === "null") { 
+            if (!utenteStringaDaStorage || utenteStringaDaStorage === "null") {
               console.error("ERRORE nel blocco if(finito): 'utenteAccesso' non trovato o è la stringa 'null' in localStorage. Impossibile salvare il quiz.");
               alert("Errore: sessione utente non valida o scaduta. Per favore, effettua nuovamente il login.");
               localStorage.removeItem('utenteAccesso');
               sessionStorage.removeItem('utenteAccesso');
               window.location.href = "/login.html";
               return;
+            }
+            console.log("DEBUG: Oggetto 'quizz' (dovrebbe contenere le domande e i risultati):", JSON.parse(JSON.stringify(quizz)));
+            console.log("DEBUG: Contenuto di 'utenteConQuiz.test' (dovrebbe essere un array con l'oggetto quizz):", JSON.parse(JSON.stringify(utenteConQuiz.test)));
+            console.log("DEBUG: Lunghezza di 'utenteConQuiz.test':", utenteConQuiz.test ? utenteConQuiz.test.length : "non definito o null");
+
+            const aggiornamentiDaInviare = {
+              test: utenteConQuiz.test
+            };
+
+            console.log("Invio dati aggiornati al server:", emailPerSalvataggio, aggiornamentiDaInviare);
+            if (utenteConQuiz.test && utenteConQuiz.test.length > 0) {
+              console.log("DEBUG: 'utenteConQuiz.test[0]' (il primo quiz nell'array):", JSON.parse(JSON.stringify(utenteConQuiz.test[0])));
+              if (utenteConQuiz.test[0] && utenteConQuiz.test[0].domande) {
+                console.log("DEBUG: Numero di domande nel primo quiz:", utenteConQuiz.test[0].domande.length);
+              }
+            } else {
+              console.warn("ATTENZIONE: 'utenteConQuiz.test' è vuoto o non definito prima di inviare al server!");
+            }
+
+            if (emailPerSalvataggio) {
+              modificaDatiUtente(emailPerSalvataggio, aggiornamentiDaInviare);
             }
 
 
@@ -198,11 +219,11 @@ function creaquiz() {
               utenteDatiParsati.email,
               null,
               null,
-              testEsistenti 
+              testEsistenti
             );
             utenteConQuiz.test.push(quizz);
 
-        
+
             try {
               localStorage.setItem("utenteAccesso", JSON.stringify(utenteConQuiz));
               console.log("Utente aggiornato con il nuovo quiz e salvato in localStorage:", utenteConQuiz);
