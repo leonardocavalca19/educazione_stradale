@@ -38,18 +38,4 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
     open = false;
-
-    function noaccesso() {
-        localStorage.removeItem('utenteAccesso');
-        window.location.href = "/login.html"
-    }
-    document.getElementById("quizlink").addEventListener("click", function (event) {
-        event.preventDefault()
-        if (localStorage.getItem('utenteAccesso') == null) {
-            noaccesso()
-        }
-        else {
-            window.location.href = "/quiz.html"
-        }
-    })
-});
+})
