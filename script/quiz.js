@@ -1,11 +1,9 @@
-let accesso = localStorage.getItem('utenteAccesso');
-let utenteCorrente = null;
-
+let accesso = localStorage.getItem('utenteAccesso')
+let utenteCorrente = null
 function noaccesso() {
   localStorage.removeItem('utenteAccesso');
-  window.location.href = "/login.html";
+  window.location.href = "/login.html"
 }
-
 if (accesso) {
   try {
     utenteCorrente = JSON.parse(accesso);
@@ -16,71 +14,68 @@ if (accesso) {
 } else {
   noaccesso();
 }
-
-let quizz;
+let quizz
 quizz = new Quizz();
 quizz.caricaDomande();
 
-const emailUtente = utenteCorrente ? utenteCorrente.email : null;
-const aggiornamentiDaInviare = {
-  test: utenteCorrente.test
-};
+async function modificaDatiUtente(emailAttuale, aggiornamenti) {
+  const url = 'http://localhost:3000/modifica-utente';
 
-async function modificaDatiUtente(emailAttuale, updates) {
-  const url = '/modifica-utente'; 
-
-  const payload = { 
-    emailDaModificare: emailAttuale, 
-    aggiornamenti: updates 
+  const payload = {
+    emailDaModificare: emailAttuale,
+    aggiornamenti: aggiornamenti
   };
 
   try {
-    const response = await fetch(url, { 
-      method: 'PUT', 
-      headers: { 
-        'Content-Type': 'application/json' 
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(payload) 
+      body: JSON.stringify(payload)
     });
 
-    const responseData = await response.json(); 
+    const responseData = await response.json();
 
-    if (response.ok) { 
-      console.log('Dati utente aggiornati sul server:', responseData); 
+    if (response.ok) {
+      console.log('Risposta dal server (modifica dati utente):', responseData);
+
+      if (responseData.utente) {
+        localStorage.setItem("utenteAccesso", JSON.stringify(responseData.utente));
+
+        utenteCorrente = responseData.utente;
+      }
+      return { success: true, message: responseData.message, utenteAggiornato: responseData.utente };
     } else {
-      console.error('Errore dal server durante la modifica:', responseData); 
+      console.error('Errore dal server (modifica dati utente):', responseData);
+      return { success: false, message: responseData.message || 'Si è verificato un errore durante la modifica.' };
     }
   } catch (error) {
-    console.error("Errore durante l'invio della richiesta di modifica:", error); 
+    console.error('Errore durante l_invio della richiesta (modifica dati utente):', error);
+    return { success: false, message: 'Errore di connessione o durante la richiesta. Riprova.' };
   }
 }
 
-if (emailUtente) {
-  modificaDatiUtente(emailUtente, aggiornamentiDaInviare); //
-} else {
-  console.error("Email utente non disponibile, impossibile aggiornare i dati.");
-}
-    
-
 function creaquiz() {
-  document.getElementById("navigazione").addEventListener('wheel', function (event) {
+  document.getElementById("navigazione").addEventListener('wheel', function(event) {
     event.preventDefault();
     const scrollAmount = event.deltaY;
     document.getElementById("navigazione").scrollLeft += scrollAmount;
   });
 
-  document.getElementById("resettaLinguaBtn").addEventListener("click", function () {
+  document.getElementById("resettaLinguaBtn").addEventListener("click", function() {
     document.cookie = "googtrans=/it/it; path=/; SameSite=Lax";
     window.location.reload();
   });
 
-  document.getElementById("logoutBtn").addEventListener("click", function () {
+  document.getElementById("logoutBtn").addEventListener("click", function() {
     noaccesso();
   });
 
   let domande = quizz.domande;
   let max = 0;
-  let bottoni = [];
+  let bottoni = []
+  let i = 0;
   for (let j = 0; j < domande.length; j++) {
     let bottone = document.createElement("button");
     bottone.textContent = j + 1;
@@ -88,16 +83,15 @@ function creaquiz() {
 
     bottone.classList.add("btn", "btn-outline-secondary", "btn-sm", "me-2"); // Aggiungi classi qui
 
-    bottone.addEventListener("click", function () {
-      i = parseInt(this.dataset.domandaIndex);
+    bottone.addEventListener("click", function() {
+      i = parseInt(this.dataset.domandaIndex); 
       aggiornadomanda(i);
     });
     bottoni.push(bottone);
     document.getElementById("navigazione").appendChild(bottone);
   }
 
-
-  for (let k = 0; k < domande.length; k++) {
+  for (let k = 0; k < domande.length; k++) { 
     document.getElementById("testo").textContent = domande[k].testo;
     let altezza = parseFloat(window.getComputedStyle(document.getElementById("testo")).getPropertyValue("height"));
     if (altezza > max) {
@@ -106,14 +100,14 @@ function creaquiz() {
   }
   document.getElementById("testo").style.height = max + "px";
 
-  let i = 0;
 
   function aggiornadomanda(n) {
     document.getElementById("testo").textContent = domande[n].testo;
     if (domande[n].img !== null) {
       document.getElementById("immagine").src = domande[n].img;
       document.getElementById("immagine").style.display = "";
-    } else {
+    }
+    else {
       document.getElementById("immagine").style.display = "none";
     }
     document.getElementById("numero-domanda").textContent = n + 1;
@@ -121,7 +115,7 @@ function creaquiz() {
       btn.classList.remove('active');
       btn.classList.add('btn-outline-secondary');
 
-      btn.style.backgroundColor = '';
+      btn.style.backgroundColor = ''; 
 
 
       const domandaIndex = parseInt(btn.dataset.domandaIndex);
@@ -143,38 +137,36 @@ function creaquiz() {
 
 
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
-    document.getElementsByClassName("bottoni")[s].addEventListener("click", async function () { // Aggiungi 'async' qui
+    document.getElementsByClassName("bottoni")[s].addEventListener("click", async function() { // Aggiungi 'async' qui
       if (i < domande.length) {
         if (domande[i].controllagiusta(this.value === "true")) {
           domande[i].risultato = true;
-        } else {
+        }
+        else {
           domande[i].risultato = false;
         }
         const currentNavButton = document.querySelector(`#navigazione button[data-domanda-index="${i}"]`);
         if (currentNavButton) {
-          currentNavButton.classList.remove('active', 'btn-outline-secondary');
-          currentNavButton.classList.add('btn-success-custom');
+            currentNavButton.classList.remove('active', 'btn-outline-secondary');
+            currentNavButton.classList.add('btn-success-custom');
         }
         if (i < domande.length - 1) {
-
           i += 1;
           aggiornadomanda(i);
-        } else {
-
-          let finito = true;
+        }
+        else {
+          let finito = true
           for (let j = 0; j < domande.length; j++) {
-            if (domande[j].risultato === null) {
-              finito = false;
-              break;
+            if (domande[j].risultato == null) {
+              finito = false
             }
           }
-
           if (finito) {
             quizz.realizazzione = new Date().toISOString();
 
-
+            
             const aggiornamentiUtente = {
-              nuovoQuizCompletato: quizz
+              nuovoQuizCompletato: quizz 
             };
 
             if (utenteCorrente && utenteCorrente.email) {
@@ -186,11 +178,11 @@ function creaquiz() {
               } else {
                 console.error("Errore nel salvataggio delle statistiche:", result.message);
                 alert("Errore nel salvataggio dei risultati. Riprova più tardi.");
-                window.location.href = "/risultati.html";
+                window.location.href = "/risultati.html"; 
               }
             } else {
               console.warn("Utente non loggato o email non disponibile. Non posso salvare il quiz.");
-              window.location.href = "/risultati.html";
+              window.location.href = "/risultati.html"; 
             }
           }
         }
@@ -199,12 +191,18 @@ function creaquiz() {
   }
 
 
-  document.getElementById("quizlink").addEventListener("click", function (event) {
+  document.getElementById("quizlink").addEventListener("click", function(event) {
     event.preventDefault();
     if (localStorage.getItem('utenteAccesso') == null) {
-      noaccesso();
-    } else {
-      window.location.href = "/quiz.html";
+      noaccesso()
     }
-  });
+    else {
+      window.location.href = "/quiz.html"
+    }
+  })
 }
+
+
+
+
+
