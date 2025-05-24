@@ -60,9 +60,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.ok) {
                     console.log("Login riuscito:", responseData);
                     if (document.getElementById("rememberMeCheck").checked) {
-                        localStorage.setItem('utenteLoggato', JSON.stringify(responseData.utente));
+                        localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
                     } else {
-                        sessionStorage.setItem('utenteLoggato', JSON.stringify(responseData.utente));
+                        sessionStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
                     }
                     window.location.href = "/quiz.html";
                 } else {
