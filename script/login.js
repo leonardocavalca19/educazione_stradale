@@ -1,4 +1,4 @@
-let utenti=[]
+let utenti = []
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -6,8 +6,8 @@ async function getutenti() {
             throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
         }
         const datiJSON = await response.json();
-        for(let i=0;i<datiJSON.length;i++){
-            utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita,datiJSON[i].test))
+        for (let i = 0; i < datiJSON.length; i++) {
+            utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
         }
 
     } catch (error) {
@@ -32,39 +32,51 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     })
 
-    document.getElementById("form").addEventListener("submit", function (event) {
+    document.getElementById("form").addEventListener("submit", async function (event) {
         event.preventDefault();
-        if (document.getElementById("passwordInput").checkValidity() && new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
-            document.getElementById("passwordInput").style.borderColor = "green"
-        }
-        else {
-            document.getElementById("passwordInput").style.borderColor = "red"
-        }
-        if (document.getElementById("emailInput").checkValidity()) {
-            document.getElementById("emailInput").style.borderColor = "green"
-        }
-        else {
-            document.getElementById("emailInput").style.borderColor = "red"
-        }
-        if (document.getElementById("emailInput").checkValidity() && document.getElementById("passwordInput").checkValidity() || new RegExp("[ -~]{8}").test(document.getElementById("passwordInput").value)) {
-            if (Utente.login(document.getElementById("emailInput").value, document.getElementById("passwordInput").value) != null) {
-                accesso = 1;
-                if (document.getElementById("rememberMeCheck").checked) {
-                    localStorage.setItem('utenteAccesso', accesso);
+        const emailInput = document.getElementById("emailInput");
+        const passwordInput = document.getElementById("passwordInput");
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+
+        let isEmailValid = emailInput.checkValidity() && email !== "";
+        let isPasswordValid = passwordInput.checkValidity() && new RegExp("[ -~]{8}").test(password);
+
+        emailInput.style.borderColor = isEmailValid ? "green" : "red";
+        passwordInput.style.borderColor = isPasswordValid ? "green" : "red";
+
+        if (isEmailValid && isPasswordValid) {
+            try {
+                const response = await fetch('/login-utente', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email: email, password: password })
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok) {
+                    console.log("Login riuscito:", responseData);
+                    if (document.getElementById("rememberMeCheck").checked) {
+                        localStorage.setItem('utenteLoggato', JSON.stringify(responseData.utente));
+                    } else {
+                        sessionStorage.setItem('utenteLoggato', JSON.stringify(responseData.utente));
+                    }
+                    window.location.href = "/quiz.html";
+                } else {
+                    document.getElementById("messaggioErrore").textContent = responseData.message || "Errore durante il login. Riprova.";
+                    document.getElementById("messaggioErrore").style.display = "block";
                 }
-                window.location.href = "/quiz.html";
+            } catch (error) {
+                console.error("Errore nella richiesta di login:", error);
+                document.getElementById("messaggioErrore").textContent = "Errore di connessione o risposta non valida dal server.";
+                document.getElementById("messaggioErrore").style.display = "block";
             }
-            else {
-                document.getElementById("messaggioErrore").textContent = "Errore! Utente non trovato. Riprova"
-                document.getElementById("messaggioErrore").style.display = ""
-            }
-
-
-        }
-        else {
-            document.getElementById("messaggioErrore").textContent = "Errore! Qualcosa è andato storto. Riprova"
-            document.getElementById("messaggioErrore").style.display = ""
-
+        } else {
+            document.getElementById("messaggioErrore").textContent = "Errore! Email o password non validi. Riprova";
+            document.getElementById("messaggioErrore").style.display = "block";
         }
 
     });

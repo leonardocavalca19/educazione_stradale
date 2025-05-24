@@ -6,13 +6,13 @@ const crypto = require('crypto');
 const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
 let utentiInMemoria = [];
 class UtenteServer {
-    constructor(nome, cognome, email, passwordHash, dataNascita,test) {
+    constructor(nome, cognome, email, passwordHash, dataNascita, test) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.passwordHash = passwordHash;
         this.dataNascita = new Date(dataNascita).toISOString().split('T')[0];
-        this.test=test
+        this.test = test
     }
 }
 
@@ -31,11 +31,11 @@ async function hashPasswordConSHA256_Server(password) {
 async function caricareUtentiIniziali() {
     try {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
-        const dati =JSON.parse(await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8'));
-        for (let i=0;i<dati.lenght;i++){
-            utentiInMemoria.push(new UtenteServer(dati[i].nome,dati[i].cognome,dati[i].email,dati[i].passwordHash,dati[i].dataNascita,dati[i].test))
+        const dati = JSON.parse(await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8'));
+        for (let i = 0; i < dati.length; i++) {
+            utentiInMemoria.push(new UtenteServer(dati[i].nome, dati[i].cognome, dati[i].email, dati[i].passwordHash, dati[i].dataNascita, dati[i].test))
         }
-        
+
         console.log("Utenti esistenti caricati in memoria da utenti.json.");
     } catch (error) {
         if (error.code === 'ENOENT') {
@@ -154,6 +154,60 @@ const server = http.createServer(async (req, res) => {
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente." }));
+                }
+            }
+        });
+    }
+    else if (req.url === '/login-utente' && req.method === 'POST') {
+        console.log("SERVER: Endpoint /login-utente (POST) raggiunto.");
+        let corpoRichiesta = '';
+        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
+        req.on('end', async () => {
+            try {
+                const credenziali = JSON.parse(corpoRichiesta);
+                const emailRicevuta = credenziali.email ? credenziali.email.trim().toLowerCase() : null;
+                const passwordInChiaroRicevuta = credenziali.password;
+
+                if (!emailRicevuta || !passwordInChiaroRicevuta) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Email e password sono richieste." }));
+                }
+
+                console.log(`SERVER: Tentativo di login per email: [${emailRicevuta}]`);
+
+                const utenteTrovato = utentiInMemoria.find(u => u.email.toLowerCase() === emailRicevuta);
+
+                if (!utenteTrovato) {
+                    console.log("SERVER: Utente non trovato per email:", emailRicevuta);
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Credenziali non valide." }));
+                }
+
+                const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
+
+                if (hashPasswordRicevuta === utenteTrovato.passwordHash) {
+                    console.log("SERVER: Login riuscito per utente:", utenteTrovato.email);
+                    const datiUtenteDaInviare = {
+                        email: utenteTrovato.email,
+                        nome: utenteTrovato.nome,
+                        cognome: utenteTrovato.cognome
+                    };
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare }));
+                } else {
+                    console.log("SERVER: Password errata per utente:", utenteTrovato.email);
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Credenziali non valide." }));
+                }
+
+            } catch (error) {
+                console.error("SERVER: Errore in /login-utente:", error);
+                if (error instanceof SyntaxError) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Richiesta JSON non valida." }));
+                } else {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Errore interno del server durante il login." }));
                 }
             }
         });

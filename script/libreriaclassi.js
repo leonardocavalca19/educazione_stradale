@@ -13,14 +13,6 @@ class Utente {
     }
     
   }
-  static login(mail,password){
-    for (let i=0;i<utenti.length;i++){
-      if (mail==utenti[i].email && password==utenti[i].password){
-        return utenti[i]
-      }
-    }
-    return null
-  }
   getdomandecorrette() {
     let domandeCorrette = []
     for (let i = 0; i < this.domande.length; i++) {
