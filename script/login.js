@@ -18,19 +18,32 @@ async function getutenti() {
 getutenti()
 
 document.addEventListener("DOMContentLoaded", function () {
-    function noaccesso() {
-        localStorage.removeItem('utenteAccesso');
-        window.location.href = "/login.html"
+    function getInfoUtenteLoggatoPerLogin() {
+        if (localStorage.getItem('utenteAccesso')) {
+            return localStorage.getItem('utenteAccesso');
+        }
+        return sessionStorage.getItem('utenteAccesso');
     }
-    document.getElementById("quizlink").addEventListener("click", function (event) {
-        event.preventDefault()
-        if (localStorage.getItem('utenteAccesso') == null) {
-            noaccesso()
-        }
-        else {
-            window.location.href = "/quiz.html"
-        }
-    })
+
+    function noaccessoPaginaLogin() {
+
+        localStorage.removeItem('utenteAccesso');
+        sessionStorage.removeItem('utenteAccesso');
+
+        window.location.href = "/login.html"; 
+    }
+
+    const quizLinkLogin = document.getElementById("quizlink");
+    if (quizLinkLogin) {
+        quizLinkLogin.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (getInfoUtenteLoggatoPerLogin() == null) {
+                noaccessoPaginaLogin();
+            } else {
+                window.location.href = "/quiz.html";
+            }
+        });
+    }
 
     document.getElementById("form").addEventListener("submit", async function (event) {
         event.preventDefault();

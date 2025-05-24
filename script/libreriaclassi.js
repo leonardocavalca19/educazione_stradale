@@ -87,3 +87,16 @@ class Quizz {
     }
   }
 }
+function getUtenteSalvato() {
+    let datiUtenteString = localStorage.getItem('utenteAccesso');
+    if (datiUtenteString) {
+        return { dati: datiUtenteString, tipoStorage: 'localStorage' };
+    }
+    datiUtenteString = sessionStorage.getItem('utenteAccesso');
+    if (datiUtenteString) {
+
+        return { dati: datiUtenteString, tipoStorage: 'sessionStorage' };
+    }
+
+    return null;
+}
