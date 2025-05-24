@@ -132,7 +132,15 @@ const server = http.createServer(async (req, res) => {
                 }
 
                 const utenteDaAggiornare = utentiInMemoria[indiceUtente];
+                if (aggiornamenti.hasOwnProperty('nuovoQuizCompletato')) {
 
+                if (!utenteDaAggiornare.test) {
+                    utenteDaAggiornare.test = [];
+                }
+
+                utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
+                console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
+            }
                 if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //

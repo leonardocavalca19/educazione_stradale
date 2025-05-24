@@ -14,3 +14,37 @@
 #immagine-container{
     height: 300px;
 }
+#navigazione::-webkit-scrollbar {
+    display: none;
+}
+
+#navigazione {
+    -ms-overflow-style: none;
+    scrollbar-width: none; 
+}
+#navigazione button {
+    background-color: #f8f9fa;
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 0.3rem;
+    padding: 0.4rem 0.7rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    min-width: 45px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+#navigazione button:hover {
+    background-color: #e9ecef;
+    border-color: #ced4da;
+    color: #212529;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#navigazione button.active {
+    background-color: #007bff;
+    color: white;
+    border-color: #007bff;
+    font-weight: 700;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transform: translateY(-1px);
+}
