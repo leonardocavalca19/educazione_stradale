@@ -1,19 +1,17 @@
 class Utente {
-  constructor(nome, cognome, email, password, data_nascita) {
+  constructor(nome, cognome, email, password, data_nascita,test) {
     this.nome = nome;
     this.cognome = cognome;
     this.email = email;
     this.password = password;
     this.data_nascita = data_nascita;
-    this.domande = [];
-  }
-  static login(mail,password){
-    for (let i=0;i<utenti.length;i++){
-      if (mail==utenti[i].email && password==utenti[i].password){
-        return utenti[i]
-      }
+    if (test!=null){
+      this.test = test;
     }
-    return null
+    else{
+      test=[]
+    }
+    
   }
   getdomandecorrette() {
     let domandeCorrette = []

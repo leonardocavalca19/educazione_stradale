@@ -53,7 +53,9 @@ function creaquiz() {
         }
         i += 1;
         aggiornadomanda(i);
-
+      }
+      else{
+        window.location.href="/risultati.html"
       }
 
 
