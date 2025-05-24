@@ -187,6 +187,7 @@ function creaquiz() {
               utenteCorrente = utenti[i]
             }
           }
+          quizz.domande=domande
           utenteCorrente.test.push(quizz)
           if (sessionStorage.getItem('utenteAccesso') !== null) {
             sessionStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
