@@ -14,10 +14,9 @@ header {
 main
 {
     padding: 20px;
-    min-height: 100vh;
     background-image: linear-gradient(#ddd, #ccc, #bbb, #aaa);
 }
-h1
+h1, h2
 {
     position: relative;
     bottom: -90px;
@@ -28,6 +27,12 @@ h1, h3
     padding: 10px;
     width: fit-content;
     border: 1px solid;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+h2
+{
+    margin: auto;
+    width: fit-content;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
 }
 .links
