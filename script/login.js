@@ -18,6 +18,7 @@ async function getutenti() {
                     let domande = []
                     for (let k = 0; k < tests[j].domande.length; k++) {
                         domande.push(new Domanda(tests[j].domande[k].testo, tests[j].domande[k].corretta, null));
+                        domande[k].risposta = tests[j].domande[k].risposta;
                         if (tests[j].domande[k].img != null) {
                             domande[k].img = tests[j].domande[k].img;
                         }
