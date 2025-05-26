@@ -162,7 +162,6 @@ const server = http.createServer(async (req, res) => {
                 await salvareUtentiSuFile();
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Utente aggiornato con successo.", utente: utenteDaAggiornare }));
 
             } catch (error) {
                 console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);

@@ -13,7 +13,7 @@ async function getutenti() {
             if (utenti[i].test != null){
                 let tests=[]
                 for (let j = 0; j < utenti[i].test.length; j++) {
-                    tests.push(new Test(utenti[i].test[j].domande));
+                    tests.push(new Quiz(utenti[i].test[j].domande));
                     tests[j].realizazzione = utenti[i].test[j].realizazzione;
                 }
                 utenti[i].test = tests;
@@ -48,7 +48,7 @@ if (accesso) {
   noaccesso();
 }
 let quizz
-quizz = new Quizz();
+quizz = new Quiz();
 quizz.caricaDomande();
 function creaquiz() {
   function scrollNavigazioneVersoBottoneAttivo(indiceBottoneAttivo) {

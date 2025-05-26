@@ -46,7 +46,7 @@ class Domanda {
     return false;
   }
 }
-class Quizz {
+class Quiz {
   constructor(domande = []) {
     this.domande = domande;
     this.realizazzione = null;
