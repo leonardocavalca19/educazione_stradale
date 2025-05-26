@@ -89,7 +89,7 @@ function creaquiz() {
 
     bottone.addEventListener("click", function () {
       for (let a = 0; a < bottoni.length; a++) {
-        if (domande[a].risultato == null) {
+        if (domande[a].risposta == null) {
           bottoni[a].style.color = "#6c757d"
         }
         else {
@@ -160,19 +160,17 @@ function creaquiz() {
   for (let s = 0; s < document.getElementsByClassName("bottoni").length; s++) {
     document.getElementsByClassName("bottoni")[s].addEventListener("click", function () {
       if (i < domande.length) {
-        if (domande[i].controllagiusta(this.value === "true")) {
-          domande[i].risultato = true;
-        }
-        else {
-          domande[i].risultato = false;
-        }
+
+        domande[i].risposta = (this.value === "true");
+
+
         bottoni[i].classList.add("btn");
         bottoni[i].classList.add("btn-success");
         bottoni[i].style.color = "white"
         let esci = true
         for (let a = 0; a < domande.length; a++) {
           for (let j = 0; j < domande.length; j++) {
-            if (domande[j].risultato == null) {
+            if (domande[j].risposta == null) {
               esci = false
             }
           }
@@ -187,7 +185,7 @@ function creaquiz() {
               utenteCorrente = utenti[i]
             }
           }
-          quizz.domande=domande
+          quizz.domande = domande
           utenteCorrente.test.push(quizz)
           if (sessionStorage.getItem('utenteAccesso') !== null) {
             sessionStorage.setItem("utenteAccesso", JSON.stringify(utenteCorrente));
@@ -201,7 +199,7 @@ function creaquiz() {
           }
 
           const emailUtente = utenteCorrente ? utenteCorrente.email : null;
-          quizz.realizazzione=new Date()
+          quizz.realizazzione = new Date()
           const aggiornamentiPayload = {
             nuovoQuizCompletato: quizz
           };
@@ -234,7 +232,7 @@ function creaquiz() {
             }
           }
           modificaDatiUtente(emailUtente, aggiornamentiPayload)
-          window.location.href="/risultati.html"
+          window.location.href = "/risultati.html"
 
         }
 

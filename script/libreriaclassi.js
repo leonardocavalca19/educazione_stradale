@@ -37,15 +37,13 @@ class Domanda {
     this.testo = testo;
     this.corretta = corretta;
     this.img = img;
-    this.risultato = null;
+    this.risposta = null;
   }
-  controllagiusta(risposta){
-    if (this.corretta == true) {
-      this.risultato = true;
+  controllagiusta(){
+    if (this.corretta == this.risposta) {
+      return true;
     }
-    else {
-      this.risultato = false;
-    }
+    return false;
   }
 }
 class Quizz {
