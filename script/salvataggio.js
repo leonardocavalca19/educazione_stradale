@@ -200,8 +200,6 @@ const server = http.createServer(async (req, res) => {
 
                 if (!utenteTrovato) {
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
-                    res.writeHead(401, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Credenziali non valide." }));
                 }
 
                 const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
@@ -217,8 +215,6 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare }));
                 } else {
                     console.log("SERVER: Password errata per utente:", utenteTrovato.email);
-                    res.writeHead(401, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Credenziali non valide." }));
                 }
 
             } catch (error) {
