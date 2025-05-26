@@ -36,6 +36,8 @@ async function getutenti() {
 }
 getutenti()
 function noaccesso() {
+    localStorage.removeItem('utenteAccesso');
+    sessionStorage.removeItem('utenteAccesso');
     window.location.href = "/login.html"
 }
 document.addEventListener("DOMContentLoaded", function () {

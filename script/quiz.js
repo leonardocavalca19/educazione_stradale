@@ -44,6 +44,8 @@ else {
 }
 let utenteCorrente = null
 function noaccesso() {
+  localStorage.removeItem('utenteAccesso');
+  sessionStorage.removeItem('utenteAccesso');
   window.location.href = "/login.html"
 }
 if (accesso) {
