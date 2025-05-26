@@ -1,13 +1,29 @@
 let utenti = []
 async function getutenti() {
     try {
-        const response = await fetch("/json/utenti.json");
+
+        const timestamp = new Date().getTime();
+        const response = await fetch(`/json/utenti.json?t=${timestamp}`); // Cache busting
+
+        console.log(`STATO RISPOSTA FETCH per /json/utenti.json?t=${timestamp}: ${response.status} - ${response.statusText}`);
+
+        // LEGGI LA RISPOSTA COME TESTO GREZZO PRIMA DI TUTTO
+        const responseText = await response.text();
+        console.log("**********************************************************************");
+        console.log("TESTO GREZZO RICEVUTO DAL SERVER per utenti.json:");
+        console.log(`"${responseText}"`); // Messo tra virgolette per vedere se è una stringa vuota o con solo spazi
+        console.log("**********************************************************************");
         if (!response.ok) {
             throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
         }
         const datiJSON = await response.json();
         for (let i = 0; i < datiJSON.length; i++) {
             utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
+        }
+        if (responseText.trim() === "") {
+            console.warn("ATTENZIONE: Il responseText ricevuto dal server è una stringa vuota o contiene solo spazi. Impossibile fare JSON.parse.");
+            utenti = [];
+            return; // Esce se il testo è vuoto
         }
 
     } catch (error) {
@@ -30,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.removeItem('utenteAccesso');
         sessionStorage.removeItem('utenteAccesso');
 
-        window.location.href = "/login.html"; 
+        window.location.href = "/login.html";
     }
 
     const quizLinkLogin = document.getElementById("quizlink");
