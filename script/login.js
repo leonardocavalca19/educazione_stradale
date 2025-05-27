@@ -1,4 +1,18 @@
 let utenti = []
+function displayMessage(message, type) {
+    const messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = '';
+
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('');
+
+    messageArea.append(wrapper);
+}
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -94,11 +108,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("Login riuscito:", responseData);
                     if (document.getElementById("rememberMeCheck").checked) {
                         localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
-                        window.location.href = "/quiz.html";
                     } else {
                         sessionStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
-                        window.location.href = "/quiz.html";
                     }
+                    
+                    window.location.href = "/quiz.html";
+                }
+                else{
+                     displayMessage(responseData.message, risultato.type || 'danger');
                 }
             } catch (error) {
                 console.error("Errore nella richiesta di login:", error);

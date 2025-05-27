@@ -200,6 +200,7 @@ const server = http.createServer(async (req, res) => {
                 const utenteTrovato = utentiInMemoria.find(u => u.email.toLowerCase() === emailRicevuta);
 
                 if (!utenteTrovato) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
                     return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type: "danger" }));
                 }
