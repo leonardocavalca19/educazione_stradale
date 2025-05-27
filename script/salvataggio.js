@@ -199,6 +199,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (!utenteTrovato) {
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
+                    res.end(JSON.stringify({ message: "Errore, indirizzo email o la password inseriti non sono corretti." }));
                 }
 
                 const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
@@ -223,7 +224,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Richiesta JSON non valida." }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore interno del server durante il login." }));
+                    res.end(JSON.stringify({ message: "Errore, indirizzo email o la password inseriti non sono corretti." }));
                 }
             }
         });
