@@ -219,6 +219,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare, type: "success" }));
                 } else {
                     console.log("SERVER: Password errata per utente:", utenteTrovato.email);
+                     return res.end(JSON.stringify({ message: "Errore, mail o password errate", type: "danger" }));
                 }
 
             } catch (error) {
