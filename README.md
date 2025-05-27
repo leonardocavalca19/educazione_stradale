@@ -23,4 +23,7 @@ Il sito offre:
 
 ## 👥 Team
 
-Il progetto è stato realizzato da un gruppo di 3 persone, che hanno collaborato equamente allo sviluppo.
+Il progetto è stato realizzato da un gruppo di 3 persone, che hanno collaborato equamente allo sviluppo:
+ - Salvatore Frattaruolo
+ - Mattia Sozzi
+ - Leonardo Cavalca
