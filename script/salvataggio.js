@@ -177,9 +177,9 @@ const server = http.createServer(async (req, res) => {
     }
     else if (req.url === '/login-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /login-utente (POST) raggiunto.");
-         res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
@@ -199,7 +199,8 @@ const server = http.createServer(async (req, res) => {
 
                 if (!utenteTrovato) {
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
-                    res.end(JSON.stringify({ message: "Errore, indirizzo email o la password inseriti non sono corretti." }));
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita." }));
                 }
 
                 const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
@@ -224,7 +225,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Richiesta JSON non valida." }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore, indirizzo email o la password inseriti non sono corretti." }));
+                    res.end(JSON.stringify({ message: "Errore, connessione al server non riuscita" }));
                 }
             }
         });
