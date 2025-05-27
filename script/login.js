@@ -103,7 +103,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
 
                 const responseData = await response.json();
-
+                if (!response.ok){
+                     displayMessage(responseData.message, risultato.type || 'danger');
+                }
                 if (response.ok) {
                     console.log("Login riuscito:", responseData);
                     if (document.getElementById("rememberMeCheck").checked) {
@@ -114,9 +116,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     
                     window.location.href = "/quiz.html";
                 }
-                else{
-                     displayMessage(responseData.message, risultato.type || 'danger');
-                }
+                
             } catch (error) {
                 console.error("Errore nella richiesta di login:", error);
             }
