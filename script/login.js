@@ -94,10 +94,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     console.log("Login riuscito:", responseData);
                     if (document.getElementById("rememberMeCheck").checked) {
                         localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
+                        window.location.href = "/quiz.html";
                     } else {
-                        localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
+                        sessionStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
+                        window.location.href = "/quiz.html";
                     }
-                    window.location.href = "/quiz.html";
                 }
             } catch (error) {
                 console.error("Errore nella richiesta di login:", error);
