@@ -81,12 +81,12 @@ const server = http.createServer(async (req, res) => {
                 if (!datiNuovoUtente.email || !datiNuovoUtente.password || !datiNuovoUtente.nome) {
                     console.error("SERVER: Dati mancanti o non validi da /registra-utente");
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Dati mancanti o non validi." }));
+                    return res.end(JSON.stringify({ message: "Dati mancanti o non validi.", type:"danger" }));
                 }
                 if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
                     console.warn("SERVER: Email già registrata:", datiNuovoUtente.email);
                     res.writeHead(409, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email già registrata." }));
+                    return res.end(JSON.stringify({ message: "Email già registrata." , type:"danger"}));
                 }
                 const passwordInChiaro = datiNuovoUtente.password;
                 const passwordHashata = await hashPasswordConSHA256_Server(passwordInChiaro);
@@ -101,7 +101,7 @@ const server = http.createServer(async (req, res) => {
                 );
 
                 utentiInMemoria.push(utenteDaSalvare);
-                res.end(JSON.stringify({ message: "Utente creato con successo" }));
+                res.end(JSON.stringify({ message: "Utente creato con successo", type:"success" }));
                 await salvareUtentiSuFile();
 
                 res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -109,7 +109,7 @@ const server = http.createServer(async (req, res) => {
             } catch (error) {
                 console.error("SERVER: Errore in /registra-utente:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione." }));
+                res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type:"danger" }));
             }
         });
 
@@ -129,7 +129,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (!emailDaModificare || !aggiornamenti) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email dell'utente da modificare e dati per l'aggiornamento sono richiesti." }));
+                    return res.end(JSON.stringify({ message: "Email dell'utente da modificare e dati per l'aggiornamento sono richiesti.", type:"danger" }));
                 }
 
                 console.log(`SERVER: Richiesta di modifica per l'utente con email: ${emailDaModificare}`);
@@ -139,7 +139,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (indiceUtente === -1) {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita." }));
+                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type:"danger" }));
                 }
 
                 const utenteDaAggiornare = utentiInMemoria[indiceUtente];
@@ -156,7 +156,7 @@ const server = http.createServer(async (req, res) => {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
                     console.log(`SERVER: Password aggiornata e hashata per l'utente: ${utenteDaAggiornare.email}`);
-                    res.end(JSON.stringify({ message: "Password aggiornata correttamente" }));
+                    res.end(JSON.stringify({ message: "Password aggiornata correttamente" , type:"success"}));
                 }
 
                 utentiInMemoria[indiceUtente] = utenteDaAggiornare;
@@ -169,10 +169,10 @@ const server = http.createServer(async (req, res) => {
                 console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);
                 if (error instanceof SyntaxError) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Corpo della richiesta JSON non valido." }));
+                    res.end(JSON.stringify({ message: "Corpo della richiesta JSON non valido.", type:"danger" }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente." }));
+                    res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente.", type:"danger" }));
                 }
             }
         });
@@ -192,7 +192,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (!emailRicevuta || !passwordInChiaroRicevuta) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email e password sono richieste." }));
+                    return res.end(JSON.stringify({ message: "Email e password sono richieste." , type:"danger"}));
                 }
 
                 console.log(`SERVER: Tentativo di login per email: [${emailRicevuta}]`);
@@ -201,7 +201,7 @@ const server = http.createServer(async (req, res) => {
 
                 if (!utenteTrovato) {
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
-                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita." }));
+                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type:"danger" }));
                 }
 
                 const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
@@ -214,7 +214,7 @@ const server = http.createServer(async (req, res) => {
                         cognome: utenteTrovato.cognome
                     };
                     res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare }));
+                    res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare, type:"success" }));
                 } else {
                     console.log("SERVER: Password errata per utente:", utenteTrovato.email);
                 }
@@ -223,10 +223,10 @@ const server = http.createServer(async (req, res) => {
                 console.error("SERVER: Errore in /login-utente:", error);
                 if (error instanceof SyntaxError) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Richiesta JSON non valida." }));
+                    res.end(JSON.stringify({ message: "Richiesta JSON non valida.", type:"danger" }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore, connessione al server non riuscita" }));
+                    res.end(JSON.stringify({ message: "Errore, connessione al server non riuscita", type:"danger" }));
                 }
             }
         });
@@ -260,7 +260,7 @@ const server = http.createServer(async (req, res) => {
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
         res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js" }));
+        res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js", type:"danger" }));
     }
 });
 

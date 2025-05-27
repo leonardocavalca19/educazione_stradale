@@ -98,18 +98,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         localStorage.setItem('utenteAccesso', JSON.stringify(responseData.utente));
                     }
                     window.location.href = "/quiz.html";
-                } else {
-                    document.getElementById("messaggioErrore").textContent = responseData.message || "Errore durante il login. Riprova.";
-                    document.getElementById("messaggioErrore").style.display = "block";
                 }
             } catch (error) {
                 console.error("Errore nella richiesta di login:", error);
-                document.getElementById("messaggioErrore").textContent = "Errore di connessione o risposta non valida dal server.";
-                document.getElementById("messaggioErrore").style.display = "block";
             }
-        } else {
-            document.getElementById("messaggioErrore").textContent = "Errore! Email o password non validi. Riprova";
-            document.getElementById("messaggioErrore").style.display = "block";
         }
 
     });

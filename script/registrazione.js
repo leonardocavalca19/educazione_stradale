@@ -1,4 +1,18 @@
 let utenti = []
+function displayMessage(message, type) {
+            const messageArea = document.getElementById('messageArea');
+            messageArea.innerHTML = '';
+
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = [
+                `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+                `   <div>${message}</div>`,
+                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+                '</div>'
+            ].join('');
+
+            messageArea.append(wrapper);
+        }
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -28,10 +42,9 @@ async function inviaDatiNuovoUtenteAlServer(datiUtente) {
             throw new Error(risultato.message || `Errore HTTP: ${response.status}`);
         }
         console.log('CLIENT: Risposta dal server:', risultato.message);
-        alert('Utente registrato con successo!');
+        displayMessage(risultato.message || 'Utente registrato con successo!', risultato.type || 'success');
     } catch (error) {
         console.error('CLIENT: Errore durante l_invio dei dati utente:', error);
-        alert(`Errore registrazione: ${error.message}`);
     }
 }
 
