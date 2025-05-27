@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const responseData = await response.json();
                 if (!response.ok){
-                     displayMessage(responseData.message, risultato.type || 'danger');
+                     displayMessage(responseData.message, responseData.type || 'danger');
                 }
                 if (response.ok) {
                     console.log("Login riuscito:", responseData);
