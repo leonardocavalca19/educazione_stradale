@@ -36,12 +36,10 @@ async function inviaDatiNuovoUtenteAlServer(datiUtente) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(datiUtente),
         });
-        console.log("CLIENT: Status risposta server:", response.status);
         const risultato = await response.json();
         if (!response.ok) {
             throw new Error(risultato.message || `Errore HTTP: ${response.status}`);
         }
-        console.log('CLIENT: Risposta dal server:', risultato.message);
         displayMessage(risultato.message || 'Utente registrato con successo!', risultato.type || 'success');
     } catch (error) {
         console.error('CLIENT: Errore durante l_invio dei dati utente:', error);
