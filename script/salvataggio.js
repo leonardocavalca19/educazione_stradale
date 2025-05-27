@@ -152,6 +152,7 @@ const server = http.createServer(async (req, res) => {
                     utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
                     console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
                 }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
                 if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
@@ -163,7 +164,7 @@ const server = http.createServer(async (req, res) => {
 
                 await salvareUtentiSuFile();
 
-                res.writeHead(200, { 'Content-Type': 'application/json' });
+                
 
             } catch (error) {
                 console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);
