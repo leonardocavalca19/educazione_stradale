@@ -1,18 +1,18 @@
 let utenti = []
 function displayMessage(message, type) {
-            const messageArea = document.getElementById('messageArea');
-            messageArea.innerHTML = '';
+    const messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = '';
 
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = [
-                `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
-                `   <div>${message}</div>`,
-                '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
-                '</div>'
-            ].join('');
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = [
+        `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+        `   <div>${message}</div>`,
+        '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+        '</div>'
+    ].join('');
 
-            messageArea.append(wrapper);
-        }
+    messageArea.append(wrapper);
+}
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -20,8 +20,8 @@ async function getutenti() {
             throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
         }
         const datiJSON = await response.json();
-        for(let i=0;i<datiJSON.length;i++){
-            utenti.push(new Utente(datiJSON[i].nome,datiJSON[i].cognome,datiJSON[i].email,datiJSON[i].passwordHash,datiJSON[i].dataNascita,datiJSON[i].test))
+        for (let i = 0; i < datiJSON.length; i++) {
+            utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
         }
 
     } catch (error) {
@@ -38,7 +38,9 @@ async function inviaDatiNuovoUtenteAlServer(datiUtente) {
         });
         const risultato = await response.json();
         if (!response.ok) {
-            throw new Error(risultato.message || `Errore HTTP: ${response.status}`);
+            console.error('CLIENT: Errore dal server:', risultato.message);
+            displayMessage(risultato.message, risultato.type || 'danger');
+            return;
         }
         displayMessage(risultato.message || 'Utente registrato con successo!', risultato.type || 'success');
     } catch (error) {
@@ -125,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
             terminiCheck.classList.add("is-valid");
         }
         if (nomecorretto && cognomecorretto && mailcorretta && password && password2 && datacorretta && document.getElementById("terminiCheck").checked) {
-            let nuovoutente = new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value),[])
+            let nuovoutente = new Utente(document.getElementById("nomeInput").value, document.getElementById("cognomeInput").value, document.getElementById("emailRegistrazioneInput").value, document.getElementById("passwordRegistrazioneInput").value, new Date(document.getElementById("dataNascitaInput").value), [])
             let contenuto = false
             for (let i = 0; i < utenti.length - 1; i++) {
                 if (JSON.stringify(nuovoutente) == JSON.stringify(utenti[i])) {
