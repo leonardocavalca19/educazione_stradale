@@ -101,6 +101,7 @@ const server = http.createServer(async (req, res) => {
                 );
 
                 utentiInMemoria.push(utenteDaSalvare);
+                res.end(JSON.stringify({ message: "Utente creato con successo" }));
                 await salvareUtentiSuFile();
 
                 res.writeHead(201, { 'Content-Type': 'application/json' });
@@ -155,6 +156,7 @@ const server = http.createServer(async (req, res) => {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
                     console.log(`SERVER: Password aggiornata e hashata per l'utente: ${utenteDaAggiornare.email}`);
+                    res.end(JSON.stringify({ message: "Password aggiornata correttamente" }));
                 }
 
                 utentiInMemoria[indiceUtente] = utenteDaAggiornare;
@@ -199,7 +201,6 @@ const server = http.createServer(async (req, res) => {
 
                 if (!utenteTrovato) {
                     console.log("SERVER: Utente non trovato per email:", emailRicevuta);
-                    res.writeHead(404, { 'Content-Type': 'application/json' });
                     return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita." }));
                 }
 
