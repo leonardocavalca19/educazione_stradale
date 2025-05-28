@@ -16,6 +16,7 @@
     <script src="/script/libreriaclassi.js"></script>
     <script src="/script/risultati.js"></script>
     <script src="script/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -66,24 +67,22 @@
         </div>
         <div id="domande" class="container d-flex flex-column border border-dark mt-3 p-3">
 
-            {/* 1. Spazio per il Grafico */}
             <section class="chart-section-revisione w-100">
                 <h4 class="text-center mb-3">Andamento Grafico</h4>
-                <div class="chart-container-revisione" id="contenitoreGraficoRevisione">
-                    <p class="text-muted">Il tuo grafico apparirà qui</p>
+                <div class="chart-container-revisione" id="chart">
+                    <canvas id="graficoConfrontoDomanda"></canvas>
                 </div>
             </section>
 
-            {/* 2. Spazio per la Revisione della Domanda Singola (usando una card Bootstrap) */}
-            <section class="question-review-card-revisione card mt-4 w-100"> {/* Aggiunto mt-4 e w-100 */}
+            <section class="question-review-card-revisione card mt-4 w-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 id="numeroDomandaRevisione">Domanda N</h5>
+                    <h5 id="numeroDomandaRevisione"></h5>
                     <span id="esitoDomandaCorrenteRevisione" class="badge"></span>
                 </div>
                 <div class="card-body">
-                    <p id="testoDomandaRevisione" class="lead">Testo della domanda...</p>
+                    <p id="testoDomandaRevisione" class="lead"></p>
                     <div class="text-center" id="contenitoreImmagineRevisione" style="display:none;">
-                        <img src="#" alt="Immagine Domanda" id="immagineDomandaRevisione">
+                        <img src="" alt="Immagine Domanda" id="immagineDomandaRevisione">
                     </div>
 
                     <hr>

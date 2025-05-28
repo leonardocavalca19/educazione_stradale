@@ -296,6 +296,7 @@ function creaquiz() {
   }
   function noaccesso() {
     localStorage.removeItem('utenteAccesso');
+    sessionStorage.removeItem('utenteAccesso');
     window.location.href = "/login.html"
   }
 }
