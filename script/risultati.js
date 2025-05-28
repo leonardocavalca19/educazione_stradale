@@ -34,57 +34,60 @@ async function getutenti() {
         utenti = [];
     }
 }
-getutenti()
-function noaccesso() {
-  localStorage.removeItem('utenteAccesso');
-  sessionStorage.removeItem('utenteAccesso');
-  window.location.href = "/login.html"
-}
-let accesso
-if (sessionStorage.getItem('utenteAccesso') == null) {
-    accesso = localStorage.getItem('utenteAccesso')
-}
-else if (sessionStorage.getItem('utenteAccesso')!=null){
-    accesso = sessionStorage.getItem('utenteAccesso')
-}
-if (accesso) {
-    try {
-        for (let i =0; i<utenti.length;i++){
-            if (utenti[i].email==JSON.parse(accesso).email){
-                accesso=utenti[i]
-            }
-        }
-    } catch (e) {
-        console.error("Errore nel parsing dell'utente da localStorage:", e);
-        noaccesso();
+
+async function crea() {
+    await getutenti()
+    function noaccesso() {
+        localStorage.removeItem('utenteAccesso');
+        sessionStorage.removeItem('utenteAccesso');
+        window.location.href = "/login.html"
     }
-} else {
-    noaccesso();
-}
-document.addEventListener("DOMContentLoaded", function () {
-    if (localStorage.getItem('utenteAccesso') != null) {
-        document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
+    let accesso
+    if (sessionStorage.getItem('utenteAccesso') == null) {
+        accesso = localStorage.getItem('utenteAccesso')
     }
     else if (sessionStorage.getItem('utenteAccesso') != null) {
-        document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
+        accesso = sessionStorage.getItem('utenteAccesso')
     }
-    document.getElementById("profilo").addEventListener("click", function () {
-        window.location.href = "/profilo.html"
-    })
+    if (accesso) {
+        try {
+            for (let i = 0; i < utenti.length; i++) {
+                if (utenti[i].email == JSON.parse(accesso).email) {
+                    accesso = utenti[i]
+                }
+            }
+        } catch (e) {
+            console.error("Errore nel parsing dell'utente da localStorage:", e);
+            noaccesso();
+        }
+    } else {
+        noaccesso();
+    }
+    document.addEventListener("DOMContentLoaded", function () {
+        if (localStorage.getItem('utenteAccesso') != null) {
+            document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
+        }
+        else if (sessionStorage.getItem('utenteAccesso') != null) {
+            document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
+        }
+        document.getElementById("profilo").addEventListener("click", function () {
+            window.location.href = "/profilo.html"
+        })
 
-    document.getElementById("logoutBtn").addEventListener("click", function () {
-        noaccesso()
-        window.location.href = "/login.html";
-    })
-    const errori=accesso.test.getdomandeerrate()
-    if (errori.length<=3){
-        document.getElementById("risultato").textContent="Promosso! 🥳🥳"
-        document.getElementById("divrisultato").style.backgroundColor="green"
-    }
-    else{
-        document.getElementById("risultato").textContent="Bocciato 😓😓"
-        document.getElementById("divrisultato").style.backgroundColor="red"
-    }
+        document.getElementById("logoutBtn").addEventListener("click", function () {
+            noaccesso()
+            window.location.href = "/login.html";
+        })
+        const errori = accesso.test.getdomandeerrate()
+        if (errori.length <= 3) {
+            document.getElementById("risultato").textContent = "Promosso! 🥳🥳"
+            document.getElementById("divrisultato").style.backgroundColor = "green"
+        }
+        else {
+            document.getElementById("risultato").textContent = "Bocciato 😓😓"
+            document.getElementById("divrisultato").style.backgroundColor = "red"
+        }
 
-    
-})
+
+    })
+}
