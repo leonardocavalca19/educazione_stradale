@@ -2,12 +2,6 @@
 {
     box-sizing: border-box;
 }
-#logoutBtn{
-    position: fixed;
-    word-wrap: break-word;
-    top: 0;
-    left: 0;
-}
 .quiz-card {
     height: 90%;
 }

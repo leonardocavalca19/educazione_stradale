@@ -1,10 +1,10 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="it">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="shortcut icon" href="/img/logo.ico">
+  <link rel="shortcut icon" href="/img/logo.ico">
   <title>Quiz Patente</title>
   <script src="script/translate.js"></script>
   <script src="script/script.js"></script>
@@ -26,9 +26,25 @@
       Resetta Lingua
     </button>
   </div>
-  <button id="logoutBtn" class="btn btn-danger">
-    Logout
-  </button>
+  <div id="divutente" class="dropdown">
+    <div class="d-flex align-items-center" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+      <img src="/img/utente.jpg" width="45px">
+      <p class="mb-0 ms-2" id="nome"></p>
+    </div>
+
+    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+      <li>
+        <button id="profilo" class="dropdown-item" type="button">
+          Vedi profilo
+        </button>
+      </li>
+      <li>
+        <button id="logoutBtn" class="dropdown-item" type="button">
+          Logout
+        </button>
+      </li>
+    </ul>
+  </div>
 
   <nav>
     <input type="button" id="menu-toggle">
