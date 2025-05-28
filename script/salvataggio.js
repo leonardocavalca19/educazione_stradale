@@ -221,6 +221,7 @@ const server = http.createServer(async (req, res) => {
                     };
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: "Login effettuato con successo.", utente: datiUtenteDaInviare, type: "success" }));
+                    return;
                 } else {
                     res.writeHead(404, { 'Content-Type': 'application/json' });
                     console.log("SERVER: Password errata per utente:", utenteTrovato.email);
