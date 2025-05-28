@@ -78,7 +78,7 @@ async function crea() {
             noaccesso()
             window.location.href = "/login.html";
         })
-        const errori = accesso.test.getdomandeerrate()
+        const errori = accesso.getdomandeerrate()
         if (errori.length <= 3) {
             document.getElementById("risultato").textContent = "Promosso! 🥳🥳"
             document.getElementById("divrisultato").style.backgroundColor = "green"
