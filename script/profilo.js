@@ -34,6 +34,12 @@ async function getutenti() {
         utenti = [];
     }
 }
+getutenti()
+function noaccesso() {
+    localStorage.removeItem('utenteAccesso');
+    sessionStorage.removeItem('utenteAccesso');
+    window.location.href = "/login.html"
+}
 let accesso
 if (sessionStorage.getItem('utenteAccesso') == null) {
     accesso = localStorage.getItem('utenteAccesso')
@@ -136,6 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
 
         document.body.innerHTML = '<div class="container alert alert-danger mt-5" role="alert">Utente non autenticato o dati non disponibili. Effettua il <a href="login.html">login</a>.</div>';
+        noaccesso()
         window.location.href = 'login.html';
     }
 
