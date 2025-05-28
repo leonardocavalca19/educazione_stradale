@@ -13,24 +13,6 @@ class Utente {
     }
     
   }
-  getdomandecorrette() {
-    let domandeCorrette = []
-    for (let i = 0; i < this.quiz.domande.length; i++) {
-      if (this.quiz.domande[i].risultato == this.quiz.domande[i].corretta) {
-        domandeCorrette.push(this.quiz.domande[i]);
-      }
-    }
-    return domandeCorrette;
-  }
-  getdomandeerrate() {
-    let domandeErrate = []
-    for (let i = 0; i < this.quiz.domande.length; i++) {
-      if (this.quiz.domande[i].risultato != this.quiz.domande[i].corretta) {
-        domandeErrate.push(this.quiz.domande[i]);
-      }
-    }
-    return domandeErrate;
-  }
 }
 class Domanda {
   constructor(testo, corretta, img = null) {

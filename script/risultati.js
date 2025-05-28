@@ -78,7 +78,13 @@ async function crea() {
             noaccesso()
             window.location.href = "/login.html";
         })
-        const errori = accesso.getdomandeerrate()
+        const quiz=accesso.test[accesso.test.length-1]
+        let errate=[]
+        for (let i=0;i<quiz.domande.length;i++){
+            if (!quiz.domande[i].controllagiusta()){
+                errate.push(quiz.domande[i])
+            }
+        }
         if (errori.length <= 3) {
             document.getElementById("risultato").textContent = "Promosso! 🥳🥳"
             document.getElementById("divrisultato").style.backgroundColor = "green"
