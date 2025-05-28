@@ -72,6 +72,9 @@ async function crea() {
             console.error(`Canvas con ID ${canvasId} non trovato per il grafico.`);
             return;
         }
+        if (window.graficoConfrontoDomanda instanceof Chart) {
+                window.graficoConfrontoDomanda.destroy();
+            }
         new Chart(ctx.getContext('2d'), {
             type: 'bar',
             data: {
@@ -183,9 +186,6 @@ async function crea() {
                         falso++
                     }
                 }
-            }
-            if (window.graficoConfrontoDomanda instanceof Chart) {
-                window.graficoConfrontoDomanda.destroy();
             }
             let statistche = {
                 conteggioVero: vero,
