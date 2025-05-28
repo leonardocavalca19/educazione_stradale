@@ -83,6 +83,15 @@ function creaquiz() {
       });
     }
   }
+  if (localStorage.getItem('utenteAccesso') != null) {
+    document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
+  }
+  else if (sessionStorage.getItem('utenteAccesso') != null) {
+    document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
+  }
+  document.getElementById("profilo").addEventListener("click", function () {
+    window.location.href = "/profilo.html"
+  })
   document.getElementById("navigazione").addEventListener('wheel', function (event) {
     event.preventDefault();
     const scrollAmount = event.deltaY;

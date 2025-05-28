@@ -40,24 +40,17 @@ function noaccesso() {
     sessionStorage.removeItem('utenteAccesso');
     window.location.href = "/login.html"
 }
-let accesso
-if (sessionStorage.getItem('utenteAccesso') == null) {
-  accesso = localStorage.getItem('utenteAccesso')
-}
-else {
-  accesso = sessionStorage.getItem('utenteAccesso')
-}
-if (accesso) {
-  try {
-    utenteCorrente = JSON.parse(accesso);
-  } catch (e) {
-    console.error("Errore nel parsing dell'utente da localStorage:", e);
-    noaccesso();
-  }
-} else {
-  noaccesso();
-}
 document.addEventListener("DOMContentLoaded", function () {
+    if (localStorage.getItem('utenteAccesso')!=null){
+        document.getElementById("nome").textContent="Ciao "+JSON.parse(localStorage.getItem('utenteAccesso')).nome+" "+JSON.parse(localStorage.getItem('utenteAccesso')).cognome
+    }
+    else if (sessionStorage.getItem('utenteAccesso')!=null){
+        document.getElementById("nome").textContent="Ciao "+JSON.parse(sessionStorage.getItem('utenteAccesso')).nome+" "+JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
+    }
+    document.getElementById("profilo").addEventListener("click",function(){
+        window.location.href="/profilo.html"
+    })
+   
     document.getElementById("logoutBtn").addEventListener("click", function () {
         noaccesso()
         window.location.href = "/login.html";
