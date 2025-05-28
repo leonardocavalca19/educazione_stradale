@@ -85,7 +85,7 @@ async function crea() {
                 errate.push(quiz.domande[i])
             }
         }
-        if (errori.length <= 3) {
+        if (errate.length <= 3) {
             document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
             document.getElementById("divrisposta").style.backgroundColor = "green"
         }
