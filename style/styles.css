@@ -39,10 +39,19 @@ h2
 {
     color: #000;
 }
-.contenuti
+.contenuti-singoli
 {
-    margin: 20px auto;
-    padding: 30px;
+    margin: 0 auto 20px auto;
+    padding: 20px;
+    width: 90%;
+    height: fit-content;
+    box-shadow: -5px 5px 3px;
+    border-radius: 25px;
+    background-color: #bbb;
+}
+.contenuti-singoli > div
+{
+    margin: auto;
     width: fit-content;
 }
 #menu-toggle

@@ -51,7 +51,8 @@ body.translated-rtl {
 }
 
 @media (min-width: 1024px) {
-    nav {
+    nav
+    {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -66,11 +67,13 @@ body.translated-rtl {
         white-space: nowrap;
     }
 
-    nav > div {
+    nav > div
+    {
         display: block;
     }
 
-    nav > div > a {
+    nav > div > a
+    {
         color: #fff;
         padding: 5px 20px;
         border-radius: 25px;
@@ -79,23 +82,17 @@ body.translated-rtl {
         transition: background-color .25s ease-in-out;
     }
 
-    nav > div > a:hover {
+    nav > div > a:hover
+    {
         color: #fff;
         text-decoration: none;
         background-color: rgba(255, 255, 255, 0.5);
     }
 
-    .testo-grafico
+    .testo-grafico > .div-tg
     {
-        margin: 0 auto 20px auto;
         display: grid;
-        width: 90%;
-        height: fit-content;
         grid-template-columns: 50% 50%;
-        border: 1px solid;
-        box-shadow: 10px 10px 5px;
-        border-radius: 25px;
-        background-color: #bbb;
     }
 
     .hamburger {
@@ -104,7 +101,8 @@ body.translated-rtl {
 }
 
 @media (max-width: 1023px) {
-    .testo-grafico {
+    .testo-grafico > .div-tg
+    {
         display: grid;
         grid-template-columns: 100%;
     }
@@ -197,4 +195,15 @@ footer > div > div
 #menu-toggle
 {
     display: none;
+}
+.testo-grafico
+{
+    margin: 0 auto 20px auto;
+    padding: 20px;
+    display: grid;
+    width: 90%;
+    height: fit-content;
+    box-shadow: -5px 5px 3px;
+    border-radius: 15px;
+    background-color: #bbb;
 }
