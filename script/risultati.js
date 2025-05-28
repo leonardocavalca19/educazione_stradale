@@ -174,10 +174,10 @@ async function crea() {
             }
             for (let j = 0; j < utenti.length; j++) {
                 if (utenti[j].test[utenti[j].test.length-1].domande.includes(quiz.domande[n])) {
-                    if (utenti[j].test[utenti[j].test.length-1].domande[domande.findIndex(quiz.domande[n])].risposta == true && utenti[j] != accesso) {
+                    if (utenti[j].test[utenti[j].test.length-1].domande[utenti[j].test[utenti[j].test.length-1].domande.findIndex(quiz.domande[n])].risposta == true && utenti[j] != accesso) {
                         vero++
                     }
-                    else if (utenti[j].test[utenti[j].test.length-1].domande[domande.findIndex(quiz.domande[n])].risposta == false && utenti[j] != accesso) {
+                    else if (utenti[j].test[utenti[j].test.length-1].domande[utenti[j].test[utenti[j].test.length-1].domande.findIndex(quiz.domande[n])].risposta == false && utenti[j] != accesso) {
                         falso++
                     }
                 }
