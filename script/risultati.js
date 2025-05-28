@@ -86,14 +86,14 @@ async function crea() {
             }
         }
         if (errate.length <= 3) {
-            document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
-            document.getElementById("divrisposta").style.backgroundColor = "green"
+            document.getElementById("risultato").textContent = "Promosso! 🥳🥳"
+            document.getElementById("divrisultato").style.backgroundColor = "green"
         }
         else {
-            document.getElementById("risposta").textContent = "Bocciato 😓😓"
-            document.getElementById("divrisposta").style.backgroundColor = "red"
+            document.getElementById("risultato").textContent = "Bocciato 😓😓"
+            document.getElementById("divrisultato").style.backgroundColor = "red"
         }
-
+        
 
     })
 }
