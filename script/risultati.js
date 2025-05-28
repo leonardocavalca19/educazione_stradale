@@ -75,7 +75,7 @@ async function crea() {
         if (window.graficoConfrontoDomanda instanceof Chart) {
                 window.graficoConfrontoDomanda.destroy();
             }
-        new Chart(ctx.getContext('2d'), {
+         window.graficoConfrontoDomanda = new Chart(ctx.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: ['Altri Utenti'],
