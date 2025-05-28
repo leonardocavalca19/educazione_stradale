@@ -184,12 +184,12 @@ async function crea() {
                     }
                 }
             }
-            if (window.myComparisonChart instanceof Chart) {
-                window.myComparisonChart.destroy();
+            if (window.graficoConfrontoDomanda instanceof Chart) {
+                window.graficoConfrontoDomanda.destroy();
             }
             let statistche = {
-                conteggioVero: vero,
-                conteggioFalso: falso
+                conteggioVero: 32,
+                conteggioFalso: 15
 
             }
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
