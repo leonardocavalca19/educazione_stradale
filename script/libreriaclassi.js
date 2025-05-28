@@ -45,7 +45,10 @@ class Quiz {
       let d = Math.floor(Math.random() * (domandeargomento.length));
       let domandaargomento = domandeargomento[d];
       let domanda = new Domanda(domandaargomento.q, domandaargomento.a, domandaargomento.img);
-      this.domande.push(domanda);
+      if (!this.domande.includes(domanda)){
+        this.domande.push(domanda);
+      }
+      
     }
   }
   async caricaDomande() {
