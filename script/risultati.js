@@ -63,7 +63,7 @@ async function crea() {
     } else {
         noaccesso();
     }
-    if (!accesso instanceof Utente){
+    if (!accesso instanceof Utente) {
         noaccesso()
     }
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
@@ -146,7 +146,7 @@ async function crea() {
                 errate.push(quiz.domande[i])
             }
         }
-        let n=0
+        let n = 0
         if (errate.length <= 3) {
             document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
             document.getElementById("divrisposta").style.backgroundColor = "green"
@@ -156,28 +156,30 @@ async function crea() {
             document.getElementById("divrisposta").style.backgroundColor = "red"
         }
         function aggiorna(n) {
-            if (n>0){
-                if (document.getElementById("domandaPrecedenteRevisione").disabled){
-                    document.getElementById("domandaPrecedenteRevisione").disabled=false
+            if (n > 0) {
+                if (document.getElementById("domandaPrecedenteRevisione").disabled) {
+                    document.getElementById("domandaPrecedenteRevisione").disabled = false
                 }
             }
-            if (n<errate.length){
-                if (document.getElementById("domandaSuccessivaRevisione").disabled){
-                    document.getElementById("domandaSuccessivaRevisione").disabled=false
+            if (n < errate.length) {
+                if (document.getElementById("domandaSuccessivaRevisione").disabled) {
+                    document.getElementById("domandaSuccessivaRevisione").disabled = false
                 }
             }
-            if (n==errate.length){
-                document.getElementById("domandaSuccessivaRevisione").disabled=true
+            if (n == errate.length) {
+                document.getElementById("domandaSuccessivaRevisione").disabled = true
             }
-            if (n==0){
-                document.getElementById("domandaPrecedenteRevisione").disabled=true
+            if (n == 0) {
+                document.getElementById("domandaPrecedenteRevisione").disabled = true
             }
             for (let j = 0; j < utenti.length; j++) {
-                if (utenti[j].test[utenti[j].test.length-1].domande.includes(quiz.domande[n])) {
-                    if (utenti[j].test[utenti[j].test.length-1].domande[utenti[j].test[utenti[j].test.length-1].domande.findIndex(quiz.domande[n])].risposta == true && utenti[j] != accesso) {
+                let arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
+                let indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
+                if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
+                    if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
                         vero++
                     }
-                    else if (utenti[j].test[utenti[j].test.length-1].domande[utenti[j].test[utenti[j].test.length-1].domande.findIndex(quiz.domande[n])].risposta == false && utenti[j] != accesso) {
+                    else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
                         falso++
                     }
                 }
@@ -193,12 +195,12 @@ async function crea() {
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
         }
         aggiorna(n)
-        document.getElementById("domandaSuccessivaRevisione").addEventListener("click",function(){
-            n+=1
+        document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
+            n += 1
             aggiorna(n)
         })
-        document.getElementById("domandaPrecedenteRevisione").addEventListener("click",function(){
-            n-=1
+        document.getElementById("domandaPrecedenteRevisione").addEventListener("click", function () {
+            n -= 1
             aggiorna(n)
         })
 
