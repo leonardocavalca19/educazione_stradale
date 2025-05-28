@@ -40,6 +40,23 @@ function noaccesso() {
     sessionStorage.removeItem('utenteAccesso');
     window.location.href = "/login.html"
 }
+let accesso
+if (sessionStorage.getItem('utenteAccesso') == null) {
+  accesso = localStorage.getItem('utenteAccesso')
+}
+else {
+  accesso = sessionStorage.getItem('utenteAccesso')
+}
+if (accesso) {
+  try {
+    utenteCorrente = JSON.parse(accesso);
+  } catch (e) {
+    console.error("Errore nel parsing dell'utente da localStorage:", e);
+    noaccesso();
+  }
+} else {
+  noaccesso();
+}
 document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("logoutBtn").addEventListener("click", function () {
         noaccesso()
