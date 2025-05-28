@@ -73,9 +73,9 @@ async function crea() {
             return;
         }
         if (window.graficoConfrontoDomanda instanceof Chart) {
-                window.graficoConfrontoDomanda.destroy();
-            }
-         window.graficoConfrontoDomanda = new Chart(ctx.getContext('2d'), {
+            window.graficoConfrontoDomanda.destroy();
+        }
+        window.graficoConfrontoDomanda = new Chart(ctx.getContext('2d'), {
             type: 'bar',
             data: {
                 labels: ['Altri Utenti'],
@@ -164,12 +164,12 @@ async function crea() {
                     document.getElementById("domandaPrecedenteRevisione").disabled = false
                 }
             }
-            if (n < errate.length-1) {
+            if (n < errate.length - 1) {
                 if (document.getElementById("domandaSuccessivaRevisione").disabled) {
                     document.getElementById("domandaSuccessivaRevisione").disabled = false
                 }
             }
-            if (n == errate.length-1) {
+            if (n == errate.length - 1) {
                 document.getElementById("domandaSuccessivaRevisione").disabled = true
             }
             if (n == 0) {
@@ -193,22 +193,61 @@ async function crea() {
 
             }
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
-            document.getElementById("numeroDomandaRevisione").textContent="Domanda N. "+accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo)
-            document.getElementById("testoDomandaRevisione").textContent=errate[n].testo
-            if (errate[n].risposta==true){
-                document.getElementById("rispostaUtenteRevisione").textContent="vero"
+            document.getElementById("numeroDomandaRevisione").textContent = "Domanda N. " + accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo)
+            document.getElementById("testoDomandaRevisione").textContent = errate[n].testo
+            if (errate[n].risposta == true) {
+                document.getElementById("rispostaUtenteRevisione").textContent = "vero"
             }
-            else{
-                document.getElementById("rispostaUtenteRevisione").textContent="falso"
+            else {
+                document.getElementById("rispostaUtenteRevisione").textContent = "falso"
             }
 
-            if (errate[n].corretta==true){
-                document.getElementById("rispostaCorrettaRevisione").textContent="vero"
+            if (errate[n].corretta == true) {
+                document.getElementById("rispostaCorrettaRevisione").textContent = "vero"
             }
-            else{
-                document.getElementById("rispostaCorrettaRevisione").textContent="falso"
+            else {
+                document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
             }
-            
+            let domandaCorrente=errate[n]
+            const Spiegazione = document.getElementById('spiegazioneRispostaScrittaRevisione');
+            if (Spiegazione) {
+                Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA...</em></p>';
+
+                fetch('/spiega-risposta', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        testoDomanda: domandaCorrente.testo,
+                        rispostaUtente: domandaCorrente.risposta,
+                        rispostaCorretta: domandaCorrente.corretta
+                    })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(errData => {
+                                throw new Error(errData.error || `Errore dal server: ${response.status}`);
+                            }).catch(() => {
+                                throw new Error(`Errore dal server: ${response.status} ${response.statusText}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.spiegazione) {
+                            Spiegazione.textContent = data.spiegazione;
+                        } else if (data.error) {
+                            Spiegazione.textContent = "Errore nel recuperare la spiegazione: " + data.error;
+                        } else {
+                            Spiegazione.textContent = "Spiegazione non disponibile al momento.";
+                        }
+                    })
+                    .catch(error => {
+                        console.error("RISULTATI.JS: Errore nel fetch della spiegazione:", error);
+                        Spiegazione.textContent = "Impossibile caricare la spiegazione: " + error.message;
+                    });
+            }
+
+
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
