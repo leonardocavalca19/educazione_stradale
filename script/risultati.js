@@ -173,11 +173,11 @@ async function crea() {
                 document.getElementById("domandaPrecedenteRevisione").disabled=true
             }
             for (let j = 0; j < utenti.length; j++) {
-                if (utenti[j].test[utenti[j].test.length-1].domande.contains(quiz.domande[n])) {
-                    if (utenti[j].test[utenti[j].test.length-1].domande[domande.indexof(quiz.domande[n])].risposta == true && utenti[j] != accesso) {
+                if (utenti[j].test[utenti[j].test.length-1].domande.includes(quiz.domande[n])) {
+                    if (utenti[j].test[utenti[j].test.length-1].domande[domande.findIndex(quiz.domande[n])].risposta == true && utenti[j] != accesso) {
                         vero++
                     }
-                    else if (utenti[j].test[utenti[j].test.length-1].domande[domande.indexof(quiz.domande[n])].risposta == false && utenti[j] != accesso) {
+                    else if (utenti[j].test[utenti[j].test.length-1].domande[domande.findIndex(quiz.domande[n])].risposta == false && utenti[j] != accesso) {
                         falso++
                     }
                 }
