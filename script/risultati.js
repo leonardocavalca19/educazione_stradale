@@ -164,12 +164,12 @@ async function crea() {
                     document.getElementById("domandaPrecedenteRevisione").disabled = false
                 }
             }
-            if (n < errate.length) {
+            if (n < errate.length-1) {
                 if (document.getElementById("domandaSuccessivaRevisione").disabled) {
                     document.getElementById("domandaSuccessivaRevisione").disabled = false
                 }
             }
-            if (n == errate.length) {
+            if (n == errate.length-1) {
                 document.getElementById("domandaSuccessivaRevisione").disabled = true
             }
             if (n == 0) {
