@@ -1,3 +1,61 @@
+let utenti = []
+async function getutenti() {
+    try {
+        const response = await fetch("/json/utenti.json");
+        if (!response.ok) {
+            throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
+        }
+        const datiJSON = await response.json();
+        for (let i = 0; i < datiJSON.length; i++) {
+            utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
+        }
+        for (let i = 0; i < utenti.length; i++) {
+            if (utenti[i].test != null) {
+                let tests = []
+                for (let j = 0; j < utenti[i].test.length; j++) {
+                    tests.push(new Quiz(utenti[i].test[j].domande));
+                    tests[j].realizazzione = utenti[i].test[j].realizazzione;
+                    let domande = []
+                    for (let k = 0; k < tests[j].domande.length; k++) {
+                        domande.push(new Domanda(tests[j].domande[k].testo, tests[j].domande[k].corretta, null));
+                        domande[k].risposta = tests[j].domande[k].risposta;
+                        if (tests[j].domande[k].img != null) {
+                            domande[k].img = tests[j].domande[k].img;
+                        }
+                    }
+                    tests[j].domande = domande;
+                }
+                utenti[i].test = tests;
+            }
+        }
+
+    } catch (error) {
+        console.error("Impossibile caricare il file utenti.json:", error);
+        utenti = [];
+    }
+}
+getutenti()
+let accesso
+if (sessionStorage.getItem('utenteAccesso') == null) {
+    accesso = localStorage.getItem('utenteAccesso')
+}
+else if (sessionStorage.getItem('utenteAccesso') != null) {
+    accesso = sessionStorage.getItem('utenteAccesso')
+}
+if (accesso) {
+    try {
+        for (let i = 0; i < utenti.length; i++) {
+            if (utenti[i].email == JSON.parse(accesso).email) {
+                accesso = utenti[i]
+            }
+        }
+    } catch (e) {
+        console.error("Errore nel parsing dell'utente da localStorage:", e);
+        noaccesso();
+    }
+} else {
+    noaccesso();
+}
 document.addEventListener('DOMContentLoaded', function () {
     const userInfoNome = document.getElementById('userInfoNome');
     const userInfoCognome = document.getElementById('userInfoCognome');
@@ -5,20 +63,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const userInfoDataNascita = document.getElementById('userInfoDataNascita');
     const testHistoryContainer = document.getElementById('testHistoryContainer');
 
-    const datiSalvati = getUtenteSalvato();
 
-    if (datiSalvati && datiSalvati.dati) {
+    if (accesso) {
         try {
-            const utente = JSON.parse(datiSalvati.dati);
 
-            userInfoNome.textContent = utente.nome || 'N/D';
-            userInfoCognome.textContent = utente.cognome || 'N/D';
-            userInfoEmail.textContent = utente.email || 'N/D';
-            userInfoDataNascita.textContent = utente.data_nascita ? new Date(utente.data_nascita).toLocaleDateString('it-IT') : 'N/D';
+            userInfoNome.textContent = accesso.nome || 'N/D';
+            userInfoCognome.textContent = accesso.cognome || 'N/D';
+            userInfoEmail.textContent = accesso.email || 'N/D';
+            userInfoDataNascita.textContent = accesso.data_nascita ? new Date(accesso.data_nascita).toLocaleDateString('it-IT') : 'N/D';
 
-            if (utente.test && utente.test.length > 0) {
+            if (accesso.test && accesso.test.length > 0) {
                 testHistoryContainer.innerHTML = '';
-                utente.test.forEach((quizRecord, index) => {
+                accesso.test.forEach((quizRecord, index) => {
                     if (!quizRecord || !quizRecord.domande) {
                         console.warn('Record test non valido:', quizRecord);
                         return;
@@ -91,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
             window.location.href = 'login.html';
         });
     }
-    document.getElementById("profilo").addEventListener("click",function(){
-        window.location.href="/profilo.html"
+    document.getElementById("profilo").addEventListener("click", function () {
+        window.location.href = "/profilo.html"
     })
 });
