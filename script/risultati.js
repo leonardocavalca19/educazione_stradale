@@ -193,16 +193,16 @@ async function crea() {
 
             }
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
-            document.getElementById("numeroDomandaRevisione").textContent="Domanda N. "+accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === quiz.domande[n].testo)
-            document.getElementById("testoDomandaRevisione").textContent=quiz.domande[n].testo
-            if (quiz.domande[n].risposta==true){
+            document.getElementById("numeroDomandaRevisione").textContent="Domanda N. "+accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo)
+            document.getElementById("testoDomandaRevisione").textContent=errate[n].testo
+            if (errate[n].risposta==true){
                 document.getElementById("rispostaUtenteRevisione").textContent="vero"
             }
             else{
                 document.getElementById("rispostaUtenteRevisione").textContent="falso"
             }
 
-            if (quiz.domande[n].corretta==true){
+            if (errate[n].corretta==true){
                 document.getElementById("rispostaCorrettaRevisione").textContent="vero"
             }
             else{
