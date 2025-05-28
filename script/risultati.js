@@ -85,15 +85,15 @@ async function crea() {
                 errate.push(quiz.domande[i])
             }
         }
-        if (errate.length <= 3) {
-            document.getElementById("risultato").textContent = "Promosso! 🥳🥳"
-            document.getElementById("divrisultato").style.backgroundColor = "green"
+        if (errori.length <= 3) {
+            document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
+            document.getElementById("divrisposta").style.backgroundColor = "green"
         }
         else {
-            document.getElementById("risultato").textContent = "Bocciato 😓😓"
-            document.getElementById("divrisultato").style.backgroundColor = "red"
+            document.getElementById("risposta").textContent = "Bocciato 😓😓"
+            document.getElementById("divrisposta").style.backgroundColor = "red"
         }
-        
+
 
     })
 }
