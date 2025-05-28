@@ -36,9 +36,9 @@ async function getutenti() {
 }
 getutenti()
 function noaccesso() {
-    localStorage.removeItem('utenteAccesso');
-    sessionStorage.removeItem('utenteAccesso');
-    window.location.href = "/login.html"
+  localStorage.removeItem('utenteAccesso');
+  sessionStorage.removeItem('utenteAccesso');
+  window.location.href = "/login.html"
 }
 let accesso
 if (sessionStorage.getItem('utenteAccesso') == null) {
@@ -76,4 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
         noaccesso()
         window.location.href = "/login.html";
     })
+    const errori=accesso.test.getdomandeerrate()
+    if (errori.length<=3){
+        document.getElementById("risultato").textContent="Promosso! 🥳🥳"
+        document.getElementById("divrisultato").style.backgroundColor="green"
+    }
+    else{
+        document.getElementById("risultato").textContent="Bocciato 😓😓"
+        document.getElementById("divrisultato").style.backgroundColor="red"
+    }
+
+    
 })

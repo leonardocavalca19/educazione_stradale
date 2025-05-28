@@ -16,7 +16,7 @@ class Utente {
   getdomandecorrette() {
     let domandeCorrette = []
     for (let i = 0; i < this.quiz.domande.length; i++) {
-      if (this.quiz.domande[i].risultato == true) {
+      if (this.quiz.domande[i].risultato == this.quiz.domande[i].corretta) {
         domandeCorrette.push(this.quiz.domande[i]);
       }
     }
@@ -25,7 +25,7 @@ class Utente {
   getdomandeerrate() {
     let domandeErrate = []
     for (let i = 0; i < this.quiz.domande.length; i++) {
-      if (this.quiz.domande[i].risultato == false) {
+      if (this.quiz.domande[i].risultato != this.quiz.domande[i].corretta) {
         domandeErrate.push(this.quiz.domande[i]);
       }
     }
