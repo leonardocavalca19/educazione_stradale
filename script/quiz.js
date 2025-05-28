@@ -177,6 +177,20 @@ function creaquiz() {
         document.getElementById("immagine").src = domande[n].img;
         document.getElementById("immagine").style.display = "";
       }
+      if (domande[n].risposta!=null){
+        if (domande[n].risposta==true){
+          document.getElementsByClassName("bottoni")[1].classList.remove("btn-danger")
+          if (!document.getElementsByClassName("bottoni")[0].classList.contains("btn-success")){
+            document.getElementsByClassName("bottoni")[0].classList.add("btn-success")
+          }
+        }
+        else{
+          document.getElementsByClassName("bottoni")[0].classList.remove("btn-success")
+          if (!document.getElementsByClassName("bottoni")[1].classList.contains("btn-danger")){
+            document.getElementsByClassName("bottoni")[1].classList.add("btn-danger")
+          }
+        } 
+      }
       else {
         document.getElementById("immagine").style.display = "none";
       }
