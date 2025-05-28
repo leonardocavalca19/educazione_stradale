@@ -188,11 +188,27 @@ async function crea() {
                 window.graficoConfrontoDomanda.destroy();
             }
             let statistche = {
-                conteggioVero: 32,
-                conteggioFalso: 15
+                conteggioVero: vero,
+                conteggioFalso: falso
 
             }
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
+            document.getElementById("numeroDomandaRevisione").textContent="Domanda N. "+accesso.test[accesso.test.length - 1].domandefindIndex(d => d.testo === quiz.domande[n].testo)
+            document.getElementById("testoDomandaRevisione").textContent=quiz.domande[n].testo
+            if (quiz.domande[n].risposta==true){
+                document.getElementById("rispostaUtenteRevisione").textContent="vero"
+            }
+            else{
+                document.getElementById("rispostaUtenteRevisione").textContent="falso"
+            }
+
+            if (quiz.domande[n].corretta==true){
+                document.getElementById("rispostaCorrettaRevisione").textContent="vero"
+            }
+            else{
+                document.getElementById("rispostaCorrettaRevisione").textContent="falso"
+            }
+            
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
