@@ -16,6 +16,7 @@
     <script src="/script/libreriaclassi.js"></script>
     <script src="/script/risultati.js"></script>
     <script src="script/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -66,11 +67,10 @@
         </div>
         <div id="domande" class="container d-flex flex-column border border-dark mt-3 p-3">
 
-            {/* 1. Spazio per il Grafico */}
             <section class="chart-section-revisione w-100">
                 <h4 class="text-center mb-3">Andamento Grafico</h4>
-                <div class="chart-container-revisione" id="contenitoreGraficoRevisione">
-                    <p class="text-muted">Il tuo grafico apparirà qui</p>
+                <div class="chart-container-revisione" id="chart">
+                    <canvas id="graficoConfrontoDomanda"></canvas>
                 </div>
             </section>
 
