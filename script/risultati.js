@@ -34,7 +34,7 @@ async function getutenti() {
         utenti = [];
     }
 }
-
+crea()
 async function crea() {
     await getutenti()
     function noaccesso() {
