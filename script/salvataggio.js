@@ -345,7 +345,7 @@ const server = http.createServer(async (req, res) => {
 
 const PORTA = 3000;
 caricareUtentiIniziali().then(() => {
-    server.listen(PORTA, () => {
-        console.log(`Server in ascolto su http://localhost:${PORTA}`);
+    server.listen(PORTA, '0.0.0.0', () => {
+        console.log(`Server in ascolto su http://0.0.0.0:${PORTA} (accessibile anche come http://192.168.1.183:${PORTA})`);
     });
 });
