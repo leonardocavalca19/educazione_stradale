@@ -261,40 +261,6 @@ const server = http.createServer(async (req, res) => {
         return
     }
 
-    else if (req.url === '/spiega-risposta' && req.method === 'POST') {
-        console.log("SERVER: Endpoint /spiega-risposta (POST) raggiunto.");
-        let corpoRichiesta = '';
-        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
-        req.on('end', async () => {
-            try {
-                const { testoDomanda, rispostaUtente, rispostaCorretta } = JSON.parse(corpoRichiesta);
-                res.setTimeout(60000);
-                if (!testoDomanda || typeof rispostaUtente === 'undefined' || typeof rispostaCorretta === 'undefined') {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: "Dati mancanti: testoDomanda, rispostaUtente, e rispostaCorretta sono richiesti." }));
-                    return
-                }
-                
-
-                const prompt = `Sei un tutor esperto di quiz per la patente di guida italiana. Un utente sta revisionando una domanda a cui ha risposto in modo errato.
-                La domanda era: "${testoDomanda}"
-                L'utente ha risposto: "${rispostaUtente ? 'Vero' : 'Falso'}".
-                La risposta corretta è: "${rispostaCorretta ? 'Vero' : 'Falso'}".
-                Fornisci una spiegazione chiara, concisa (idealmente 2-3 frasi, massimo 4 righe) e in italiano del perché la risposta dell'utente è sbagliata e/o perché la risposta corretta è quella giusta. La spiegazione deve essere istruttiva e facile da capire.`;
-                const result = await model.generateContent(prompt);
-                const responseFromAI = await result.response;
-                const spiegazione = responseFromAI.text().trim();
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ spiegazione: spiegazione }));
-            }
-            catch {
-                console.error("SERVER: Errore in /spiega-risposta:", error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
-            }
-        });
-        return
-    }
     else if (req.url === '/' || req.url === '/index.html') {
         try {
             const html = await fs.readFile(path.join(__dirname, '..', 'index.html'), 'utf8');

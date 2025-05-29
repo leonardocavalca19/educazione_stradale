@@ -207,72 +207,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }
-            let domandaCorrente = errate[n]
-            const Spiegazione = document.getElementById('spiegazioneRispostaScrittaRevisione');
-            const API_PORT = 3000;
-            const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
-            if (Spiegazione) {
-                Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA... Attendere prego, potrebbe richiedere fino a 90 secondi...</em></p>';
-                const controller = new AbortController();
-                const signal = controller.signal;
-
-                const CLIENT_TIMEOUT_MS = 90000;
-
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => {
-                        controller.abort();
-                        reject(new Error('Timeout: La richiesta ha impiegato troppo tempo per rispondere (client-side).'));
-                    }, CLIENT_TIMEOUT_MS);
-                });
-                Promise.race([
-                    fetch(`${API_BASE_URL}/spiega-risposta`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            testoDomanda: domandaCorrente.testo,
-                            rispostaUtente: domandaCorrente.risposta,
-                            rispostaCorretta: domandaCorrente.corretta
-                        }),
-                        signal: signal
-                    }),
-                    timeoutPromise
-                ])
-                    .then(response => {
-
-                        if (response instanceof Response) {
-                            if (!response.ok) {
-                                return response.json().then(errData => {
-
-                                    throw new Error(errData.error || `Errore dal server: ${response.status}`);
-                                }).catch(() => {
-
-                                    throw new Error(`Errore dal server: ${response.status} ${response.statusText}`);
-                                });
-                            }
-                            return response.json();
-                        }
-
-                        throw new Error('Risposta inaspettata dalla Promise.race');
-                    })
-                    .then(data => {
-                        if (data.spiegazione) {
-                            Spiegazione.textContent = data.spiegazione;
-                        } else if (data.error) {
-                            Spiegazione.textContent = "Errore nel recuperare la spiegazione: " + data.error;
-                        } else {
-                            Spiegazione.textContent = "Spiegazione non disponibile al momento.";
-                        }
-                    })
-                    .catch(error => {
-                        console.error("RISULTATI.JS: Errore nel fetch della spiegazione o timeout:", error);
-                        if (error.name === 'AbortError') {
-                            Spiegazione.textContent = "Impossibile caricare la spiegazione: la richiesta è stata annullata per timeout (client).";
-                        } else {
-                            Spiegazione.textContent = "Impossibile caricare la spiegazione: " + error.message;
-                        }
-                    });
-            }
+            }     
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
