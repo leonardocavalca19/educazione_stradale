@@ -274,32 +274,25 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ error: "Dati mancanti: testoDomanda, rispostaUtente, e rispostaCorretta sono richiesti." }));
                     return
                 }
-                    console.log("SERVER /spiega-risposta: Inizio chiamata all'IA...");
-                    const startTime = Date.now();
-     
+                
 
-                    const prompt = `Sei un tutor esperto di quiz per la patente di guida italiana. Un utente sta revisionando una domanda a cui ha risposto in modo errato.
+                const prompt = `Sei un tutor esperto di quiz per la patente di guida italiana. Un utente sta revisionando una domanda a cui ha risposto in modo errato.
                 La domanda era: "${testoDomanda}"
                 L'utente ha risposto: "${rispostaUtente ? 'Vero' : 'Falso'}".
                 La risposta corretta è: "${rispostaCorretta ? 'Vero' : 'Falso'}".
                 Fornisci una spiegazione chiara, concisa (idealmente 2-3 frasi, massimo 4 righe) e in italiano del perché la risposta dell'utente è sbagliata e/o perché la risposta corretta è quella giusta. La spiegazione deve essere istruttiva e facile da capire.`;
-                    const result = await model.generateContent(prompt);
-                    const responseFromAI = await result.response;
-                    const spiegazione = responseFromAI.text().trim();
-                    const endTime = Date.now();
-                    const durationMs = endTime - startTime;
-                    console.log(`SERVER /spiega-risposta: Chiamata all'IA completata in ${durationMs}ms`);
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ spiegazione: spiegazione }));
-
-                }
-                catch {
-                    console.error("SERVER: Errore in /spiega-risposta:", error);
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
-                }
-            
-            });
+                const result = await model.generateContent(prompt);
+                const responseFromAI = await result.response;
+                const spiegazione = responseFromAI.text().trim();
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ spiegazione: spiegazione }));
+            }
+            catch {
+                console.error("SERVER: Errore in /spiega-risposta:", error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
+            }
+        });
         return
     }
     else if (req.url === '/' || req.url === '/index.html') {
@@ -333,7 +326,7 @@ const server = http.createServer(async (req, res) => {
             const html = await fs.readFile(path.join(__dirname, '..', 'risultati.html'), 'utf8');
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(html);
-        } catch (e) { console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.html"); }
+        } catch (e) {console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.html");   }
     } else if (req.url === '/risultati.js') {
         try {
             const js = await fs.readFile(path.join(__dirname, '..', 'risultati.js'), 'utf8');

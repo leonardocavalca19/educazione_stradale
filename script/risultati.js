@@ -213,26 +213,47 @@ async function crea() {
             const API_PORT = 3000;
             const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
             if (Spiegazione) {
-                Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA...</em></p>';
+                Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA... Attendere prego, potrebbe richiedere fino a 90 secondi...</em></p>';
+                const controller = new AbortController();
+                const signal = controller.signal;
 
-                fetch(`${API_BASE_URL}/spiega-risposta`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        testoDomanda: domandaCorrente.testo,
-                        rispostaUtente: domandaCorrente.risposta,
-                        rispostaCorretta: domandaCorrente.corretta
-                    })
-                })
+                const CLIENT_TIMEOUT_MS = 90000;
+
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => {
+                        controller.abort();
+                        reject(new Error('Timeout: La richiesta ha impiegato troppo tempo per rispondere (client-side).'));
+                    }, CLIENT_TIMEOUT_MS);
+                });
+                Promise.race([
+                    fetch(`${API_BASE_URL}/spiega-risposta`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            testoDomanda: domandaCorrente.testo,
+                            rispostaUtente: domandaCorrente.risposta,
+                            rispostaCorretta: domandaCorrente.corretta
+                        }),
+                        signal: signal
+                    }),
+                    timeoutPromise
+                ])
                     .then(response => {
-                        if (!response.ok) {
-                            return response.json().then(errData => {
-                                throw new Error(errData.error || `Errore dal server: ${response.status}`);
-                            }).catch(() => {
-                                throw new Error(`Errore dal server: ${response.status} ${response.statusText}`);
-                            });
+
+                        if (response instanceof Response) {
+                            if (!response.ok) {
+                                return response.json().then(errData => {
+
+                                    throw new Error(errData.error || `Errore dal server: ${response.status}`);
+                                }).catch(() => {
+
+                                    throw new Error(`Errore dal server: ${response.status} ${response.statusText}`);
+                                });
+                            }
+                            return response.json();
                         }
-                        return response.json();
+
+                        throw new Error('Risposta inaspettata dalla Promise.race');
                     })
                     .then(data => {
                         if (data.spiegazione) {
@@ -244,12 +265,14 @@ async function crea() {
                         }
                     })
                     .catch(error => {
-                        console.error("RISULTATI.JS: Errore nel fetch della spiegazione:", error);
-                        Spiegazione.textContent = "Impossibile caricare la spiegazione: " + error.message;
+                        console.error("RISULTATI.JS: Errore nel fetch della spiegazione o timeout:", error);
+                        if (error.name === 'AbortError') {
+                            Spiegazione.textContent = "Impossibile caricare la spiegazione: la richiesta è stata annullata per timeout (client).";
+                        } else {
+                            Spiegazione.textContent = "Impossibile caricare la spiegazione: " + error.message;
+                        }
                     });
             }
-
-
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
