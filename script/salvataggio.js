@@ -321,6 +321,19 @@ const server = http.createServer(async (req, res) => {
             }
         }
     }
+    else if (req.url === '/risultati.html') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'risultati.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.html");   }
+    } else if (req.url === '/risultati.js') {
+        try {
+            const js = await fs.readFile(path.join(__dirname, '..', 'risultati.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(js);
+        } catch (e) { console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.js"); }
+    }
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
         if (!res.headersSent) {
