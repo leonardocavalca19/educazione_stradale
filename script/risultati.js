@@ -58,8 +58,14 @@ async function crea() {
             }
         } catch (e) {
             console.error("Errore nel parsing dell'utente da localStorage:", e);
+            noaccesso();
         }
-    } 
+    } else {
+        noaccesso();
+    }
+    if (!accesso instanceof Utente) {
+        noaccesso()
+    }
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
         const ctx = document.getElementById(canvasId);
         if (!ctx) {
