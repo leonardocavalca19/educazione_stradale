@@ -193,7 +193,7 @@ async function crea() {
 
             }
             creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
-            document.getElementById("numeroDomandaRevisione").textContent = "Domanda N. " + accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo)
+            document.getElementById("numeroDomandaRevisione").textContent = "Domanda N. " + accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo) + 1
             document.getElementById("testoDomandaRevisione").textContent = errate[n].testo
             if (errate[n].risposta == true) {
                 document.getElementById("rispostaUtenteRevisione").textContent = "vero"
@@ -208,12 +208,13 @@ async function crea() {
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
             }
-            let domandaCorrente=errate[n]
+            let domandaCorrente = errate[n]
             const Spiegazione = document.getElementById('spiegazioneRispostaScrittaRevisione');
+            const API_BASE_URL = 'http://192.168.1.183:3000';
             if (Spiegazione) {
                 Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA...</em></p>';
 
-                fetch('/spiega-risposta', {
+                fetch(`${API_BASE_URL}/spiega-risposta`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

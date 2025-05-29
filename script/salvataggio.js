@@ -113,7 +113,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
                     return
                 }
-            return
+                return
 
             } catch (error) {
                 if (!res.headersSent) {
@@ -122,7 +122,7 @@ const server = http.createServer(async (req, res) => {
                 }
                 return
             }
-        
+
         });
         return
 
@@ -145,7 +145,7 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Email e password sono richieste.", type: "danger" }));
                     return
                 }
-                
+
 
                 console.log(`SERVER: Tentativo di login per email: [${emailRicevuta}]`);
 
@@ -261,7 +261,7 @@ const server = http.createServer(async (req, res) => {
         return
     }
 
-    if (req.url === '/spiega-risposta' && req.method === 'POST') {
+    else if (req.url === '/spiega-risposta' && req.method === 'POST') {
         console.log("SERVER: Endpoint /spiega-risposta (POST) raggiunto.");
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
@@ -286,13 +286,11 @@ const server = http.createServer(async (req, res) => {
                 const spiegazione = responseFromAI.text().trim();
                 res.writeHead(200, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ spiegazione: spiegazione }));
-                return
             }
             catch {
                 console.error("SERVER: Errore in /spiega-risposta:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
-                return
             }
         });
         return
@@ -325,8 +323,10 @@ const server = http.createServer(async (req, res) => {
     }
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js", type: "danger" }));
+        if (!res.headersSent) {
+            res.writeHead(404, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js", type: "danger" }));
+        }
     }
 });
 
