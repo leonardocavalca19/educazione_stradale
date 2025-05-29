@@ -107,80 +107,16 @@ const server = http.createServer(async (req, res) => {
                 utentiInMemoria.push(utenteDaSalvare);
                 await salvareUtentiSuFile();
                 if (!res.headersSent) {
-                    res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
+                    return res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
                 }
 
             } catch (error) {
                 console.error("SERVER: Errore in /registra-utente:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type: "danger" }));
+                return res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type: "danger" }));
             }
         });
 
-    }
-    else if (req.url === '/modifica-utente' && req.method === 'PUT') {
-        console.log("SERVER: Endpoint /modifica-utente (PUT) raggiunto.");
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-        let corpoRichiesta = '';
-        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
-        req.on('end', async () => {
-            try {
-                const payload = JSON.parse(corpoRichiesta);
-                const emailDaModificare = payload.emailDaModificare;
-                const aggiornamenti = payload.aggiornamenti;
-
-                if (!emailDaModificare || !aggiornamenti) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email dell'utente da modificare e dati per l'aggiornamento sono richiesti.", type: "danger" }));
-                }
-
-                console.log(`SERVER: Richiesta di modifica per l'utente con email: ${emailDaModificare}`);
-                console.log("SERVER: Dati di aggiornamento ricevuti:", aggiornamenti);
-
-                const indiceUtente = utentiInMemoria.findIndex(u => u.email === emailDaModificare);
-
-                if (indiceUtente === -1) {
-                    res.writeHead(404, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type: "danger" }));
-                }
-
-                const utenteDaAggiornare = utentiInMemoria[indiceUtente];
-                if (aggiornamenti.hasOwnProperty('nuovoQuizCompletato')) {
-
-                    if (!utenteDaAggiornare.test) {
-                        utenteDaAggiornare.test = [];
-                    }
-
-                    utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
-                    console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
-                }
-                res.writeHead(200, { 'Content-Type': 'application/json' });
-                if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
-                    console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
-                    utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
-                    console.log(`SERVER: Password aggiornata e hashata per l'utente: ${utenteDaAggiornare.email}`);
-                    res.end(JSON.stringify({ message: "Password aggiornata correttamente", type: "success" }));
-                }
-
-                utentiInMemoria[indiceUtente] = utenteDaAggiornare;
-
-                await salvareUtentiSuFile();
-
-
-
-            } catch (error) {
-                console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);
-                if (error instanceof SyntaxError) {
-                    res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Corpo della richiesta JSON non valido.", type: "danger" }));
-                } else {
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente.", type: "danger" }));
-                }
-            }
-        });
     }
     else if (req.url === '/login-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /login-utente (POST) raggiunto.");
@@ -232,14 +168,79 @@ const server = http.createServer(async (req, res) => {
                 console.error("SERVER: Errore in /login-utente:", error);
                 if (error instanceof SyntaxError) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Richiesta JSON non valida.", type: "danger" }));
+                    return res.end(JSON.stringify({ message: "Richiesta JSON non valida.", type: "danger" }));
                 } else {
                     res.writeHead(500, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Errore, connessione al server non riuscita", type: "danger" }));
+                    return res.end(JSON.stringify({ message: "Errore, connessione al server non riuscita", type: "danger" }));
                 }
             }
         });
     }
+    else if (req.url === '/modifica-utente' && req.method === 'PUT') {
+        console.log("SERVER: Endpoint /modifica-utente (PUT) raggiunto.");
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        let corpoRichiesta = '';
+        req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
+        req.on('end', async () => {
+            try {
+                const payload = JSON.parse(corpoRichiesta);
+                const emailDaModificare = payload.emailDaModificare;
+                const aggiornamenti = payload.aggiornamenti;
+
+                if (!emailDaModificare || !aggiornamenti) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Email dell'utente da modificare e dati per l'aggiornamento sono richiesti.", type: "danger" }));
+                }
+
+                console.log(`SERVER: Richiesta di modifica per l'utente con email: ${emailDaModificare}`);
+                console.log("SERVER: Dati di aggiornamento ricevuti:", aggiornamenti);
+
+                const indiceUtente = utentiInMemoria.findIndex(u => u.email === emailDaModificare);
+
+                if (indiceUtente === -1) {
+                    res.writeHead(404, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type: "danger" }));
+                }
+
+                const utenteDaAggiornare = utentiInMemoria[indiceUtente];
+                if (aggiornamenti.hasOwnProperty('nuovoQuizCompletato')) {
+
+                    if (!utenteDaAggiornare.test) {
+                        utenteDaAggiornare.test = [];
+                    }
+
+                    utenteDaAggiornare.test.push(aggiornamenti.nuovoQuizCompletato);
+                    console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
+                }
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
+                    console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
+                    utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
+                    console.log(`SERVER: Password aggiornata e hashata per l'utente: ${utenteDaAggiornare.email}`);
+                    return res.end(JSON.stringify({ message: "Password aggiornata correttamente", type: "success" }));
+                }
+
+                utentiInMemoria[indiceUtente] = utenteDaAggiornare;
+
+                await salvareUtentiSuFile();
+
+
+
+            } catch (error) {
+                console.error("SERVER: Errore durante l'aggiornamento dell'utente in /modifica-utente:", error);
+                if (error instanceof SyntaxError) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Corpo della richiesta JSON non valido.", type: "danger" }));
+                } else {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Errore interno del server durante l'aggiornamento dell'utente.", type: "danger" }));
+                }
+            }
+        });
+    }
+    
     if (req.url === '/spiega-risposta' && req.method === 'POST') {
         console.log("SERVER: Endpoint /spiega-risposta (POST) raggiunto.");
         let corpoRichiesta = '';
@@ -263,12 +264,12 @@ const server = http.createServer(async (req, res) => {
                 const responseFromAI = await result.response;
                 const spiegazione = responseFromAI.text().trim();
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ spiegazione: spiegazione }));
+                return res.end(JSON.stringify({ spiegazione: spiegazione }));
             }
             catch {
                 console.error("SERVER: Errore in /spiega-risposta:", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
+                return res.end(JSON.stringify({ error: "Errore interno del server nel generare la spiegazione.", details: error.message }));
             }
         })
     }
