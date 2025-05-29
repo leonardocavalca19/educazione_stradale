@@ -268,7 +268,7 @@ const server = http.createServer(async (req, res) => {
         req.on('end', async () => {
             try {
                 const { testoDomanda, rispostaUtente, rispostaCorretta } = JSON.parse(corpoRichiesta);
-
+                res.setTimeout(60000);
                 if (!testoDomanda || typeof rispostaUtente === 'undefined' || typeof rispostaCorretta === 'undefined') {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ error: "Dati mancanti: testoDomanda, rispostaUtente, e rispostaCorretta sono richiesti." }));
