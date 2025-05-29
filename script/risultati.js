@@ -63,9 +63,7 @@ async function crea() {
     } else {
         noaccesso();
     }
-    if (!accesso instanceof Utente) {
-        noaccesso()
-    }
+
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
         const ctx = document.getElementById(canvasId);
         if (!ctx) {
