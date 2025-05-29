@@ -88,9 +88,11 @@ const server = http.createServer(async (req, res) => {
                     return res.end(JSON.stringify({ message: "Dati mancanti o non validi.", type: "danger" }));
                 }
                 if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
-                    console.warn("SERVER: Email già registrata:", datiNuovoUtente.email);
-                    res.writeHead(409, { 'Content-Type': 'application/json' });
-                    return res.end(JSON.stringify({ message: "Email già registrata.", type: "danger" }));
+                    if (!res.headersSent) {
+                        res.writeHead(409, { 'Content-Type': 'application/json' });
+                        res.end(JSON.stringify({ message: "Email già registrata.", type: "danger" }));
+                    }
+                    return;
                 }
                 const passwordInChiaro = datiNuovoUtente.password;
                 const passwordHashata = await hashPasswordConSHA256_Server(passwordInChiaro);
@@ -107,14 +109,19 @@ const server = http.createServer(async (req, res) => {
                 utentiInMemoria.push(utenteDaSalvare);
                 await salvareUtentiSuFile();
                 if (!res.headersSent) {
-                    return res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
+                    res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
+                    return
                 }
+            return
 
             } catch (error) {
-                console.error("SERVER: Errore in /registra-utente:", error);
-                res.writeHead(500, { 'Content-Type': 'application/json' });
-                return res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type: "danger" }));
+                if (!res.headersSent) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type: "danger" }));
+                }
+                return
             }
+        
         });
 
     }
@@ -240,7 +247,7 @@ const server = http.createServer(async (req, res) => {
             }
         });
     }
-    
+
     if (req.url === '/spiega-risposta' && req.method === 'POST') {
         console.log("SERVER: Endpoint /spiega-risposta (POST) raggiunto.");
         let corpoRichiesta = '';
