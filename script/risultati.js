@@ -210,8 +210,8 @@ async function crea() {
             }
             let domandaCorrente = errate[n]
             const Spiegazione = document.getElementById('spiegazioneRispostaScrittaRevisione');
-            const API_PORT = 3000; // Porta del tuo server Node.js
-            const API_BASE_URL = `<span class="math-inline">\{window\.location\.protocol\}//</span>{window.location.hostname}:${API_PORT}`;
+            const API_PORT = 3000;
+            const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
             if (Spiegazione) {
                 Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA...</em></p>';
 
