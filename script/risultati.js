@@ -34,7 +34,14 @@ async function getutenti() {
         utenti = [];
     }
 }
-crea()
+const quiz = null
+function inizializza(n) {
+    quiz = n
+}
+document.addEventListener("DOMContentLoaded", function () {
+    crea()
+})
+
 async function crea() {
     await getutenti()
     function noaccesso() {
@@ -140,7 +147,6 @@ async function crea() {
             noaccesso()
             window.location.href = "/login.html";
         })
-        const quiz = accesso.test[accesso.test.length - 1]
         let errate = []
         let vero = 0
         let falso = 0
@@ -207,7 +213,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }     
+            }
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {

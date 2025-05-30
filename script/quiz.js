@@ -285,6 +285,7 @@ function creaquiz() {
             }
           }
           modificaDatiUtente(emailUtente, aggiornamentiPayload)
+          inizializza(accesso.test[accesso.test.length - 1])
           window.location.href = "/risultati.html"
 
         }
