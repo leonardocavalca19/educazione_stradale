@@ -1,4 +1,21 @@
+/**
+ * @file Script per la gestione del login utente, caricamento dati utente e protezione rotte.
+ * @summary Questo script gestisce il form di login, recupera i dati degli utenti da un file JSON,
+ * gestisce la sessione utente (tramite localStorage o sessionStorage) e protegge l'accesso
+ * alla pagina del quiz.
+ */
+
+/**
+ * @type {Utente[]} Array per memorizzare gli oggetti Utente caricati dal file JSON.
+ * La classe Utente è definita nel file libreriaclassi.js
+ */
 let utenti = []
+/**
+ * Carica asincronamente i dati degli utenti dal file '/json/utenti.json'.
+ * Popola l'array globale 'utenti' con istanze di Oggetti Utente, Quiz e Domanda.
+ * Definite sempre in libreriaclassi.js.
+ * Gestisce eventuali errori durante il fetch o il parsing del JSON.
+ */
 async function getutenti() {
     try {
         const response = await fetch("/json/utenti.json");
@@ -34,14 +51,26 @@ async function getutenti() {
         utenti = [];
     }
 }
+// Invoca la funzione principale 'crea' per iniziare il processo di caricamento e visualizzazione dei risultati.
 crea()
+/**
+ * Funzione principale asincrona per inizializzare la pagina dei risultati.
+ * Carica i dati degli utenti, identifica l'utente loggato, recupera l'ultimo quiz sostenuto
+ * e imposta l'interfaccia per la revisione delle domande errate e il grafico di confronto.
+ */
 async function crea() {
+    // Attende il caricamento completo dei dati di tutti gli utenti
     await getutenti()
+    /**
+     * Gestisce il logout dell'utente.
+     * Rimuove i dati dell'utente da localStorage e sessionStorage e reindirizza alla pagina di login.
+     */
     function noaccesso() {
         localStorage.removeItem('utenteAccesso');
         sessionStorage.removeItem('utenteAccesso');
         window.location.href = "/login.html"
     }
+    /** @type {string | object | null} Recupera i dati dell'utente loggato dallo storage. Inizialmente è una stringa JSON. */
     let accesso
     if (sessionStorage.getItem('utenteAccesso') == null) {
         accesso = localStorage.getItem('utenteAccesso')
@@ -51,6 +80,7 @@ async function crea() {
     }
     if (accesso) {
         try {
+            // Parsa i dati dell'utente (se ancora stringa) per ottenere l'email e cercare l'oggetto Utente completo.
             for (let i = 0; i < utenti.length; i++) {
                 if (utenti[i].email == JSON.parse(accesso).email) {
                     accesso = utenti[i]
@@ -61,24 +91,34 @@ async function crea() {
             noaccesso();
         }
     } else {
+         // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
         noaccesso();
     }
+     // Verifica finale che 'accesso' sia un'istanza di Utente.
     if (!accesso instanceof Utente) {
         noaccesso()
     }
+     /**
+     * Crea o aggiorna un grafico a barre (usando Chart.js) per mostrare come altri utenti
+     * hanno risposto a una specifica domanda errata.
+     * @param {string} canvasId - L'ID dell'elemento canvas nel DOM per il grafico.
+     * @param {{conteggioVero: number, conteggioFalso: number}} statisticheAltri - Oggetto con il conteggio delle risposte "Vero" e "Falso" date da altri utenti.
+     */
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
         const ctx = document.getElementById(canvasId);
         if (!ctx) {
             console.error(`Canvas con ID ${canvasId} non trovato per il grafico.`);
             return;
         }
+        // Distrugge un eventuale grafico precedente sullo stesso canvas per evitarne la sovrapposizione.
         if (window.graficoConfrontoDomanda instanceof Chart) {
             window.graficoConfrontoDomanda.destroy();
         }
+        // Crea una nuova istanza di Chart.js.
         window.graficoConfrontoDomanda = new Chart(ctx.getContext('2d'), {
-            type: 'bar',
+            type: 'bar', // Tipo di grafico: a barre.
             data: {
-                labels: ['Altri Utenti'],
+                labels: ['Altri Utenti'], // Etichetta per il gruppo di barre.
                 datasets: [
                     {
                         label: 'Hanno Risposto "Vero"',
@@ -97,25 +137,25 @@ async function crea() {
                 ]
             },
             options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
+                indexAxis: 'y', // Barre orizzontali.
+                responsive: true, 
+                maintainAspectRatio: false, 
                 scales: {
-                    x: {
+                    x: { // Asse X (valori numerici delle risposte).
                         beginAtZero: true,
-                        stacked: false,
+                        stacked: false, // Barre affiancate, non impilate
                         title: {
                             display: true,
                             text: 'Numero di Risposte Date dagli Altri Utenti'
                         }
                     },
-                    y: {
+                    y: { // Asse Y (etichetta 'Altri Utenti').
                         stacked: false
                     }
                 },
                 plugins: {
                     legend: {
-                        position: 'top',
+                        position: 'top', // Posizione della legenda.
                     },
                     title: {
                         display: true,
@@ -125,6 +165,10 @@ async function crea() {
             }
         });
     }
+    /**
+     * Listener che si attiva quando il documento HTML è stato completamente caricato e parsato.
+     * Imposta la visualizzazione dei risultati, la navigazione tra le domande errate e gli event listener.
+     */
     document.addEventListener("DOMContentLoaded", function () {
         if (localStorage.getItem('utenteAccesso') != null) {
             document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
@@ -132,15 +176,18 @@ async function crea() {
         else if (sessionStorage.getItem('utenteAccesso') != null) {
             document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
         }
+         // Event listener per il link/bottone del profilo
         document.getElementById("profilo").addEventListener("click", function () {
             window.location.href = "/profilo.html"
         })
-
+        // Event listener per il bottone di logout.
         document.getElementById("logoutBtn").addEventListener("click", function () {
             noaccesso()
             window.location.href = "/login.html";
         })
+        // Recupera l'ultimo quiz sostenuto dall'utente.
         const quiz = accesso.test[accesso.test.length - 1]
+        /** @type {Domanda[]} Array per memorizzare le domande a cui l'utente ha risposto erroneamente. */
         let errate = []
         let vero = 0
         let falso = 0
@@ -150,6 +197,7 @@ async function crea() {
             }
         }
         let n = 0
+        // Determina se l'utente è promosso o bocciato in base al numero di errori.
         if (errate.length <= 3) {
             document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
             document.getElementById("divrisposta").style.backgroundColor = "green"
@@ -158,7 +206,12 @@ async function crea() {
             document.getElementById("risposta").textContent = "Bocciato 😓😓"
             document.getElementById("divrisposta").style.backgroundColor = "red"
         }
+        /**
+         * Aggiorna la visualizzazione della domanda errata corrente e il grafico di confronto.
+         * @param {number} n - L'indice della domanda errata (nell'array 'errate') da visualizzare.
+         */
         function aggiorna(n) {
+            // Aggiorna stato bottoni "Precedente" e "Successiva"
             if (n > 0) {
                 if (document.getElementById("domandaPrecedenteRevisione").disabled) {
                     document.getElementById("domandaPrecedenteRevisione").disabled = false
@@ -207,72 +260,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }
-            let domandaCorrente = errate[n]
-            const Spiegazione = document.getElementById('spiegazioneRispostaScrittaRevisione');
-            const API_PORT = 3000;
-            const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:${API_PORT}`;
-            if (Spiegazione) {
-                Spiegazione.innerHTML = '<p class="text-muted"><em>Caricamento spiegazione dall\'IA... Attendere prego, potrebbe richiedere fino a 90 secondi...</em></p>';
-                const controller = new AbortController();
-                const signal = controller.signal;
-
-                const CLIENT_TIMEOUT_MS = 90000;
-
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => {
-                        controller.abort();
-                        reject(new Error('Timeout: La richiesta ha impiegato troppo tempo per rispondere (client-side).'));
-                    }, CLIENT_TIMEOUT_MS);
-                });
-                Promise.race([
-                    fetch(`${API_BASE_URL}/spiega-risposta`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            testoDomanda: domandaCorrente.testo,
-                            rispostaUtente: domandaCorrente.risposta,
-                            rispostaCorretta: domandaCorrente.corretta
-                        }),
-                        signal: signal
-                    }),
-                    timeoutPromise
-                ])
-                    .then(response => {
-
-                        if (response instanceof Response) {
-                            if (!response.ok) {
-                                return response.json().then(errData => {
-
-                                    throw new Error(errData.error || `Errore dal server: ${response.status}`);
-                                }).catch(() => {
-
-                                    throw new Error(`Errore dal server: ${response.status} ${response.statusText}`);
-                                });
-                            }
-                            return response.json();
-                        }
-
-                        throw new Error('Risposta inaspettata dalla Promise.race');
-                    })
-                    .then(data => {
-                        if (data.spiegazione) {
-                            Spiegazione.textContent = data.spiegazione;
-                        } else if (data.error) {
-                            Spiegazione.textContent = "Errore nel recuperare la spiegazione: " + data.error;
-                        } else {
-                            Spiegazione.textContent = "Spiegazione non disponibile al momento.";
-                        }
-                    })
-                    .catch(error => {
-                        console.error("RISULTATI.JS: Errore nel fetch della spiegazione o timeout:", error);
-                        if (error.name === 'AbortError') {
-                            Spiegazione.textContent = "Impossibile caricare la spiegazione: la richiesta è stata annullata per timeout (client).";
-                        } else {
-                            Spiegazione.textContent = "Impossibile caricare la spiegazione: " + error.message;
-                        }
-                    });
-            }
+            }     
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
