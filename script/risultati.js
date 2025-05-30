@@ -133,97 +133,100 @@ async function crea() {
         });
     }
     document.addEventListener("DOMContentLoaded", function () {
-        if (localStorage.getItem('utenteAccesso') != null) {
-            document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
-        }
-        else if (sessionStorage.getItem('utenteAccesso') != null) {
-            document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
-        }
-        document.getElementById("profilo").addEventListener("click", function () {
-            window.location.href = "/profilo.html"
-        })
+        if (window.location.href === "/risultati.html") {
+            if (localStorage.getItem('utenteAccesso') != null) {
+                document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
+            }
+            else if (sessionStorage.getItem('utenteAccesso') != null) {
+                document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
+            }
+            document.getElementById("profilo").addEventListener("click", function () {
+                window.location.href = "/profilo.html"
+            })
 
-        document.getElementById("logoutBtn").addEventListener("click", function () {
-            noaccesso()
-            window.location.href = "/login.html";
-        })
-        let errate = []
-        let vero = 0
-        let falso = 0
-        for (let i = 0; i < quiz.domande.length; i++) {
-            if (!quiz.domande[i].controllagiusta()) {
-                errate.push(quiz.domande[i])
-            }
-        }
-        let n = 0
-        if (errate.length <= 3) {
-            document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
-            document.getElementById("divrisposta").style.backgroundColor = "green"
-        }
-        else {
-            document.getElementById("risposta").textContent = "Bocciato 😓😓"
-            document.getElementById("divrisposta").style.backgroundColor = "red"
-        }
-        function aggiorna(n) {
-            if (n > 0) {
-                if (document.getElementById("domandaPrecedenteRevisione").disabled) {
-                    document.getElementById("domandaPrecedenteRevisione").disabled = false
+            document.getElementById("logoutBtn").addEventListener("click", function () {
+                noaccesso()
+                window.location.href = "/login.html";
+            })
+            let errate = []
+            let vero = 0
+            let falso = 0
+            for (let i = 0; i < quiz.domande.length; i++) {
+                if (!quiz.domande[i].controllagiusta()) {
+                    errate.push(quiz.domande[i])
                 }
             }
-            if (n < errate.length - 1) {
-                if (document.getElementById("domandaSuccessivaRevisione").disabled) {
-                    document.getElementById("domandaSuccessivaRevisione").disabled = false
-                }
-            }
-            if (n == errate.length - 1) {
-                document.getElementById("domandaSuccessivaRevisione").disabled = true
-            }
-            if (n == 0) {
-                document.getElementById("domandaPrecedenteRevisione").disabled = true
-            }
-            for (let j = 0; j < utenti.length; j++) {
-                let arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
-                let indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
-                if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
-                    if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
-                        vero++
-                    }
-                    else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
-                        falso++
-                    }
-                }
-            }
-            let statistche = {
-                conteggioVero: vero,
-                conteggioFalso: falso
-
-            }
-            creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
-            document.getElementById("numeroDomandaRevisione").textContent = "Domanda N. " + (accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo) + 1)
-            document.getElementById("testoDomandaRevisione").textContent = errate[n].testo
-            if (errate[n].risposta == true) {
-                document.getElementById("rispostaUtenteRevisione").textContent = "vero"
+            let n = 0
+            if (errate.length <= 3) {
+                document.getElementById("risposta").textContent = "Promosso! 🥳🥳"
+                document.getElementById("divrisposta").style.backgroundColor = "green"
             }
             else {
-                document.getElementById("rispostaUtenteRevisione").textContent = "falso"
+                document.getElementById("risposta").textContent = "Bocciato 😓😓"
+                document.getElementById("divrisposta").style.backgroundColor = "red"
             }
+            function aggiorna(n) {
+                if (n > 0) {
+                    if (document.getElementById("domandaPrecedenteRevisione").disabled) {
+                        document.getElementById("domandaPrecedenteRevisione").disabled = false
+                    }
+                }
+                if (n < errate.length - 1) {
+                    if (document.getElementById("domandaSuccessivaRevisione").disabled) {
+                        document.getElementById("domandaSuccessivaRevisione").disabled = false
+                    }
+                }
+                if (n == errate.length - 1) {
+                    document.getElementById("domandaSuccessivaRevisione").disabled = true
+                }
+                if (n == 0) {
+                    document.getElementById("domandaPrecedenteRevisione").disabled = true
+                }
+                for (let j = 0; j < utenti.length; j++) {
+                    let arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
+                    let indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
+                    if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
+                        if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
+                            vero++
+                        }
+                        else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
+                            falso++
+                        }
+                    }
+                }
+                let statistche = {
+                    conteggioVero: vero,
+                    conteggioFalso: falso
 
-            if (errate[n].corretta == true) {
-                document.getElementById("rispostaCorrettaRevisione").textContent = "vero"
+                }
+                creaGraficoConfrontoPerDomandaErrata("graficoConfrontoDomanda", statistche)
+                document.getElementById("numeroDomandaRevisione").textContent = "Domanda N. " + (accesso.test[accesso.test.length - 1].domande.findIndex(d => d.testo === errate[n].testo) + 1)
+                document.getElementById("testoDomandaRevisione").textContent = errate[n].testo
+                if (errate[n].risposta == true) {
+                    document.getElementById("rispostaUtenteRevisione").textContent = "vero"
+                }
+                else {
+                    document.getElementById("rispostaUtenteRevisione").textContent = "falso"
+                }
+
+                if (errate[n].corretta == true) {
+                    document.getElementById("rispostaCorrettaRevisione").textContent = "vero"
+                }
+                else {
+                    document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
+                }
             }
-            else {
-                document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }
+            aggiorna(n)
+            document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
+                n += 1
+                aggiorna(n)
+            })
+            document.getElementById("domandaPrecedenteRevisione").addEventListener("click", function () {
+                n -= 1
+                aggiorna(n)
+            })
+
         }
-        aggiorna(n)
-        document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
-            n += 1
-            aggiorna(n)
-        })
-        document.getElementById("domandaPrecedenteRevisione").addEventListener("click", function () {
-            n -= 1
-            aggiorna(n)
-        })
 
 
 
