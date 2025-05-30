@@ -1,22 +1,61 @@
+
+/**
+ * @file Script server Node.js per la gestione degli utenti e dei quiz.
+ * @summary Questo server gestisce la registrazione, il login, la modifica dei dati utente (inclusi i risultati dei quiz)
+ * e serve i file statici necessari per l'applicazione client.
+ * Utilizza un file JSON locale (utenti.json) come persistenza dei dati.
+ */
+
+// Importazione dei moduli Node.js necessari.
 const fs = require('fs').promises;
 const path = require('path');
 const http = require('http');
 const crypto = require('crypto');
-
+const os = require('os');
+/**
+ * @const {string} PERCORSO_UTENTI_JSON
+ * Percorso completo del file JSON dove vengono memorizzati i dati degli utenti.
+ * Si trova nella cartella 'json' a un livello superiore rispetto alla directory corrente (__dirname).
+ */
 const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
+/**
+ * @type {UtenteServer[]} Array che funge da cache in memoria per gli oggetti Utente.
+ * Viene popolato al caricamento iniziale da utenti.json e aggiornato durante le operazioni del server.
+ */
 let utentiInMemoria = [];
+/**
+ * Classe che rappresenta un utente lato server.
+ * Gestisce la struttura dei dati utente come viene memorizzata e manipolata dal server.
+ */
 class UtenteServer {
+    /**
+     * Costruttore per la classe UtenteServer.
+     * @param {string} nome - Il nome dell'utente.
+     * @param {string} cognome - Il cognome dell'utente.
+     * @param {string} email - L'email dell'utente (usata come identificatore univoco).
+     * @param {string} passwordHash - La password dell'utente già hashata.
+     * @param {string|Date} dataNascita - La data di nascita dell'utente. Verrà normalizzata in formato YYYY-MM-DD.
+     * @param {Array<object>} test - Un array di oggetti rappresentanti i test sostenuti dall'utente.
+     */
     constructor(nome, cognome, email, passwordHash, dataNascita, test) {
         this.nome = nome;
         this.cognome = cognome;
         this.email = email;
         this.passwordHash = passwordHash;
+        // Normalizza la data di nascita in formato YYYY-MM-DD.
         this.dataNascita = new Date(dataNascita).toISOString().split('T')[0];
         this.test = test
     }
 }
-
+/**
+ * Funzione asincrona per hashare una password utilizzando l'algoritmo SHA-256.
+ * Tenta di usare l'API Web Crypto (`global.crypto.subtle`) se disponibile,
+ * altrimenti ripiega sul modulo 'crypto' di Node.js.
+ * @param {string} password - La password in chiaro da hashare.
+ * @returns {Promise<string>} Una Promise che risolve con la stringa esadecimale dell'hash della password.
+ */
 async function hashPasswordConSHA256_Server(password) {
+    // Controlla se l'API Web Crypto è disponibile
     if (typeof global.crypto !== 'undefined' && global.crypto.subtle) {
         const encoder = new TextEncoder();
         const data = encoder.encode(password);
@@ -24,14 +63,23 @@ async function hashPasswordConSHA256_Server(password) {
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     } else {
+        // Utilizza il modulo 'crypto' di Node.js
         return crypto.createHash('sha256').update(password).digest('hex');
     }
 }
-
+/**
+ * Carica asincronamente gli utenti dal file PERCORSO_UTENTI_JSON nella cache `utentiInMemoria`.
+ * Questa funzione viene chiamata all'avvio del server.
+ * Se il file non esiste (ENOENT), inizia con una lista utenti vuota.
+ * Crea la directory 'json' se non esiste.
+ */
 async function caricareUtentiIniziali() {
     try {
+        // Assicura che la directory dove si trova utenti.json esista.
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
+        // Legge il file utenti.json.
         const dati = JSON.parse(await fs.readFile(PERCORSO_UTENTI_JSON, 'utf8'));
+        // Popola utentiInMemoria con istanze di UtenteServer.
         for (let i = 0; i < dati.length; i++) {
             utentiInMemoria.push(new UtenteServer(dati[i].nome, dati[i].cognome, dati[i].email, dati[i].passwordHash, dati[i].dataNascita, dati[i].test))
         }
@@ -39,14 +87,21 @@ async function caricareUtentiIniziali() {
         console.log("Utenti esistenti caricati in memoria da utenti.json.");
     } catch (error) {
         if (error.code === 'ENOENT') {
+            // Errore: File Not Found.
             console.log("File utenti.json non trovato. Inizio con lista vuota.");
             utentiInMemoria = [];
         } else {
+            // Altri errori durante il caricamento.
             console.error("Errore caricamento utenti.json:", error);
         }
     }
 }
-
+/**
+ * Salva asincronamente l'array `utentiInMemoria` nel file PERCORSO_UTENTI_JSON.
+ * Serializza l'array in una stringa JSON formattata.
+ * Crea la directory 'json' se non esiste.
+ * @throws Lancia un errore se il salvataggio fallisce.
+ */
 async function salvareUtentiSuFile() {
     try {
         await fs.mkdir(path.dirname(PERCORSO_UTENTI_JSON), { recursive: true });
@@ -58,32 +113,43 @@ async function salvareUtentiSuFile() {
         throw error;
     }
 }
-
+/**
+ * Creazione del server HTTP.
+ * Il server gestisce le richieste in entrata, instrada verso gli endpoint corretti
+ * e interagisce con il sistema di gestione degli utenti.
+ */
 const server = http.createServer(async (req, res) => {
     console.log(`SERVER: Ricevuta richiesta - Metodo: ${req.method}, URL: ${req.url}`);
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    // Impostazione degli header CORS per permettere richieste da origini diverse (es. client su porta diversa).
+    res.setHeader('Access-Control-Allow-Origin', '*'); // Permette qualsiasi origine.
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Metodi HTTP permessi.
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Header permessi nella richiesta.
+    // Gestione delle richieste pre-flight OPTIONS.
     if (req.method === 'OPTIONS') {
         res.writeHead(204);
         res.end();
         return;
     }
+    // Endpoint per la registrazione di un nuovo utente.
     if (req.url === '/registra-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /registra-utente (POST) raggiunto.");
         let corpoRichiesta = '';
+        // Accumula i dati ricevuti nel corpo della richiesta.
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
+        // Quando tutti i dati sono stati ricevuti.
         req.on('end', async () => {
             console.log("SERVER: Corpo richiesta per /registra-utente:", corpoRichiesta);
             try {
                 const datiNuovoUtente = JSON.parse(corpoRichiesta);
                 console.log("SERVER: Dati parsati da /registra-utente:", datiNuovoUtente);
+                // Validazione base dei dati ricevuti.
                 if (!datiNuovoUtente.email || !datiNuovoUtente.password || !datiNuovoUtente.nome) {
                     console.error("SERVER: Dati mancanti o non validi da /registra-utente");
                     res.writeHead(400, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: "Dati mancanti o non validi.", type: "danger" }));
                     return;
                 }
+                // Controlla se l'email è già registrata.
                 if (utentiInMemoria.some(u => u.email === datiNuovoUtente.email)) {
                     if (!res.headersSent) {
                         res.writeHead(409, { 'Content-Type': 'application/json' });
@@ -93,7 +159,9 @@ const server = http.createServer(async (req, res) => {
                 }
                 const passwordInChiaro = datiNuovoUtente.password;
                 const passwordHashata = await hashPasswordConSHA256_Server(passwordInChiaro);
+                // Hasha la password prima di salvarla.
                 console.log("SERVER: Password hashata per /registra-utente.");
+                // Crea una nuova istanza di UtenteServer.
                 const utenteDaSalvare = new UtenteServer(
                     datiNuovoUtente.nome,
                     datiNuovoUtente.cognome,
@@ -103,8 +171,8 @@ const server = http.createServer(async (req, res) => {
                     datiNuovoUtente.test
                 );
 
-                utentiInMemoria.push(utenteDaSalvare);
-                await salvareUtentiSuFile();
+                utentiInMemoria.push(utenteDaSalvare); // Aggiunge il nuovo utente alla cache in memoria.
+                await salvareUtentiSuFile(); // Salva l'array aggiornato su file.
                 if (!res.headersSent) {
                     res.end(JSON.stringify({ message: "Utente creato con successo", type: "success" }));
                     return
@@ -113,7 +181,7 @@ const server = http.createServer(async (req, res) => {
 
             } catch (error) {
                 if (!res.headersSent) {
-                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    res.writeHead(500, { 'Content-Type': 'application/json' }); // Internal Server Error.
                     res.end(JSON.stringify({ message: "Errore interno del server durante la registrazione.", type: "danger" }));
                 }
                 return
@@ -123,11 +191,9 @@ const server = http.createServer(async (req, res) => {
         return
 
     }
+    // Endpoint per il login di un utente.
     else if (req.url === '/login-utente' && req.method === 'POST') {
         console.log("SERVER: Endpoint /login-utente (POST) raggiunto.");
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
@@ -144,7 +210,7 @@ const server = http.createServer(async (req, res) => {
 
 
                 console.log(`SERVER: Tentativo di login per email: [${emailRicevuta}]`);
-
+                // Trova l'utente per email (ignorando maiuscole/minuscole).
                 const utenteTrovato = utentiInMemoria.find(u => u.email.toLowerCase() === emailRicevuta);
 
                 if (!utenteTrovato) {
@@ -153,11 +219,12 @@ const server = http.createServer(async (req, res) => {
                     res.end(JSON.stringify({ message: "Utente non trovato con l'email fornita.", type: "danger" }));
                     return
                 }
-
+                // Hasha la password ricevuta e la confronta con quella memorizzata.
                 const hashPasswordRicevuta = await hashPasswordConSHA256_Server(passwordInChiaroRicevuta);
 
                 if (hashPasswordRicevuta === utenteTrovato.passwordHash) {
                     console.log("SERVER: Login riuscito per utente:", utenteTrovato.email);
+                    // Prepara i dati utente da inviare al client.
                     const datiUtenteDaInviare = {
                         email: utenteTrovato.email,
                         nome: utenteTrovato.nome,
@@ -187,11 +254,9 @@ const server = http.createServer(async (req, res) => {
         });
         return
     }
+    // Endpoint per modificare i dati di un utente (es. aggiungere un quiz, cambiare password).
     else if (req.url === '/modifica-utente' && req.method === 'PUT') {
         console.log("SERVER: Endpoint /modifica-utente (PUT) raggiunto.");
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
         let corpoRichiesta = '';
         req.on('data', chunk => { corpoRichiesta += chunk.toString(); });
         req.on('end', async () => {
@@ -218,6 +283,7 @@ const server = http.createServer(async (req, res) => {
                 }
 
                 const utenteDaAggiornare = utentiInMemoria[indiceUtente];
+                // Se ci sono aggiornamenti relativi a un nuovo quiz completato.
                 if (aggiornamenti.hasOwnProperty('nuovoQuizCompletato')) {
 
                     if (!utenteDaAggiornare.test) {
@@ -228,6 +294,7 @@ const server = http.createServer(async (req, res) => {
                     console.log(`SERVER: Aggiunto nuovo quiz completato per utente: ${utenteDaAggiornare.email}`);
                 }
                 res.writeHead(200, { 'Content-Type': 'application/json' });
+                // Se c'è un aggiornamento della password.
                 if (aggiornamenti.hasOwnProperty('password') && aggiornamenti.password) {
                     console.log(`SERVER: Inizio aggiornamento password per l'utente: ${utenteDaAggiornare.email}`);
                     utenteDaAggiornare.passwordHash = await hashPasswordConSHA256_Server(aggiornamenti.password); //
@@ -256,7 +323,7 @@ const server = http.createServer(async (req, res) => {
         });
         return
     }
-
+    // Blocco per servire file statici (HTML, JS, JSON).
     else if (req.url === '/' || req.url === '/index.html') {
         try {
             const html = await fs.readFile(path.join(__dirname, '..', 'index.html'), 'utf8');
@@ -288,7 +355,7 @@ const server = http.createServer(async (req, res) => {
             const html = await fs.readFile(path.join(__dirname, '..', 'risultati.html'), 'utf8');
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(html);
-        } catch (e) {console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.html");   }
+        } catch (e) { console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.html"); }
     } else if (req.url === '/risultati.js') {
         try {
             const js = await fs.readFile(path.join(__dirname, '..', 'risultati.js'), 'utf8');
@@ -304,10 +371,25 @@ const server = http.createServer(async (req, res) => {
         }
     }
 });
-
+/**
+ * @const {number} PORTA - La porta su cui il server si metterà in ascolto.
+ */
 const PORTA = 3000;
+// Avvio del server: prima carica gli utenti iniziali, poi mette il server in ascolto.
 caricareUtentiIniziali().then(() => {
-    server.listen(PORTA, '0.0.0.0', () => {
-        console.log(`Server in ascolto su http://0.0.0.0:${PORTA} (accessibile anche come http://192.168.1.183:${PORTA})`);
+    server.listen(PORTA, '0.0.0.0', () => {// Ascolta su tutte le interfacce di rete.
+        // Ottieni e logga gli indirizzi IP di rete locali
+        const networkInterfaces = os.networkInterfaces();
+        Object.keys(networkInterfaces).forEach((ifaceName) => {
+            networkInterfaces[ifaceName].forEach((iface) => {
+                // Salta indirizzi non IPv4 e indirizzi interni (es. 127.0.0.1)
+                if (iface.family === 'IPv4' && !iface.internal) {
+                    console.log(`Accessibile anche da altre macchine sulla rete locale via: http://${iface.address}:${PORTA}`);
+                }
+            });
+        });
     });
+}).catch(error => {
+    console.error("SERVER: Errore critico durante l'avvio del server (caricamento utenti fallito):", error);
+    process.exit(1); // Esce dal processo se il caricamento iniziale fallisce in modo grave.
 });
