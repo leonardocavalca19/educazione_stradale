@@ -162,16 +162,5 @@ async function avvia() {
             noaccesso()
             window.location.href = "/login.html";
         })
-        const bottoni = document.querySelectorAll('.revisione');
-        const arrayDiBottoni = Array.from(bottoni);
-        const indice=0
-        bottoni.forEach(bottone => {
-            bottone.addEventListener('click', function (event) {
-                const bottoneCliccato = event.currentTarget;
-                indice = arrayDiBottoni.indexOf(bottoneCliccato);
-            });
-        });
-        inizializza(indice)
-        window.location.href = "/risultati.html"
     });
 }

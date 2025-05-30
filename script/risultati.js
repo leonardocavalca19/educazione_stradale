@@ -34,14 +34,7 @@ async function getutenti() {
         utenti = [];
     }
 }
-const quiz = null
-function inizializza(n) {
-    quiz = n
-}
-document.addEventListener("DOMContentLoaded", function () {
-    crea()
-})
-
+crea()
 async function crea() {
     await getutenti()
     function noaccesso() {
@@ -133,9 +126,7 @@ async function crea() {
         });
     }
     document.addEventListener("DOMContentLoaded", function () {
-        if (window.location.href==="/risultati.html")
-            {
-                if (localStorage.getItem('utenteAccesso') != null) {
+        if (localStorage.getItem('utenteAccesso') != null) {
             document.getElementById("nome").textContent = "Ciao " + JSON.parse(localStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(localStorage.getItem('utenteAccesso')).cognome
         }
         else if (sessionStorage.getItem('utenteAccesso') != null) {
@@ -149,6 +140,7 @@ async function crea() {
             noaccesso()
             window.location.href = "/login.html";
         })
+        const quiz = accesso.test[accesso.test.length - 1]
         let errate = []
         let vero = 0
         let falso = 0
@@ -215,7 +207,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }
+            }     
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
@@ -227,8 +219,6 @@ async function crea() {
             aggiorna(n)
         })
 
-            }
-        
 
 
 
