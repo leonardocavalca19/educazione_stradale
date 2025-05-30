@@ -1,4 +1,5 @@
 let accesso
+getutenti()
 if (sessionStorage.getItem('utenteAccesso') == null) {
   accesso = localStorage.getItem('utenteAccesso')
 }
@@ -25,7 +26,6 @@ let quizz
 quizz = new Quiz();
 quizz.caricaDomande();
 async function creaquiz() {
-  await getutenti()
   function scrollNavigazioneVersoBottoneAttivo(indiceBottoneAttivo) {
     const containerNavigazione = document.getElementById("navigazione");
 
