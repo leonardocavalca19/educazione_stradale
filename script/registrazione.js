@@ -1,3 +1,4 @@
+let utenti = []
 function displayMessage(message, type) {
     const messageArea = document.getElementById('messageArea');
     messageArea.innerHTML = '';
@@ -11,6 +12,22 @@ function displayMessage(message, type) {
     ].join('');
 
     messageArea.append(wrapper);
+}
+async function getutenti() {
+    try {
+        const response = await fetch("/json/utenti.json");
+        if (!response.ok) {
+            throw new Error(`Errore HTTP: ${response.status} - ${response.statusText}`);
+        }
+        const datiJSON = await response.json();
+        for (let i = 0; i < datiJSON.length; i++) {
+            utenti.push(new Utente(datiJSON[i].nome, datiJSON[i].cognome, datiJSON[i].email, datiJSON[i].passwordHash, datiJSON[i].dataNascita, datiJSON[i].test))
+        }
+
+    } catch (error) {
+        console.error("Impossibile caricare il file utenti.json:", error);
+        utenti = [];
+    }
 }
 async function inviaDatiNuovoUtenteAlServer(datiUtente) {
     try {
@@ -30,11 +47,9 @@ async function inviaDatiNuovoUtenteAlServer(datiUtente) {
         console.error('CLIENT: Errore durante l_invio dei dati utente:', error);
     }
 }
+
+getutenti()
 document.addEventListener("DOMContentLoaded", function () {
-    async function utenti(){
-        await getutenti()
-    }
-    utenti()
     document.getElementById("registrazioneForm").addEventListener("submit", async function (event) {
         event.preventDefault()
         let nomecorretto = false
