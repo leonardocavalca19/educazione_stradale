@@ -2,10 +2,6 @@ const fs = require('fs').promises;
 const path = require('path');
 const http = require('http');
 const crypto = require('crypto');
-require('dotenv').config();
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
 const PERCORSO_UTENTI_JSON = path.join(__dirname, '..', 'json', 'utenti.json');
 let utentiInMemoria = [];
