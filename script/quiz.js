@@ -1,4 +1,3 @@
-let accesso
 let utenti = []
 async function getutenti() {
   try {
@@ -36,6 +35,7 @@ async function getutenti() {
   }
 }
 getutenti()
+let accesso
 if (sessionStorage.getItem('utenteAccesso') == null) {
   accesso = localStorage.getItem('utenteAccesso')
 }
@@ -61,7 +61,7 @@ if (accesso) {
 let quizz
 quizz = new Quiz();
 quizz.caricaDomande();
-async function creaquiz() {
+function creaquiz() {
   function scrollNavigazioneVersoBottoneAttivo(indiceBottoneAttivo) {
     const containerNavigazione = document.getElementById("navigazione");
 
@@ -202,7 +202,7 @@ async function creaquiz() {
           document.getElementsByClassName("bottoni")[1].classList.add("btn-danger")
         }
       }
-
+      
       document.getElementById("numero-domanda").textContent = n + 1;
       return n
     }
