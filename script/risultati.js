@@ -95,7 +95,7 @@ async function crea() {
         noaccesso();
     }
      // Verifica finale che 'accesso' sia un'istanza di Utente.
-    if (!accesso instanceof Utente) {
+    if (!(accesso instanceof Utente)) {
         noaccesso()
     }
      /**
