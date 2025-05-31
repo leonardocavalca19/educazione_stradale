@@ -42,53 +42,73 @@
             <h1 class="read">GUIDA IN STATO DI EBBREZZA</h1>
         </header>
         <main>
-            <section class="testo-grafico">
-                <div class="div-tg">
+            <section class="sections">
+                <p class="read paragrafo">
+                    La guida in stato di ebbrezza è un comportamento pericoloso e vietato dalla legge,
+                    che si verifica quando una persona guida un veicolo dopo aver bevuto una quantità di alcol tale da aver compromesso le proprie attività psiofisiche.
+                    Guidare sotto l'effetto dell'alcol è una delle principali cause di incidenti stradali gravi e mortali in tutto il mondo.
+                </p>
+                <p class="read paragrafo">
+                    Proprio per questo motivo il codice della strada vieta l'eccessivo consumo di alcool prima di mettersi alla guida.<br>
+                    Secondo l'Istituto Superiore di Sanità, in Italia, gli incidenti stradali alcol-correlati rappresentano circa il 30-35% degli incidenti mortali.<br>
+                    Anche un tasso alcolemico relativamente basso può compromettere la capacità di guida, aumentando drasticamente la possibilità di commettere errori fatali.
+                    Nel 2023, si stima che oltre 1.100 decessi siano stati causati da guida in stato di ebbrezza.
+                </p>
+                <img src="img/alcol.webp" alt="alcol" style="margin: auto; width: 50%;"></img>
+                <div class="paragrafo">
+                    <p class="read paragrafo">
+                        L'alcol etilico è una sostanza psicoattiva che agisce sul sistema nervoso centrale. I suoi effetti variano in base alla quantità assunta, al peso corporeo, al metabolismo eccetera.<br>
+                        Tra gli effetti principali ci sono:
+                    </p>
+                    <ul>
+                        <li>Alterazione dei riflessi e del tempo di reazione</li>
+                        <li>Risuzione della concentrazione e della capacità di giudizio</li>
+                        <li>Visione offuscata e ridotta percezione delle distanze</li>
+                        <li>Euforia o sonnolenza, a seconda della quantità assunta</li>
+                        <li>Perdita di coordinazione motoria</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="sections">
+                <div class="paragrafo">
+                    <p class="read">
+                        Guidare sotto l'effetto dell'alcol può causare gravi danni, sia a chi guida che agli altri utenti della strada.<br>
+                        Le principali conseguenze sono:
+                    </p>
+                    <ul>
+                        <li>Incidenti stradali</li>
+                        <li>Danni a persone</li>
+                        <li>Danni a veicoli e infrastrutture</li>
+                        <li>Problemi legali e assicurativi</li>
+                    </ul>
+                </div>
+                <div class="canvas">
+                    <canvas id="barreAlcol"></canvas>
+                </div>
+            </section>
+
+            <div class="sections">
+                <section class="contenuti-singoli">
+                    <div>
+                        <h4 class="read">Secondo il codice della strada (art. 186 cds):</h4>
+                        <p class="read">
+                            È vietato guidare in stato di ebbrezza in conseguenza dell'uso di bevande alcoliche.<br>
+                            Chiunque guida in stato di ebbrezza e' punito:
+                            A seconda del tasso alcolemico rilevato, ci sono tre fasce di gravità:
+                            <ul class="container-fluid">
+                                <li>Da 0,5 a 0,8 g/l: multa da € 543 a € 2.170 e sospensione patente da 3 a 6 mesi.</li>
+                                <li>Da 0,8 a 1,5 g/l: reato penale, ammenda da € 800 a € 3.200, arresto fino a 6 mesi e sospensione patente da 6 mesi a 1 anno.</li>
+                                <li>Oltre 1,5 g/l: reato penale aggravato, ammenda da € 1.500 a € 6.000, arresto da 6 mesi a 1 anno, sospensione patente da 1 a 2 anni e confisca del veicolo.</li>
+                            </ul>
+                        </p>
+                    </div>
+                </section>
+                <section class="contenuti-singoli">
                     <div class="canvas">
                         <canvas id="tortaEbbrezza"></canvas>
                     </div>
-                    <div class="txt1">
-                        <p class="read">
-                            Guidare sotto l'effetto dell'alcol è una delle principali cause di incidenti stradali gravi e mortali in tutto il mondo.
-                            L'alcol compromette il sistema nervoso centrale, riducendo la capacità di concentrazione, rallentando i riflessi e alterando la percezione del rischio.<br>
-                            Proprio per questo motivo il codice della strada vieta l'eccessivo consumo di alcool prima di mettersi alla guida.<br>
-                            Secondo l'Istituto Superiore di Sanità, in Italia, gli incidenti stradali alcol-correlati rappresentano circa il 30-35% degli incidenti mortali.<br>
-                            Anche un tasso alcolemico relativamente basso può compromettere la capacità di guida, aumentando drasticamente la possibilità di commettere errori fatali.
-                            Nel 2023, si stima che oltre 1.100 decessi siano stati causati da guida in stato di ebbrezza.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!--PLACEHOLDER - DA SISTEMARE-->
-            <section>
-                <div class="mx-auto">
-                    <p>
-                        Gli effetti della guida in stato di ebbrezza sono:
-                        <ul>
-                            <li class="read">Alterazione della percezione</li>
-                            <li class="read">Riduzione della prontezza dei riflessi</li>
-                            <li class="read">Conseguente aumento del rischio di incidenti</li>
-                        </ul>
-                    </p>
-                </div>
-            </section>
-
-            <section class="contenuti-singoli">
-                <div>
-                    <h4 class="read">Secondo il codice della strada (art. 186 cds):</h4>
-                    <p class="read">
-                        È vietato guidare in stato di ebbrezza in conseguenza dell'uso di bevande alcoliche.<br>
-                        Chiunque guida in stato di ebbrezza e' punito:
-                        A seconda del tasso alcolemico rilevato, ci sono tre fasce di gravità:
-                        <ul>
-                            <li>Da 0,5 a 0,8 g/l: multa da € 543 a € 2.170 e sospensione patente da 3 a 6 mesi.</li>
-                            <li>Da 0,8 a 1,5 g/l: reato penale, ammenda da € 800 a € 3.200, arresto fino a 6 mesi e sospensione patente da 6 mesi a 1 anno.</li>
-                            <li>Oltre 1,5 g/l: reato penale aggravato, ammenda da € 1.500 a € 6.000, arresto da 6 mesi a 1 anno, sospensione patente da 1 a 2 anni e confisca del veicolo.</li>
-                        </ul>
-                    </p>
-                </div>
-            </section>
+                </section>
+            </div>
         </main>
         <footer>
             <div class="griglia">
@@ -98,8 +118,8 @@
                     </p>
                     <ul>
                         <li><a class="links-footer" href="https://webuser.itis.pr.it/~sCAVALCA5" target="_blank">Cavalca Leonardo</a></li>
-                        <li><a class="links-footer" href="webuser.itis.pr.it/~sfrattar" target="_blank">Frattaruolo Salvatore</a></li>
-                        <li><a class="links-footer" href="webuser.itis.pr.it/~ssozzi4" target="_blank">Sozzi Mattia</a></li>
+                        <li><a class="links-footer" href="https://webuser.itis.pr.it/~sfrattar" target="_blank">Frattaruolo Salvatore</a></li>
+                        <li><a class="links-footer" href="https://webuser.itis.pr.it/~ssozzi4" target="_blank">Sozzi Mattia</a></li>
                     </ul>
                 </div>
                 <div class="altri-link">

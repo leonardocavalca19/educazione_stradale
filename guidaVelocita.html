@@ -42,34 +42,65 @@
             <h1 class="read">VELOCITÀ ALLA GUIDA</h1>
         </header>
         <main>
-            <section class="testo-grafico">
-                <div class="div-tg">
+            <section class="sections">
+                <p class="read paragrafo">
+                    L'eccessiva velocità alla guida si verifica quando un conducente supera i limiti di velocità stabiliti dal Codice della Strada
+                    o guida a una velocità non adeguata alle condizioni del traffico, della strada o atmosferiche, anche se inferiore ai limiti previsti.
+                </p>
+                <p class="read paragrafo">
+                    Superare i limiti di velocità è una delle principali cause di incidenti stradali, e spesso ne aggrava la gravità.<br>
+                    Nel 2023, la velocità eccessiva è stata una delle principali cause di incidenti stradali in Italia.<br>
+                    L'eccessivo aumento della velocità può aumentare la perdita di controllo del veicolo, mettendo a rischio la tua vita, quella dei passeggeri che stai portando e quella di eventuali pedoni o altre macchine che potresti colpire.
+                    A queste velocità la macchina diventa difficile da manovrare, è più difficile reagire agli imprevisti e schivare ostacoli improvvisi. Questo vale ancora di più in condizioni di visibilità ridotta come durante una forte pioggia o l'ingresso del veicolo all'interno di un banco di nebbia
+                </p>
+                <div class="paragrafo">
+                    <p>L'eccessiva velocità piò portare a:</p>
+                    <ul class="read">
+                        <li>Riduzione dei tempi di reazione: maggiore è la velocita, minore è il tempo per reagire a un ostacolo imprevisto</li>
+                        <li>Aumento dello spazio di frenata: a velocità elevate, la distanza</li>
+                        <li>Perdita di controllo del veicolo: una curva o una manovra brusca piò portare a uscite di strada, con conseguenze anche fatali</li>
+                        <li>Maggiore gravità degli incidenti: in caso di impatto con un altro veicolo o un utente della strada, le forze aumentano con l'aumentare della velocità, arrivando a causare più danni a persone e strutture</li>
+                    </ul>
+                </div>
+            </section>
+            <section class="sections">
+                <div class="paragrafo">
+                    <p class="read">Pene amministrative per eccesso di velocità:</p>
+                    <ul class="read">
+                        <li>Superamento del limite di fino a 10 km/h: sanzione da 42€ a 173€</li>
+                        <li>Superamento del limite di fino a 40 km/h: sanzione da 173€ a 695€ e decurtazione di 3 punti dalla patente</li>
+                        <li>Superamento del limite di fino a 60 km/h: sanzione da 543€ a 2170€ e decurtazione di 6 punti dalla patente</li>
+                        <li>Superamento del limite di 140 km/h: sanzione da 845€ a 3382€, decurtazione di 10 punti dalla patente e sospensione della patente</li>
+                    </ul>
+                    <p>
+                        Ci sono, inoltre, alcune aggravanti.<br>
+                        Se l'infrazione avviene in orario notturno le sanzioni pecuniarie sono aumentate di un terzo.<br>
+                        In caso di recidiva, può essere disposta la revoca della patente
+                    </p>
+                </div>
+                <div class="canvas">
+                    <canvas id="lineVelocita"></canvas>
+                </div>
+            </section>
+            <div class="sections">
+                <section class="contenuti-singoli">
+                        <div>
+                            <h4 class="read">Secondo il codice della strada (art. 142 cds):</h4>
+                            <p class="read">
+                                Ai fini della sicurezza della circolazione e della tutela  della
+                                vita umana la velocita' massima non puo' superare i 130 km/h  per  le
+                                autostrade, i 110 km/h per le strade  extraurbane  principali,  i  90
+                                km/h per le strade extraurbane secondarie ed i 50 km/h per le  strade
+                                nei centri abitati. 
+                            </p>
+                        </div>
+                </section>
+                <section class="contenuti-singoli">
                     <div class="canvas">
                         <canvas id="tortaVelocita"></canvas>
                     </div>
-                    <div class="txt1">
-                        <p class="read">
-                            Superare i limiti di velocità è una delle principali cause di incidenti stradali, e spesso ne aggrava la gravità.<br>
-                            Esso riduce il tempo di reazione e aumenta la gravità degli incidenti.<br>
-                            Nel 2023, la velocità eccessiva è stata una delle principali cause di incidenti stradali in Italia.<br>
-                            L'eccessivo aumento della velocità può aumentare la perdita di controllo del veicolo, mettendo a rischio la tua vita, quella dei passeggeri che stai portando e quella di eventuali pedoni o altre macchine che potresti colpire.
-                            A queste velocità la macchina diventa difficile da manovrare, è più difficile reagire agli imprevisti e schivare ostacoli improvvisi. Questo vale ancora di più in condizioni di visibilità ridotta come durante una forte pioggia o l'ingresso del veicolo all'interno di un banco di nebbia
-                        </p>
-                    </div>
-                </div>
-            </section>
-            <section class="contenuti-singoli">
-                    <div>
-                        <h4 class="read">Secondo il codice della strada (art. 142 cds):</h4>
-                        <p class="read">
-                            Ai fini della sicurezza della circolazione e della tutela  della
-                            vita umana la velocita' massima non puo' superare i 130 km/h  per  le
-                            autostrade, i 110 km/h per le strade  extraurbane  principali,  i  90
-                            km/h per le strade extraurbane secondarie ed i 50 km/h per le  strade
-                            nei centri abitati. 
-                        </p>
-                    </div>
-            </section>
+                </section>
+            </div>
         </main>
         <footer>
             <div class="griglia">
@@ -79,8 +110,8 @@
                     </p>
                     <ul>
                         <li><a class="links-footer" href="https://webuser.itis.pr.it/~sCAVALCA5" target="_blank">Cavalca Leonardo</a></li>
-                        <li><a class="links-footer" href="webuser.itis.pr.it/~sfrattar" target="_blank">Frattaruolo Salvatore</a></li>
-                        <li><a class="links-footer" href="webuser.itis.pr.it/~ssozzi4" target="_blank">Sozzi Mattia</a></li>
+                        <li><a class="links-footer" href="https://webuser.itis.pr.it/~sfrattar" target="_blank">Frattaruolo Salvatore</a></li>
+                        <li><a class="links-footer" href="https://webuser.itis.pr.it/~ssozzi4" target="_blank">Sozzi Mattia</a></li>
                     </ul>
                 </div>
                 <div class="altri-link">

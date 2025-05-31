@@ -22,4 +22,7 @@ document.addEventListener("DOMContentLoaded", function(){
         document.getElementById("leggi").disabled = false;
         if (synth.speaking) synth.cancel();
     });
+    window.addEventListener('beforeunload', function (e) {
+        if(synth.speaking) synth.cancel();
+});
 });

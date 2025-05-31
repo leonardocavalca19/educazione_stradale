@@ -98,6 +98,10 @@ body.translated-rtl {
     .hamburger {
         display: none;
     }
+    .sections
+    {
+        grid-template-columns: 50% 50%;
+    }
 }
 
 @media (max-width: 1023px) {
@@ -143,6 +147,10 @@ body.translated-rtl {
     .hamburger {
         color: #fff;
     }
+    .sections
+    {
+        grid-template-columns: 100%;
+    }
 }
 nav > div > a
 {
@@ -164,7 +172,7 @@ body {
 canvas
 {
     margin: auto;
-    width: 100%;
+    width: 120%;
     display: block;
     max-width: 600px;
 }
@@ -206,6 +214,16 @@ footer > div > div
     box-shadow: -5px 5px 3px;
     border-radius: 15px;
     background-color: #bbb;
+}
+.sections
+{
+    margin: 0 auto;
+    display: grid;
+    height: 100%;
+}
+.paragrafo
+{
+    margin: 20px;
 }
 .play-buttons
 {
