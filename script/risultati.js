@@ -78,22 +78,6 @@ async function crea() {
     else if (sessionStorage.getItem('utenteAccesso') != null) {
         accesso = sessionStorage.getItem('utenteAccesso')
     }
-    if (accesso) {
-        try {
-            // Parsa i dati dell'utente (se ancora stringa) per ottenere l'email e cercare l'oggetto Utente completo.
-            for (let i = 0; i < utenti.length; i++) {
-                if (utenti[i].email == JSON.parse(accesso).email) {
-                    accesso = utenti[i]
-                }
-            }
-        } catch (e) {
-            console.error("Errore nel parsing dell'utente da localStorage:", e);
-            noaccesso();
-        }
-    } else {
-         // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
-        noaccesso();
-    }
      // Verifica finale che 'accesso' sia un'istanza di Utente.
     if (!(accesso instanceof Utente)) {
         noaccesso()
