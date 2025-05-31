@@ -85,6 +85,7 @@ async function crea() {
                 if (!(accesso instanceof Utente)) {
                     if (utenti[i].email == JSON.parse(accesso).email) {
                         accesso = utenti[i]
+                        break
                     }
                 }
             }
