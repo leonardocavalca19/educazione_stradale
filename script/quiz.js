@@ -62,7 +62,6 @@ async function getutenti() {
     }
 }
 // Invoca immediatamente getutenti per caricare i dati degli utenti all'avvio dello script
-getutenti()
 /** @type {string | null} Stringa JSON contenente i dati base dell'utente loggato, recuperata dallo storage. */
 let accesso
 if (sessionStorage.getItem('utenteAccesso') == null) {

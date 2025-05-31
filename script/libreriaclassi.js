@@ -59,9 +59,7 @@ class Quiz {
       }
       let json = await risposta.json();
       this.scegliDomandeRandom(json, 30);
-      document.addEventListener("DOMContentLoaded", function() {
-        creaquiz();
-      });
+      creaquiz();
 
 
     } catch (errore) {
