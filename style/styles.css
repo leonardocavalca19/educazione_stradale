@@ -4,6 +4,10 @@
     padding: 0;
     box-sizing: border-box;
 }
+html
+{
+    min-width: 800px;
+}
 header {
     background-image: url("/img/strada.jpg");
     background-size: cover;
