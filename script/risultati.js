@@ -82,28 +82,32 @@ async function crea() {
         try {
             // Parsa i dati dell'utente (se ancora stringa) per ottenere l'email e cercare l'oggetto Utente completo.
             for (let i = 0; i < utenti.length; i++) {
-                if (utenti[i].email == JSON.parse(accesso).email) {
-                    accesso = utenti[i]
+                if (!(accesso instanceof Utente)) {
+                    if (utenti[i].email == JSON.parse(accesso).email) {
+                        accesso = utenti[i]
+                        break
+                    }
                 }
             }
+
         } catch (e) {
             console.error("Errore nel parsing dell'utente da localStorage:", e);
             noaccesso();
         }
     } else {
-         // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
+        // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
         noaccesso();
     }
-     // Verifica finale che 'accesso' sia un'istanza di Utente.
-    if (!accesso instanceof Utente) {
+    // Verifica finale che 'accesso' sia un'istanza di Utente.
+    if (!(accesso instanceof Utente)) {
         noaccesso()
     }
-     /**
-     * Crea o aggiorna un grafico a barre (usando Chart.js) per mostrare come altri utenti
-     * hanno risposto a una specifica domanda errata.
-     * @param {string} canvasId - L'ID dell'elemento canvas nel DOM per il grafico.
-     * @param {{conteggioVero: number, conteggioFalso: number}} statisticheAltri - Oggetto con il conteggio delle risposte "Vero" e "Falso" date da altri utenti.
-     */
+    /**
+    * Crea o aggiorna un grafico a barre (usando Chart.js) per mostrare come altri utenti
+    * hanno risposto a una specifica domanda errata.
+    * @param {string} canvasId - L'ID dell'elemento canvas nel DOM per il grafico.
+    * @param {{conteggioVero: number, conteggioFalso: number}} statisticheAltri - Oggetto con il conteggio delle risposte "Vero" e "Falso" date da altri utenti.
+    */
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
         const ctx = document.getElementById(canvasId);
         if (!ctx) {
@@ -138,8 +142,8 @@ async function crea() {
             },
             options: {
                 indexAxis: 'y', // Barre orizzontali.
-                responsive: true, 
-                maintainAspectRatio: false, 
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { // Asse X (valori numerici delle risposte).
                         beginAtZero: true,
@@ -176,7 +180,7 @@ async function crea() {
         else if (sessionStorage.getItem('utenteAccesso') != null) {
             document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
         }
-         // Event listener per il link/bottone del profilo
+        // Event listener per il link/bottone del profilo
         document.getElementById("profilo").addEventListener("click", function () {
             window.location.href = "/profilo.html"
         })
@@ -229,16 +233,24 @@ async function crea() {
                 document.getElementById("domandaPrecedenteRevisione").disabled = true
             }
             for (let j = 0; j < utenti.length; j++) {
-                let arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
-                let indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
-                if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
-                    if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
-                        vero++
-                    }
-                    else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
-                        falso++
+                let arrayDomandeAltroUtente
+                let indiceDomandaInAltroUtente
+                try {
+                    arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
+                    indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
+                    if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
+                        if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
+                            vero++
+                        }
+                        else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
+                            falso++
+                        }
                     }
                 }
+                catch {
+
+                }
+
             }
             let statistche = {
                 conteggioVero: vero,
@@ -260,7 +272,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }     
+            }
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
