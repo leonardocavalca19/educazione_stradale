@@ -81,11 +81,14 @@ async function crea() {
     if (accesso) {
         try {
             // Parsa i dati dell'utente (se ancora stringa) per ottenere l'email e cercare l'oggetto Utente completo.
-            for (let i = 0; i < utenti.length; i++) {
-                if (utenti[i].email == JSON.parse(accesso).email) {
-                    accesso = utenti[i]
+            if(!(accesso instanceof Utente)){
+                for (let i = 0; i < utenti.length; i++) {
+                    if (utenti[i].email == JSON.parse(accesso).email) {
+                        accesso = utenti[i]
+                    }
                 }
             }
+            
         } catch (e) {
             console.error("Errore nel parsing dell'utente da localStorage:", e);
             noaccesso();
