@@ -233,16 +233,24 @@ async function crea() {
                 document.getElementById("domandaPrecedenteRevisione").disabled = true
             }
             for (let j = 0; j < utenti.length; j++) {
-                let arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
-                let indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
-                if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
-                    if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
-                        vero++
-                    }
-                    else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
-                        falso++
+                let arrayDomandeAltroUtente
+                let indiceDomandaInAltroUtente
+                try {
+                    arrayDomandeAltroUtente = utenti[j].test[utenti[j].test.length - 1].domande;
+                    indiceDomandaInAltroUtente = arrayDomandeAltroUtente.findIndex(d => d.testo === quiz.domande[n].testo);
+                    if (arrayDomandeAltroUtente.includes(quiz.domande[n])) {
+                        if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == true && utenti[j] != accesso) {
+                            vero++
+                        }
+                        else if (arrayDomandeAltroUtente[indiceDomandaInAltroUtente].risposta == false && utenti[j] != accesso) {
+                            falso++
+                        }
                     }
                 }
+                catch {
+
+                }
+
             }
             let statistche = {
                 conteggioVero: vero,
