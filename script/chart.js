@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
-    if (ctx) {
-        const ctx = document.getElementById("myChart");
-    }
-    
+    const ctx = document.getElementById("myChart");
     const tortaEbbrezza = document.getElementById('tortaEbbrezza');
     const tortaCellulare = document.getElementById("tortaCellulare");
     const tortaVelocita = document.getElementById("tortaVelocita");
