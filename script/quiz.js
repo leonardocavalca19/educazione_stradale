@@ -62,6 +62,7 @@ async function getutenti() {
     }
 }
 // Invoca immediatamente getutenti per caricare i dati degli utenti all'avvio dello script
+getutenti()
 /** @type {string | null} Stringa JSON contenente i dati base dell'utente loggato, recuperata dallo storage. */
 let accesso
 if (sessionStorage.getItem('utenteAccesso') == null) {
@@ -95,7 +96,6 @@ if (accesso) {
 /** @type {Quiz} Istanza del quiz corrente. Definita in libreriaclassi.js */
 let quizz = new Quiz();
 quizz.caricaDomande(); // Carica le domande per il quiz. Usando il metodo "casicadomande" della classe Quiz
-creaquiz();
 /**
  * Funzione principale che costruisce l'interfaccia del quiz, gestisce la navigazione
  * tra le domande, la raccolta delle risposte e il salvataggio finale del quiz.
