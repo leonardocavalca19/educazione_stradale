@@ -81,32 +81,32 @@ async function crea() {
     if (accesso) {
         try {
             // Parsa i dati dell'utente (se ancora stringa) per ottenere l'email e cercare l'oggetto Utente completo.
-            if(!(accesso instanceof Utente)){
-                for (let i = 0; i < utenti.length; i++) {
+            for (let i = 0; i < utenti.length; i++) {
+                if (!(accesso instanceof Utente)) {
                     if (utenti[i].email == JSON.parse(accesso).email) {
                         accesso = utenti[i]
                     }
                 }
             }
-            
+
         } catch (e) {
             console.error("Errore nel parsing dell'utente da localStorage:", e);
             noaccesso();
         }
     } else {
-         // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
+        // Se l'utente dallo storage non corrisponde a nessun utente caricato da utenti.json
         noaccesso();
     }
-     // Verifica finale che 'accesso' sia un'istanza di Utente.
+    // Verifica finale che 'accesso' sia un'istanza di Utente.
     if (!(accesso instanceof Utente)) {
         noaccesso()
     }
-     /**
-     * Crea o aggiorna un grafico a barre (usando Chart.js) per mostrare come altri utenti
-     * hanno risposto a una specifica domanda errata.
-     * @param {string} canvasId - L'ID dell'elemento canvas nel DOM per il grafico.
-     * @param {{conteggioVero: number, conteggioFalso: number}} statisticheAltri - Oggetto con il conteggio delle risposte "Vero" e "Falso" date da altri utenti.
-     */
+    /**
+    * Crea o aggiorna un grafico a barre (usando Chart.js) per mostrare come altri utenti
+    * hanno risposto a una specifica domanda errata.
+    * @param {string} canvasId - L'ID dell'elemento canvas nel DOM per il grafico.
+    * @param {{conteggioVero: number, conteggioFalso: number}} statisticheAltri - Oggetto con il conteggio delle risposte "Vero" e "Falso" date da altri utenti.
+    */
     function creaGraficoConfrontoPerDomandaErrata(canvasId, statisticheAltri) {
         const ctx = document.getElementById(canvasId);
         if (!ctx) {
@@ -141,8 +141,8 @@ async function crea() {
             },
             options: {
                 indexAxis: 'y', // Barre orizzontali.
-                responsive: true, 
-                maintainAspectRatio: false, 
+                responsive: true,
+                maintainAspectRatio: false,
                 scales: {
                     x: { // Asse X (valori numerici delle risposte).
                         beginAtZero: true,
@@ -179,7 +179,7 @@ async function crea() {
         else if (sessionStorage.getItem('utenteAccesso') != null) {
             document.getElementById("nome").textContent = "Ciao " + JSON.parse(sessionStorage.getItem('utenteAccesso')).nome + " " + JSON.parse(sessionStorage.getItem('utenteAccesso')).cognome
         }
-         // Event listener per il link/bottone del profilo
+        // Event listener per il link/bottone del profilo
         document.getElementById("profilo").addEventListener("click", function () {
             window.location.href = "/profilo.html"
         })
@@ -263,7 +263,7 @@ async function crea() {
             }
             else {
                 document.getElementById("rispostaCorrettaRevisione").textContent = "falso"
-            }     
+            }
         }
         aggiorna(n)
         document.getElementById("domandaSuccessivaRevisione").addEventListener("click", function () {
