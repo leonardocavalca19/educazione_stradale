@@ -374,7 +374,7 @@ const server = http.createServer(async (req, res) => {
 /**
  * @const {number} PORTA - La porta su cui il server si metterà in ascolto.
  */
-const PORTA = 3000;
+const PORTA = process.env.PORT || 3000;;
 // Avvio del server: prima carica gli utenti iniziali, poi mette il server in ascolto.
 caricareUtentiIniziali().then(() => {
     server.listen(PORTA, '0.0.0.0', () => {// Ascolta su tutte le interfacce di rete.
