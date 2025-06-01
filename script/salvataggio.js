@@ -699,40 +699,52 @@ const server = http.createServer(async (req, res) => {
         }
     }
     else if (req.url.startsWith('/img_sign/') && req.method === 'GET') {
-    try {
+        try {
 
-        const imagePath = path.join(__dirname, '..', req.url);
+            const imagePath = path.join(__dirname, '..', req.url);
 
-        const relativeImagePath = path.relative(path.join(__dirname, '..'), imagePath);
-        if (!relativeImagePath.startsWith('img_sign' + path.sep)) {
-            throw new Error('Accesso non valido al di fuori della cartella img_sign.');
-        }
+            const relativeImagePath = path.relative(path.join(__dirname, '..'), imagePath);
+            if (!relativeImagePath.startsWith('img_sign' + path.sep)) {
+                throw new Error('Accesso non valido al di fuori della cartella img_sign.');
+            }
 
-        const imageContent = await fs.readFile(imagePath);
-        const mimeType = getImageMimeType(imagePath);
+            const imageContent = await fs.readFile(imagePath);
+            const mimeType = getImageMimeType(imagePath);
 
-        res.writeHead(200, { 'Content-Type': mimeType });
-        res.end(imageContent);
-    } catch (error) {
-        if (error.code === 'ENOENT' || error.message.includes('Accesso non valido')) {
-            console.error(`SERVER: Immagine non trovata o accesso negato in /img_sign/: ${req.url}`, error.message);
-            res.writeHead(404);
-            res.end("Immagine non trovata");
-        } else {
-            console.error(`SERVER: Errore durante il caricamento dell'immagine ${req.url}:`, error);
-            res.writeHead(500);
-            res.end("Errore interno del server");
+            res.writeHead(200, { 'Content-Type': mimeType });
+            res.end(imageContent);
+        } catch (error) {
+            if (error.code === 'ENOENT' || error.message.includes('Accesso non valido')) {
+                console.error(`SERVER: Immagine non trovata o accesso negato in /img_sign/: ${req.url}`, error.message);
+                res.writeHead(404);
+                res.end("Immagine non trovata");
+            } else {
+                console.error(`SERVER: Errore durante il caricamento dell'immagine ${req.url}:`, error);
+                res.writeHead(500);
+                res.end("Errore interno del server");
+            }
         }
     }
-}
+    else if (req.url === '/json/domande.json' && req.method === 'GET') {
+        try {
+            const jsonData = await fs.readFile(path.join(__dirname, '..', 'json', 'domande.json'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(jsonData);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento json/domande.json:", e);
+            res.writeHead(404);
+            res.end("domande.json non trovato");
+        }
+    }
+
 
     else {
-        console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
-        if (!res.headersSent) {
-            res.writeHead(404, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js", type: "danger" }));
-        }
+    console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
+    if (!res.headersSent) {
+        res.writeHead(404, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: "Endpoint non trovato sul server Node.js", type: "danger" }));
     }
+}
 });
 /**
  * @const {number} PORTA - La porta su cui il server si metterà in ascolto.
