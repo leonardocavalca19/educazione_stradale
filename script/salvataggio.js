@@ -12,6 +12,19 @@ const path = require('path');
 const http = require('http');
 const crypto = require('crypto');
 const os = require('os');
+const IMAGE_MIME_TYPES = {
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.gif': 'image/gif',
+    '.svg': 'image/svg+xml',
+    '.ico': 'image/x-icon',
+    '.webp': 'image/webp'
+};
+function getImageMimeType(filePath) {
+    const ext = path.extname(filePath).toLowerCase();
+    return IMAGE_MIME_TYPES[ext] || 'application/octet-stream'; // Default generico se non riconosciuto
+}
 /**
  * @const {string} PERCORSO_UTENTI_JSON
  * Percorso completo del file JSON dove vengono memorizzati i dati degli utenti.
@@ -418,6 +431,168 @@ const server = http.createServer(async (req, res) => {
             res.end("style/styles.css non trovato");
         }
     }
+    else if (req.url === '/guidaEbbrezza.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'guidaEbbrezza.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento guidaEbbrezza.html:", e);
+            res.writeHead(404);
+            res.end("guidaEbbrezza.html non trovato");
+        }
+    }
+    else if (req.url === '/cambia_password.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'cambia_password.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento cambia_password.html:", e);
+            res.writeHead(404);
+            res.end("cambia_password.html non trovato");
+        }
+    }
+    else if (req.url === '/guidaCellulare.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'guidaCellulare.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento guidaCellulare.html:", e);
+            res.writeHead(404);
+            res.end("guidaCellulare.html non trovato");
+        }
+    }
+    else if (req.url === '/guidaCinture.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'guidaCinture.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento guidaCinture.html:", e);
+            res.writeHead(404);
+            res.end("guidaCinture.html non trovato");
+        }
+    }
+    else if (req.url === '/guidaPedoni.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'guidaPedoni.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento guidaPedoni.html:", e);
+            res.writeHead(404);
+            res.end("guidaPedoni.html non trovato");
+        }
+    }
+    else if (req.url === '/guidaVelocita.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'guidaVelocita.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento guidaVelocita.html:", e);
+            res.writeHead(404);
+            res.end("guidaVelocita.html non trovato");
+        }
+    }
+    else if (req.url === '/script/script.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/script.js:", e);
+            res.writeHead(404);
+            res.end("script/script.js non trovato");
+        }
+    }
+    else if (req.url === '/script/chart.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'chart.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/chart.js:", e);
+            res.writeHead(404);
+            res.end("script/chart.js non trovato");
+        }
+    }
+    else if (req.url === '/script/translate.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'translate.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/translate.js:", e);
+            res.writeHead(404);
+            res.end("script/translate.js non trovato");
+        }
+    }
+    else if (req.url === '/script/reader.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'reader.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/reader.js:", e);
+            res.writeHead(404);
+            res.end("script/reader.js non trovato");
+        }
+    }
+    else if (req.url.startsWith('/img/') && req.method === 'GET') {
+        try {
+            const imagePath = path.join(__dirname, '..', req.url);
+            const relativeImagePath = path.relative(path.join(__dirname, '..'), imagePath);
+            if (!relativeImagePath.startsWith('img' + path.sep)) {
+                throw new Error('Accesso non valido al di fuori della cartella img.');
+            }
+
+            const imageContent = await fs.readFile(imagePath);
+            const mimeType = getImageMimeType(imagePath);
+
+            res.writeHead(200, { 'Content-Type': mimeType });
+            res.end(imageContent);
+        } catch (error) {
+            if (error.code === 'ENOENT' || error.message.includes('Accesso non valido')) {
+                console.error(`SERVER: Immagine non trovata o accesso negato: ${req.url}`, error.message);
+                res.writeHead(404);
+                res.end("Immagine non trovata");
+            } else {
+                console.error(`SERVER: Errore durante il caricamento dell'immagine ${req.url}:`, error);
+                res.writeHead(500);
+                res.end("Errore interno del server");
+            }
+        }
+    }
+    else if (req.url.startsWith('/img_sign/') && req.method === 'GET') {
+    try {
+
+        const imagePath = path.join(__dirname, '..', req.url);
+
+        const relativeImagePath = path.relative(path.join(__dirname, '..'), imagePath);
+        if (!relativeImagePath.startsWith('img_sign' + path.sep)) {
+            throw new Error('Accesso non valido al di fuori della cartella img_sign.');
+        }
+
+        const imageContent = await fs.readFile(imagePath);
+        const mimeType = getImageMimeType(imagePath);
+
+        res.writeHead(200, { 'Content-Type': mimeType });
+        res.end(imageContent);
+    } catch (error) {
+        if (error.code === 'ENOENT' || error.message.includes('Accesso non valido')) {
+            console.error(`SERVER: Immagine non trovata o accesso negato in /img_sign/: ${req.url}`, error.message);
+            res.writeHead(404);
+            res.end("Immagine non trovata");
+        } else {
+            console.error(`SERVER: Errore durante il caricamento dell'immagine ${req.url}:`, error);
+            res.writeHead(500);
+            res.end("Errore interno del server");
+        }
+    }
+}
 
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
