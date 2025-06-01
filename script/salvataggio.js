@@ -497,6 +497,72 @@ const server = http.createServer(async (req, res) => {
             res.end("guidaVelocita.html non trovato");
         }
     }
+    else if (req.url === '/quiz.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'quiz.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento quiz.html:", e);
+            res.writeHead(404);
+            res.end("quiz.html non trovato");
+        }
+    }
+    else if (req.url === '/profilo.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'profilo.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento profilo.html:", e);
+            res.writeHead(404);
+            res.end("profilo.html non trovato");
+        }
+    }
+    else if (req.url === '/login.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'login.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento login.html:", e);
+            res.writeHead(404);
+            res.end("login.html non trovato");
+        }
+    }
+    else if (req.url === '/registrati.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'registrati.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento registrati.html:", e);
+            res.writeHead(404);
+            res.end("registrati.html non trovato");
+        }
+    }
+    else if (req.url === '/termini.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'termini.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento termini.html:", e);
+            res.writeHead(404);
+            res.end("termini.html non trovato");
+        }
+    }
+    else if (req.url === '/cambia_password.html' && req.method === 'GET') {
+        try {
+            const html = await fs.readFile(path.join(__dirname, '..', 'cambia_password.html'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/html' });
+            res.end(html);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento cambia_password.html:", e);
+            res.writeHead(404);
+            res.end("cambia_password.html non trovato");
+        }
+    }
     else if (req.url === '/script/script.js' && req.method === 'GET') {
         try {
             const jsContent = await fs.readFile(path.join(__dirname, 'script.js'), 'utf8');
@@ -528,6 +594,72 @@ const server = http.createServer(async (req, res) => {
             console.error("SERVER: Errore caricamento script/translate.js:", e);
             res.writeHead(404);
             res.end("script/translate.js non trovato");
+        }
+    }
+    else if (req.url === '/script/libreriaclassi.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'libreriaclassi.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/libreriaclassi.js:", e);
+            res.writeHead(404);
+            res.end("script/libreriaclassi.js non trovato");
+        }
+    }
+    else if (req.url === '/script/login.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'login.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/login.js:", e);
+            res.writeHead(404);
+            res.end("script/login.js non trovato");
+        }
+    }
+    else if (req.url === '/script/profilo.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'profilo.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/profilo.js:", e);
+            res.writeHead(404);
+            res.end("script/profilo.js non trovato");
+        }
+    }
+    else if (req.url === '/script/quiz.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'quiz.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/quiz.js:", e);
+            res.writeHead(404);
+            res.end("script/quiz.js non trovato");
+        }
+    }
+    else if (req.url === '/script/registrazione.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'registrazione.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/registrazione.js:", e);
+            res.writeHead(404);
+            res.end("script/registrazione.js non trovato");
+        }
+    }
+    else if (req.url === '/script/risultati.js' && req.method === 'GET') {
+        try {
+            const jsContent = await fs.readFile(path.join(__dirname, 'risultati.js'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'application/javascript' });
+            res.end(jsContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento script/risultati.js:", e);
+            res.writeHead(404);
+            res.end("script/risultati.js non trovato");
         }
     }
     else if (req.url === '/script/reader.js' && req.method === 'GET') {
