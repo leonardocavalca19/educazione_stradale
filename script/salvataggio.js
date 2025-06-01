@@ -363,6 +363,62 @@ const server = http.createServer(async (req, res) => {
             res.end(js);
         } catch (e) { console.error("SERVER: Errore caricamento utenti.json (GET):", e); res.writeHead(500); res.end("Errore lettura risultati.js"); }
     }
+    else if (req.url === '/style/comune.css' && req.method === 'GET') { // Controlla l'URL esatto
+        try {
+            const cssContent = await fs.readFile(path.join(__dirname, '..', 'style', 'comune.css'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(cssContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento style/comune.css:", e);
+            res.writeHead(404);
+            res.end("style/comune.css non trovato");
+        }
+    }
+    else if (req.url === '/style/login.css' && req.method === 'GET') {
+        try {
+            const cssContent = await fs.readFile(path.join(__dirname, '..', 'style', 'login.css'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(cssContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento style/login.css:", e);
+            res.writeHead(404);
+            res.end("style/login.css non trovato");
+        }
+    }
+    else if (req.url === '/style/quiz.css' && req.method === 'GET') {
+        try {
+            const cssContent = await fs.readFile(path.join(__dirname, '..', 'style', 'quiz.css'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(cssContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento style/quiz.css:", e);
+            res.writeHead(404);
+            res.end("style/quiz.css non trovato");
+        }
+    }
+    else if (req.url === '/style/registrati.css' && req.method === 'GET') {
+        try {
+            const cssContent = await fs.readFile(path.join(__dirname, '..', 'style', 'registrati.css'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(cssContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento style/registrati.css:", e);
+            res.writeHead(404);
+            res.end("style/registrati.css non trovato");
+        }
+    }
+    else if (req.url === '/style/styles.css' && req.method === 'GET') {
+        try {
+            const cssContent = await fs.readFile(path.join(__dirname, '..', 'style', 'styles.css'), 'utf8');
+            res.writeHead(200, { 'Content-Type': 'text/css' });
+            res.end(cssContent);
+        } catch (e) {
+            console.error("SERVER: Errore caricamento style/styles.css:", e);
+            res.writeHead(404);
+            res.end("style/styles.css non trovato");
+        }
+    }
+
     else {
         console.log(`SERVER: Nessun handler per ${req.method} ${req.url}. Invio 404.`);
         if (!res.headersSent) {
@@ -374,7 +430,7 @@ const server = http.createServer(async (req, res) => {
 /**
  * @const {number} PORTA - La porta su cui il server si metterà in ascolto.
  */
-const PORTA = process.env.PORT || 3000;;
+const PORTA = process.env.PORT || 3000;
 // Avvio del server: prima carica gli utenti iniziali, poi mette il server in ascolto.
 caricareUtentiIniziali().then(() => {
     server.listen(PORTA, '0.0.0.0', () => {// Ascolta su tutte le interfacce di rete.
