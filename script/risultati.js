@@ -195,10 +195,14 @@ async function crea() {
         let errate = []
         let vero = 0
         let falso = 0
-        for (let i = 0; i < quiz.domande.length; i++) {
+        try {
+            for (let i = 0; i < quiz.domande.length; i++) {
             if (!quiz.domande[i].controllagiusta()) {
                 errate.push(quiz.domande[i])
             }
+        }
+        } catch (error) {
+            
         }
         let n = 0
         // Determina se l'utente è promosso o bocciato in base al numero di errori.
